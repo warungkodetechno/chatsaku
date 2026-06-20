@@ -308,14 +308,16 @@ def kirim_wa(nomor, pesan):
 #         "status": True
 #     })
 
-@app.route("/webhook", methods=["POST"])
+@app.route("/webhook", methods=["GET", "POST"])
 def webhook():
-
-    payload = request.json or {}
 
     print("=" * 50)
     print("WEBHOOK MASUK")
-    print(payload)
+    print(request.method)
+
+    if request.is_json:
+        print(request.json)
+
     print("=" * 50)
 
     return jsonify({
