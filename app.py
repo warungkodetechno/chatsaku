@@ -61,9 +61,13 @@ FONTE_TOKEN = os.getenv("FONTE_TOKEN")
 
 def kirim_wa(nomor, pesan):
 
+    if not FONTE_TOKEN:
+        print("FONTE_TOKEN tidak ditemukan")
+        return
+
     try:
 
-        requests.post(
+        response = requests.post(
             "https://api.fonnte.com/send",
             headers={
                 "Authorization": FONTE_TOKEN
@@ -72,13 +76,19 @@ def kirim_wa(nomor, pesan):
                 "target": nomor,
                 "message": pesan
             },
-            timeout=10
+            timeout=20
         )
+
+        print("================================")
+        print("KIRIM WA")
+        print("Nomor :", nomor)
+        print("Status :", response.status_code)
+        print("Response :", response.text)
+        print("================================")
 
     except Exception as e:
 
-        print("ERROR KIRIM WA:", e)
-
+        print("ERROR KIRIM WA :", str(e))
 # ==================================
 # WEBHOOK FONTE
 # ==================================
@@ -87,18 +97,46 @@ def webhook():
 
     payload = request.json or {}
 
-    print("PAYLOAD FONTE:")
+    print("================================")
+    print("WEBHOOK MASUK")
     print(payload)
+    print("================================")
 
-    sender = payload.get("sender", "")
-    message = payload.get("message", "")
+    sender = ""
+    message = ""
 
-    if not sender or not message:
+    # Format webhook Fonte versi 1
+    if "sender" in payload:
+        sender = payload.get("sender", "")
+        message = payload.get("message", "")
+
+    # Format webhook Fonte versi 2
+    elif "data" in payload:
+
+        data = payload.get("data", {})
+
+        sender = data.get("sender", "")
+        message = data.get("message", "")
+
+    sender = str(sender).strip()
+    message = str(message).strip()
+
+    print("SENDER :", sender)
+    print("MESSAGE :", message)
+
+    if not sender:
+
         return jsonify({
-            "status": False
+            "status": False,
+            "message": "sender kosong"
         })
 
-    message = str(message).strip()
+    if not message:
+
+        return jsonify({
+            "status": False,
+            "message": "message kosong"
+        })
 
     cmd = message.lower()
 
@@ -269,6 +307,16 @@ def webhook():
     return jsonify({
         "status": True
     })
+
+@app.route("/test-wa")
+def test_wa():
+
+    kirim_wa(
+        "6285872362212",
+        "Test WhatsApp dari Railway"
+    )
+
+    return "TEST DIKIRIM"
 
 
 if __name__ == "__main__":
