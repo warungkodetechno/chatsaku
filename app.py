@@ -92,217 +92,231 @@ def kirim_wa(nomor, pesan):
 # ==================================
 # WEBHOOK FONTE
 # ==================================
+# @app.route("/webhook", methods=["POST"])
+# def webhook():
+
+#     payload = request.json or {}
+
+#     print("================================")
+#     print("WEBHOOK MASUK")
+#     print(payload)
+#     print("================================")
+
+#     sender = ""
+#     message = ""
+
+#     # Format webhook Fonte versi 1
+#     if "sender" in payload:
+#         sender = payload.get("sender", "")
+#         message = payload.get("message", "")
+
+#     # Format webhook Fonte versi 2
+#     elif "data" in payload:
+
+#         data = payload.get("data", {})
+
+#         sender = data.get("sender", "")
+#         message = data.get("message", "")
+
+#     sender = str(sender).strip()
+#     message = str(message).strip()
+
+#     print("SENDER :", sender)
+#     print("MESSAGE :", message)
+
+#     if not sender:
+
+#         return jsonify({
+#             "status": False,
+#             "message": "sender kosong"
+#         })
+
+#     if not message:
+
+#         return jsonify({
+#             "status": False,
+#             "message": "message kosong"
+#         })
+
+#     cmd = message.lower()
+
+#     # =========================
+#     # KELUAR
+#     # =========================
+
+#     if cmd.startswith("keluar"):
+
+#         try:
+
+#             parts = message.split()
+
+#             nominal = int(parts[1])
+
+#             keterangan = " ".join(parts[2:])
+
+#             trx = Transaksi(
+#                 tanggal=datetime.now(),
+#                 tipe="KELUAR",
+#                 nominal=nominal,
+#                 keterangan=keterangan,
+#                 nomor_wa=sender
+#             )
+
+#             db.session.add(trx)
+#             db.session.commit()
+
+#             kirim_wa(
+#                 sender,
+#                 f"✅ Pengeluaran Tersimpan\n\n"
+#                 f"Nominal : Rp {nominal:,.0f}\n"
+#                 f"Keterangan : {keterangan}"
+#             )
+
+#         except Exception as e:
+
+#             print(e)
+
+#             kirim_wa(
+#                 sender,
+#                 "Format salah.\n\n"
+#                 "Contoh:\n"
+#                 "keluar 25000 makan siang"
+#             )
+
+#         return jsonify({"status": True})
+
+#     # =========================
+#     # MASUK
+#     # =========================
+
+#     elif cmd.startswith("masuk"):
+
+#         try:
+
+#             parts = message.split()
+
+#             nominal = int(parts[1])
+
+#             keterangan = " ".join(parts[2:])
+
+#             trx = Transaksi(
+#                 tanggal=datetime.now(),
+#                 tipe="MASUK",
+#                 nominal=nominal,
+#                 keterangan=keterangan,
+#                 nomor_wa=sender
+#             )
+
+#             db.session.add(trx)
+#             db.session.commit()
+
+#             kirim_wa(
+#                 sender,
+#                 f"✅ Pemasukan Tersimpan\n\n"
+#                 f"Nominal : Rp {nominal:,.0f}\n"
+#                 f"Keterangan : {keterangan}"
+#             )
+
+#         except Exception as e:
+
+#             print(e)
+
+#             kirim_wa(
+#                 sender,
+#                 "Format salah.\n\n"
+#                 "Contoh:\n"
+#                 "masuk 1000000 gaji"
+#             )
+
+#         return jsonify({"status": True})
+
+#     # =========================
+#     # SALDO
+#     # =========================
+
+#     elif cmd == "saldo":
+
+#         masuk = db.session.query(
+#             db.func.sum(
+#                 Transaksi.nominal
+#             )
+#         ).filter(
+#             Transaksi.tipe == "MASUK"
+#         ).scalar() or 0
+
+#         keluar = db.session.query(
+#             db.func.sum(
+#                 Transaksi.nominal
+#             )
+#         ).filter(
+#             Transaksi.tipe == "KELUAR"
+#         ).scalar() or 0
+
+#         saldo = masuk - keluar
+
+#         kirim_wa(
+#             sender,
+#             f"💰 SALDO SAAT INI\n\n"
+#             f"Masuk : Rp {masuk:,.0f}\n"
+#             f"Keluar : Rp {keluar:,.0f}\n"
+#             f"Saldo : Rp {saldo:,.0f}"
+#         )
+
+#         return jsonify({"status": True})
+
+#     # =========================
+#     # HARI INI
+#     # =========================
+
+#     elif cmd == "hariini":
+
+#         today = datetime.now().date()
+
+#         data = Transaksi.query.filter(
+#             db.func.date(
+#                 Transaksi.tanggal
+#             ) == today
+#         ).all()
+
+#         total = sum(
+#             x.nominal for x in data
+#         )
+
+#         kirim_wa(
+#             sender,
+#             f"📅 TRANSAKSI HARI INI\n\n"
+#             f"Jumlah : {len(data)}\n"
+#             f"Total : Rp {total:,.0f}"
+#         )
+
+#         return jsonify({"status": True})
+
+#     # =========================
+#     # HELP
+#     # =========================
+
+#     kirim_wa(
+#         sender,
+#         "📌 Perintah Yang Tersedia\n\n"
+#         "masuk 100000 gaji\n"
+#         "keluar 25000 makan\n"
+#         "saldo\n"
+#         "hariini"
+#     )
+
+#     return jsonify({
+#         "status": True
+#     })
+
 @app.route("/webhook", methods=["POST"])
 def webhook():
 
     payload = request.json or {}
 
-    print("================================")
+    print("=" * 50)
     print("WEBHOOK MASUK")
     print(payload)
-    print("================================")
-
-    sender = ""
-    message = ""
-
-    # Format webhook Fonte versi 1
-    if "sender" in payload:
-        sender = payload.get("sender", "")
-        message = payload.get("message", "")
-
-    # Format webhook Fonte versi 2
-    elif "data" in payload:
-
-        data = payload.get("data", {})
-
-        sender = data.get("sender", "")
-        message = data.get("message", "")
-
-    sender = str(sender).strip()
-    message = str(message).strip()
-
-    print("SENDER :", sender)
-    print("MESSAGE :", message)
-
-    if not sender:
-
-        return jsonify({
-            "status": False,
-            "message": "sender kosong"
-        })
-
-    if not message:
-
-        return jsonify({
-            "status": False,
-            "message": "message kosong"
-        })
-
-    cmd = message.lower()
-
-    # =========================
-    # KELUAR
-    # =========================
-
-    if cmd.startswith("keluar"):
-
-        try:
-
-            parts = message.split()
-
-            nominal = int(parts[1])
-
-            keterangan = " ".join(parts[2:])
-
-            trx = Transaksi(
-                tanggal=datetime.now(),
-                tipe="KELUAR",
-                nominal=nominal,
-                keterangan=keterangan,
-                nomor_wa=sender
-            )
-
-            db.session.add(trx)
-            db.session.commit()
-
-            kirim_wa(
-                sender,
-                f"✅ Pengeluaran Tersimpan\n\n"
-                f"Nominal : Rp {nominal:,.0f}\n"
-                f"Keterangan : {keterangan}"
-            )
-
-        except Exception as e:
-
-            print(e)
-
-            kirim_wa(
-                sender,
-                "Format salah.\n\n"
-                "Contoh:\n"
-                "keluar 25000 makan siang"
-            )
-
-        return jsonify({"status": True})
-
-    # =========================
-    # MASUK
-    # =========================
-
-    elif cmd.startswith("masuk"):
-
-        try:
-
-            parts = message.split()
-
-            nominal = int(parts[1])
-
-            keterangan = " ".join(parts[2:])
-
-            trx = Transaksi(
-                tanggal=datetime.now(),
-                tipe="MASUK",
-                nominal=nominal,
-                keterangan=keterangan,
-                nomor_wa=sender
-            )
-
-            db.session.add(trx)
-            db.session.commit()
-
-            kirim_wa(
-                sender,
-                f"✅ Pemasukan Tersimpan\n\n"
-                f"Nominal : Rp {nominal:,.0f}\n"
-                f"Keterangan : {keterangan}"
-            )
-
-        except Exception as e:
-
-            print(e)
-
-            kirim_wa(
-                sender,
-                "Format salah.\n\n"
-                "Contoh:\n"
-                "masuk 1000000 gaji"
-            )
-
-        return jsonify({"status": True})
-
-    # =========================
-    # SALDO
-    # =========================
-
-    elif cmd == "saldo":
-
-        masuk = db.session.query(
-            db.func.sum(
-                Transaksi.nominal
-            )
-        ).filter(
-            Transaksi.tipe == "MASUK"
-        ).scalar() or 0
-
-        keluar = db.session.query(
-            db.func.sum(
-                Transaksi.nominal
-            )
-        ).filter(
-            Transaksi.tipe == "KELUAR"
-        ).scalar() or 0
-
-        saldo = masuk - keluar
-
-        kirim_wa(
-            sender,
-            f"💰 SALDO SAAT INI\n\n"
-            f"Masuk : Rp {masuk:,.0f}\n"
-            f"Keluar : Rp {keluar:,.0f}\n"
-            f"Saldo : Rp {saldo:,.0f}"
-        )
-
-        return jsonify({"status": True})
-
-    # =========================
-    # HARI INI
-    # =========================
-
-    elif cmd == "hariini":
-
-        today = datetime.now().date()
-
-        data = Transaksi.query.filter(
-            db.func.date(
-                Transaksi.tanggal
-            ) == today
-        ).all()
-
-        total = sum(
-            x.nominal for x in data
-        )
-
-        kirim_wa(
-            sender,
-            f"📅 TRANSAKSI HARI INI\n\n"
-            f"Jumlah : {len(data)}\n"
-            f"Total : Rp {total:,.0f}"
-        )
-
-        return jsonify({"status": True})
-
-    # =========================
-    # HELP
-    # =========================
-
-    kirim_wa(
-        sender,
-        "📌 Perintah Yang Tersedia\n\n"
-        "masuk 100000 gaji\n"
-        "keluar 25000 makan\n"
-        "saldo\n"
-        "hariini"
-    )
+    print("=" * 50)
 
     return jsonify({
         "status": True
