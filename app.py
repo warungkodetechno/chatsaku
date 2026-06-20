@@ -9,6 +9,8 @@ from datetime import datetime
 
 from models import db
 from models import Transaksi
+import requests
+import os
 
 app = Flask(__name__)
 
@@ -55,6 +57,27 @@ def index():
 # def index():
 #     return "Railway OK"
 
+FONTE_TOKEN = os.getenv("UmbHUrGrpZtTXyCg7Upj")
+
+def kirim_wa(nomor, pesan):
+
+    try:
+
+        requests.post(
+            "https://api.fonnte.com/send",
+            headers={
+                "Authorization": FONTE_TOKEN
+            },
+            data={
+                "target": nomor,
+                "message": pesan
+            },
+            timeout=10
+        )
+
+    except Exception as e:
+
+        print("ERROR KIRIM WA:", e)
 
 # ==================================
 # WEBHOOK FONTE
@@ -62,11 +85,20 @@ def index():
 @app.route("/webhook", methods=["POST"])
 def webhook():
 
-    payload = request.json
+    payload = request.json or {}
+
+    print("PAYLOAD FONTE:")
+    print(payload)
 
     sender = payload.get("sender", "")
+    message = payload.get("message", "")
 
-    message = payload.get("message", "").strip()
+    if not sender or not message:
+        return jsonify({
+            "status": False
+        })
+
+    message = str(message).strip()
 
     cmd = message.lower()
 
@@ -95,19 +127,25 @@ def webhook():
             db.session.add(trx)
             db.session.commit()
 
-            return jsonify({
-                "reply":
-                f"✅ Pengeluaran tersimpan\n\n"
-                f"Rp {nominal:,.0f}\n"
-                f"{keterangan}"
-            })
+            kirim_wa(
+                sender,
+                f"✅ Pengeluaran Tersimpan\n\n"
+                f"Nominal : Rp {nominal:,.0f}\n"
+                f"Keterangan : {keterangan}"
+            )
 
-        except:
+        except Exception as e:
 
-            return jsonify({
-                "reply":
-                "Format:\nkeluar 25000 makan siang"
-            })
+            print(e)
+
+            kirim_wa(
+                sender,
+                "Format salah.\n\n"
+                "Contoh:\n"
+                "keluar 25000 makan siang"
+            )
+
+        return jsonify({"status": True})
 
     # =========================
     # MASUK
@@ -134,19 +172,25 @@ def webhook():
             db.session.add(trx)
             db.session.commit()
 
-            return jsonify({
-                "reply":
-                f"✅ Pemasukan tersimpan\n\n"
-                f"Rp {nominal:,.0f}\n"
-                f"{keterangan}"
-            })
+            kirim_wa(
+                sender,
+                f"✅ Pemasukan Tersimpan\n\n"
+                f"Nominal : Rp {nominal:,.0f}\n"
+                f"Keterangan : {keterangan}"
+            )
 
-        except:
+        except Exception as e:
 
-            return jsonify({
-                "reply":
-                "Format:\nmasuk 1000000 gaji"
-            })
+            print(e)
+
+            kirim_wa(
+                sender,
+                "Format salah.\n\n"
+                "Contoh:\n"
+                "masuk 1000000 gaji"
+            )
+
+        return jsonify({"status": True})
 
     # =========================
     # SALDO
@@ -172,13 +216,15 @@ def webhook():
 
         saldo = masuk - keluar
 
-        return jsonify({
-            "reply":
-            f"💰 Saldo Saat Ini\n\n"
+        kirim_wa(
+            sender,
+            f"💰 SALDO SAAT INI\n\n"
             f"Masuk : Rp {masuk:,.0f}\n"
             f"Keluar : Rp {keluar:,.0f}\n"
             f"Saldo : Rp {saldo:,.0f}"
-        })
+        )
+
+        return jsonify({"status": True})
 
     # =========================
     # HARI INI
@@ -194,22 +240,34 @@ def webhook():
             ) == today
         ).all()
 
-        total = sum(x.nominal for x in data)
+        total = sum(
+            x.nominal for x in data
+        )
 
-        return jsonify({
-            "reply":
-            f"📅 Hari Ini\n"
-            f"Jumlah Transaksi : {len(data)}\n"
+        kirim_wa(
+            sender,
+            f"📅 TRANSAKSI HARI INI\n\n"
+            f"Jumlah : {len(data)}\n"
             f"Total : Rp {total:,.0f}"
-        })
+        )
 
-    return jsonify({
-        "reply":
-        "Perintah:\n\n"
+        return jsonify({"status": True})
+
+    # =========================
+    # HELP
+    # =========================
+
+    kirim_wa(
+        sender,
+        "📌 Perintah Yang Tersedia\n\n"
         "masuk 100000 gaji\n"
         "keluar 25000 makan\n"
         "saldo\n"
         "hariini"
+    )
+
+    return jsonify({
+        "status": True
     })
 
 
