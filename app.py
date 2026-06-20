@@ -330,51 +330,108 @@ def test_post():
         "status": True
     }
 
+# ==================================
+# WEBHOOK FONNTE
+# ==================================
 @app.route("/webhook", methods=["GET", "POST"])
 def webhook():
 
-    print("=" * 60)
-    print("POST DITERIMA")
+    print("=" * 80)
+    print("WEBHOOK MASUK")
+    print("METHOD :", request.method)
+    print("CONTENT TYPE :", request.content_type)
+    print("=" * 80)
 
-    print("METHOD:")
-    print(request.method)
+    # jika dibuka dari browser
+    if request.method == "GET":
 
-    print("CONTENT TYPE:")
-    print(request.content_type)
+        return jsonify({
+            "status": True,
+            "message": "Webhook aktif"
+        })
 
-    print("FORM:")
+    # ==========================
+    # DEBUG DATA MASUK
+    # ==========================
+
+    print("FORM :")
     print(request.form.to_dict())
 
-    print("ARGS:")
-    print(request.args.to_dict())
-
-    print("RAW:")
-    print(request.data.decode("utf-8"))
-
-    print("JSON:")
+    print("JSON :")
     print(request.get_json(silent=True))
 
-    print("=" * 60)
+    print("RAW :")
+    print(request.data.decode("utf-8"))
 
-    return "OK", 200
+    # ==========================
+    # AMBIL DATA
+    # ==========================
+
+    sender = ""
+    message = ""
+
+    # FORMAT FORM-DATA
+    if request.form:
+
+        sender = request.form.get("sender", "")
+        message = request.form.get("message", "")
+
+    # FORMAT JSON
+    else:
+
+        payload = request.get_json(silent=True) or {}
+
+        sender = payload.get("sender", "")
+        message = payload.get("message", "")
+
+        if not sender and "data" in payload:
+
+            sender = payload["data"].get("sender", "")
+            message = payload["data"].get("message", "")
+
+    sender = str(sender).strip()
+    message = str(message).strip()
+
+    print("SENDER :", sender)
+    print("MESSAGE :", message)
+
+    if not sender:
+
+        return jsonify({
+            "status": False,
+            "message": "sender kosong"
+        })
+
+    if not message:
+
+        return jsonify({
+            "status": False,
+            "message": "message kosong"
+        })
+
+    # ==========================
+    # TEST BALASAN
+    # ==========================
+
+    kirim_wa(
+        sender,
+        f"Pesan diterima:\n{message}"
+    )
+
+    return jsonify({
+        "status": True
+    })
 
 @app.route("/test-wa")
 def test_wa():
 
-    response = requests.post(
-        "https://api.fonnte.com/send",
-        headers={
-            "Authorization": FONTE_TOKEN
-        },
-        data={
-            "target": "6285872362212",
-            "message": "Test dari Railway"
-        }
+    kirim_wa(
+        "6285872362212",
+        "Test dari Railway berhasil"
     )
 
     return {
-        "status_code": response.status_code,
-        "response": response.text
+        "status": True
     }
 
 @app.route("/debug-token")
