@@ -318,6 +318,15 @@ def test_wa():
 
     return "TEST DIKIRIM"
 
+@app.route("/debug-token")
+def debug_token():
+
+    token = os.getenv("FONTE_TOKEN")
+
+    return {
+        "exists": bool(token),
+        "length": len(token) if token else 0
+    }
 
 if __name__ == "__main__":
 
