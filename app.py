@@ -14,6 +14,15 @@ import os
 
 app = Flask(__name__)
 
+@app.before_request
+def log_all():
+
+    print("=" * 80)
+    print("PATH :", request.path)
+    print("METHOD :", request.method)
+    print("CONTENT TYPE :", request.content_type)
+    print("=" * 80)
+
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///kas.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
@@ -308,8 +317,20 @@ def kirim_wa(nomor, pesan):
 #         "status": True
 #     })
 
+@app.route("/test-post", methods=["POST"])
+def test_post():
+
+    print("POST BERHASIL MASUK")
+
+    print(request.form.to_dict())
+
+    print(request.get_json(silent=True))
+
+    return {
+        "status": True
+    }
+
 @app.route("/webhook", methods=["GET", "POST"])
-@app.route("/webhook", methods=["POST"])
 def webhook():
 
     print("=" * 60)
