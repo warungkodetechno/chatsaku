@@ -409,44 +409,44 @@ def webhook():
     # ==================================
     elif cmd.startswith("masuk"):
 
-    print("MASUK COMMAND TERDETEKSI")
+        print("MASUK COMMAND TERDETEKSI")
 
-    try:
+        try:
 
-        parts = message.split()
+            parts = message.split()
 
-        nominal = int(parts[1])
+            nominal = int(parts[1])
 
-        keterangan = " ".join(parts[2:])
+            keterangan = " ".join(parts[2:])
 
-        print("NOMINAL :", nominal)
-        print("KETERANGAN :", keterangan)
+            print("NOMINAL :", nominal)
+            print("KETERANGAN :", keterangan)
 
-        trx = Transaksi(
-            tanggal=datetime.now(),
-            tipe="MASUK",
-            nominal=nominal,
-            keterangan=keterangan,
-            nomor_wa=sender
-        )
+            trx = Transaksi(
+                tanggal=datetime.now(),
+                tipe="MASUK",
+                nominal=nominal,
+                keterangan=keterangan,
+                nomor_wa=sender
+            )
 
-        db.session.add(trx)
-        db.session.commit()
+            db.session.add(trx)
+            db.session.commit()
 
-        print("DATA TERSIMPAN")
+            print("DATA TERSIMPAN")
 
-        kirim_wa(
-            sender,
-            f"✅ Pemasukan tersimpan\n\n"
-            f"Rp {nominal:,.0f}\n"
-            f"{keterangan}"
-        )
+            kirim_wa(
+                sender,
+                f"✅ Pemasukan tersimpan\n\n"
+                f"Rp {nominal:,.0f}\n"
+                f"{keterangan}"
+            )
 
-        print("KIRIM WA SELESAI")
+            print("KIRIM WA SELESAI")
 
-    except Exception as e:
+        except Exception as e:
 
-        print("ERROR MASUK :", str(e))
+            print("ERROR MASUK :", str(e))
 
     # ==================================
     # KELUAR
