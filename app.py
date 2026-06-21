@@ -70,10 +70,6 @@ FONTE_TOKEN = os.getenv("FONTE_TOKEN")
 
 def kirim_wa(nomor, pesan):
 
-    if not FONTE_TOKEN:
-        print("FONTE_TOKEN tidak ditemukan")
-        return
-
     try:
 
         response = requests.post(
@@ -85,19 +81,19 @@ def kirim_wa(nomor, pesan):
                 "target": nomor,
                 "message": pesan
             },
-            timeout=20
+            timeout=30
         )
 
-        print("================================")
-        print("KIRIM WA")
-        print("Nomor :", nomor)
-        print("Status :", response.status_code)
-        print("Response :", response.text)
-        print("================================")
+        print("========== FONNTE ==========")
+        print("STATUS :", response.status_code)
+        print("BODY :", response.text)
+        print("============================")
+
+        return response.text
 
     except Exception as e:
 
-        print("ERROR KIRIM WA :", str(e))
+        print("ERROR FONNTE :", str(e))
 
 @app.route("/test-post", methods=["POST"])
 def test_post():
@@ -413,41 +409,44 @@ def webhook():
     # ==================================
     elif cmd.startswith("masuk"):
 
-        try:
+    print("MASUK COMMAND TERDETEKSI")
 
-            parts = message.split()
+    try:
 
-            nominal = int(parts[1])
-            keterangan = " ".join(parts[2:])
+        parts = message.split()
 
-            trx = Transaksi(
-                tanggal=datetime.now(),
-                tipe="MASUK",
-                nominal=nominal,
-                keterangan=keterangan,
-                nomor_wa=sender
-            )
+        nominal = int(parts[1])
 
-            db.session.add(trx)
-            db.session.commit()
+        keterangan = " ".join(parts[2:])
 
-            kirim_wa(
-                sender,
-                f"✅ Pemasukan tersimpan\n\n"
-                f"Rp {nominal:,.0f}\n"
-                f"{keterangan}"
-            )
+        print("NOMINAL :", nominal)
+        print("KETERANGAN :", keterangan)
 
-        except Exception as e:
+        trx = Transaksi(
+            tanggal=datetime.now(),
+            tipe="MASUK",
+            nominal=nominal,
+            keterangan=keterangan,
+            nomor_wa=sender
+        )
 
-            print(e)
+        db.session.add(trx)
+        db.session.commit()
 
-            kirim_wa(
-                sender,
-                "Format:\nmasuk 100000 gaji"
-            )
+        print("DATA TERSIMPAN")
 
-        return jsonify({"status": True})
+        kirim_wa(
+            sender,
+            f"✅ Pemasukan tersimpan\n\n"
+            f"Rp {nominal:,.0f}\n"
+            f"{keterangan}"
+        )
+
+        print("KIRIM WA SELESAI")
+
+    except Exception as e:
+
+        print("ERROR MASUK :", str(e))
 
     # ==================================
     # KELUAR
