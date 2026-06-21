@@ -320,6 +320,9 @@ def test_post():
 
 #     return jsonify({"status": True})
 
+# ==================================
+# WEBHOOK FONNTE
+# ==================================
 @app.route("/webhook", methods=["POST"])
 def webhook():
 
@@ -331,49 +334,52 @@ def webhook():
     print("=" * 80)
 
     # ==================================
-    # ABAIKAN STATUS DEVICE
+    # ABAIKAN WEBHOOK STATUS DEVICE
     # ==================================
     if "state" in payload:
-        print("STATUS DEVICE")
-        return jsonify({"status": True})
+
+        print("WEBHOOK STATE DEVICE")
+        return jsonify({
+            "status": True
+        })
+
+    # ==================================
+    # ABAIKAN WEBHOOK STATUS PESAN
+    # ==================================
+    if "status" in payload:
+
+        print("WEBHOOK STATUS PESAN")
+        return jsonify({
+            "status": True
+        })
 
     # ==================================
     # AMBIL DATA PESAN
     # ==================================
-    sender = str(payload.get("sender", "")).strip()
-    message = str(payload.get("message", "")).strip()
+    sender = str(
+        payload.get("sender")
+        or payload.get("pengirim")
+        or ""
+    ).strip()
 
-    # fallback beberapa format webhook
-    if not sender and "pengirim" in payload:
-        sender = str(payload.get("pengirim", "")).strip()
-
-    if not message and "pesan" in payload:
-        message = str(payload.get("pesan", "")).strip()
+    message = str(
+        payload.get("message")
+        or payload.get("pesan")
+        or ""
+    ).strip()
 
     print("SENDER :", sender)
     print("MESSAGE :", message)
 
-    # ==================================
-    # CEGAH LOOPING PESAN BOT
-    # ==================================
-    if "_Sent via fonnte.com_" in message:
-        print("PESAN BOT SENDIRI -> DIABAIKAN")
-        return jsonify({"status": True})
-
-    if payload.get("quick") is True:
-        print("QUICK MESSAGE -> DIABAIKAN")
-        return jsonify({"status": True})
-
-    # ==================================
-    # VALIDASI
-    # ==================================
     if not sender:
         return jsonify({"status": True})
 
     if not message:
         return jsonify({"status": True})
 
-    cmd = message.lower()
+    cmd = message.lower().strip()
+
+    print("CMD :", cmd)
 
     # ==================================
     # SALDO
@@ -381,13 +387,17 @@ def webhook():
     if cmd == "saldo":
 
         masuk = db.session.query(
-            db.func.sum(Transaksi.nominal)
+            db.func.sum(
+                Transaksi.nominal
+            )
         ).filter(
             Transaksi.tipe == "MASUK"
         ).scalar() or 0
 
         keluar = db.session.query(
-            db.func.sum(Transaksi.nominal)
+            db.func.sum(
+                Transaksi.nominal
+            )
         ).filter(
             Transaksi.tipe == "KELUAR"
         ).scalar() or 0
@@ -396,7 +406,7 @@ def webhook():
 
         kirim_wa(
             sender,
-            f"💰 SALDO\n\n"
+            f"💰 SALDO SAAT INI\n\n"
             f"Masuk : Rp {masuk:,.0f}\n"
             f"Keluar : Rp {keluar:,.0f}\n"
             f"Saldo : Rp {saldo:,.0f}"
@@ -409,8 +419,6 @@ def webhook():
     # ==================================
     elif cmd.startswith("masuk"):
 
-        print("MASUK COMMAND TERDETEKSI")
-
         try:
 
             parts = message.split()
@@ -418,9 +426,6 @@ def webhook():
             nominal = int(parts[1])
 
             keterangan = " ".join(parts[2:])
-
-            print("NOMINAL :", nominal)
-            print("KETERANGAN :", keterangan)
 
             trx = Transaksi(
                 tanggal=datetime.now(),
@@ -433,20 +438,27 @@ def webhook():
             db.session.add(trx)
             db.session.commit()
 
-            print("DATA TERSIMPAN")
+            print("PEMASUKAN TERSIMPAN")
 
             kirim_wa(
                 sender,
                 f"✅ Pemasukan tersimpan\n\n"
-                f"Rp {nominal:,.0f}\n"
-                f"{keterangan}"
+                f"Nominal : Rp {nominal:,.0f}\n"
+                f"Keterangan : {keterangan}"
             )
-
-            print("KIRIM WA SELESAI")
 
         except Exception as e:
 
             print("ERROR MASUK :", str(e))
+
+            kirim_wa(
+                sender,
+                "Format salah\n\n"
+                "Contoh:\n"
+                "masuk 1000000 gaji"
+            )
+
+        return jsonify({"status": True})
 
     # ==================================
     # KELUAR
@@ -458,6 +470,7 @@ def webhook():
             parts = message.split()
 
             nominal = int(parts[1])
+
             keterangan = " ".join(parts[2:])
 
             trx = Transaksi(
@@ -471,20 +484,24 @@ def webhook():
             db.session.add(trx)
             db.session.commit()
 
+            print("PENGELUARAN TERSIMPAN")
+
             kirim_wa(
                 sender,
                 f"✅ Pengeluaran tersimpan\n\n"
-                f"Rp {nominal:,.0f}\n"
-                f"{keterangan}"
+                f"Nominal : Rp {nominal:,.0f}\n"
+                f"Keterangan : {keterangan}"
             )
 
         except Exception as e:
 
-            print(e)
+            print("ERROR KELUAR :", str(e))
 
             kirim_wa(
                 sender,
-                "Format:\nkeluar 25000 makan siang"
+                "Format salah\n\n"
+                "Contoh:\n"
+                "keluar 25000 makan siang"
             )
 
         return jsonify({"status": True})
@@ -497,15 +514,19 @@ def webhook():
         today = datetime.now().date()
 
         data = Transaksi.query.filter(
-            db.func.date(Transaksi.tanggal) == today
+            db.func.date(
+                Transaksi.tanggal
+            ) == today
         ).all()
 
-        total = sum(x.nominal for x in data)
+        total = sum(
+            x.nominal for x in data
+        )
 
         kirim_wa(
             sender,
-            f"📅 Hari Ini\n\n"
-            f"Jumlah Transaksi : {len(data)}\n"
+            f"📅 TRANSAKSI HARI INI\n\n"
+            f"Jumlah : {len(data)}\n"
             f"Total : Rp {total:,.0f}"
         )
 
@@ -516,14 +537,16 @@ def webhook():
     # ==================================
     kirim_wa(
         sender,
-        "Perintah:\n\n"
+        "📌 Perintah yang tersedia\n\n"
         "masuk 100000 gaji\n"
         "keluar 25000 makan\n"
         "saldo\n"
         "hariini"
     )
 
-    return jsonify({"status": True})
+    return jsonify({
+        "status": True
+    })
 
 @app.route("/test-wa")
 def test_wa():
