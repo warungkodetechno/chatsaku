@@ -63,22 +63,46 @@ def log_all():
 # =========================
 # DASHBOARD
 # =========================
+# @app.route("/")
+# def index():
+#     data = Transaksi.query.order_by(Transaksi.tanggal.desc()).all()
+
+#     total_masuk = sum(x.nominal for x in data if x.tipe == "MASUK")
+#     total_keluar = sum(x.nominal for x in data if x.tipe == "KELUAR")
+#     saldo = total_masuk - total_keluar
+
+#     return render_template(
+#         "index.html",
+#         data=data,
+#         saldo=saldo,
+#         total_masuk=total_masuk,
+#         total_keluar=total_keluar
+#     )
+
 @app.route("/")
 def index():
-    data = Transaksi.query.order_by(Transaksi.tanggal.desc()).all()
 
-    total_masuk = sum(x.nominal for x in data if x.tipe == "MASUK")
-    total_keluar = sum(x.nominal for x in data if x.tipe == "KELUAR")
+    page = request.args.get("page", 1, type=int)
+    per_page = 10
+
+    data_paginated = Transaksi.query.order_by(
+        Transaksi.tanggal.desc()
+    ).paginate(page=page, per_page=per_page)
+
+    all_data = Transaksi.query.all()
+
+    total_masuk = sum(x.nominal for x in all_data if x.tipe == "MASUK")
+    total_keluar = sum(x.nominal for x in all_data if x.tipe == "KELUAR")
     saldo = total_masuk - total_keluar
 
     return render_template(
         "index.html",
-        data=data,
-        saldo=saldo,
+        data=all_data,
+        data_paginated=data_paginated,
         total_masuk=total_masuk,
-        total_keluar=total_keluar
+        total_keluar=total_keluar,
+        saldo=saldo
     )
-
 
 # =========================
 # FONNTE SEND MESSAGE
