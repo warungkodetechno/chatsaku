@@ -115,67 +115,65 @@ def webhook():
     payload = request.get_json(silent=True) or {}
 
     print("=" * 80)
-    print("WEBHOOK MASUK")
+    print("WEBHOOK INCOMING")
     print(payload)
     print("=" * 80)
 
     # =========================
-    # IGNORE DEVICE STATUS
+    # IGNORE STATUS / DELIVERY EVENTS
     # =========================
-    if "state" in payload or "status" in payload:
+    if payload.get("status") or payload.get("state"):
+        return jsonify({"status": True})
+
+    if payload.get("event") in ["sent", "delivered", "read"]:
         return jsonify({"status": True})
 
     # =========================
-    # AMBIL DATA PESAN
+    # EXTRACT DATA (SAFE)
     # =========================
-    sender = str(
-        payload.get("sender")
-        or payload.get("pengirim")
-        or ""
-    ).strip()
+    sender = str(payload.get("sender") or payload.get("from") or "").strip()
+    message = str(payload.get("message") or payload.get("text") or "").strip()
 
-    message = str(
-        payload.get("message")
-        or payload.get("pesan")
-        or ""
-    ).strip()
+    msg_id = payload.get("id") or payload.get("inboxid")
 
-    msg_id = str(
-        payload.get("id")
-        or payload.get("inboxid")
-        or message
-    ).strip()
-
-    print("SENDER :", sender)
-    print("MESSAGE :", message)
-    print("MSG_ID :", msg_id)
-
-    # =========================
-    # VALIDASI DASAR
-    # =========================
     if not sender or not message:
         return jsonify({"status": True})
 
     # =========================
-    # ANTI LOOP / DUPLICATE
+    # ANTI LOOP INTELLIGENT FILTER
     # =========================
-    if is_duplicate(msg_id):
-        print("DUPLICATE MESSAGE IGNORED")
-        return jsonify({"status": True})
 
-    # =========================
-    # ANTI BOT ECHO
-    # =========================
     lower_msg = message.lower()
 
+    # 1. IGNORE MESSAGE FROM BOT SYSTEM ITSELF
+    if sender == os.getenv("BOT_NUMBER", ""):
+        return jsonify({"status": True})
+
+    # 2. IGNORE FONNTE SYSTEM MESSAGE
     if "sent via fonnte" in lower_msg:
         return jsonify({"status": True})
 
-    if message.startswith("📌 Perintah yang tersedia"):
+    # 3. IGNORE BOT RESPONSE (CRITICAL LOOP STOP)
+    if lower_msg.startswith("[bot]") or lower_msg.startswith("📌") or lower_msg.startswith("✅"):
+        return jsonify({"status": True})
+
+    # =========================
+    # SAFE MSG ID (NO FALLBACK TO MESSAGE)
+    # =========================
+    if not msg_id:
+        msg_id = f"{sender}:{int(time.time())}"
+
+    # =========================
+    # OPTIONAL DEDUP (LIGHT)
+    # =========================
+    if is_duplicate(msg_id):
         return jsonify({"status": True})
 
     cmd = lower_msg.strip()
-    print("CMD :", cmd)
+
+    print("SENDER:", sender)
+    print("MESSAGE:", message)
+    print("CMD:", cmd)
 
     # =========================
     # SALDO
@@ -192,10 +190,7 @@ def webhook():
 
         kirim_wa(
             sender,
-            f"💰 SALDO SAAT INI\n\n"
-            f"Masuk : Rp {masuk:,.0f}\n"
-            f"Keluar : Rp {keluar:,.0f}\n"
-            f"Saldo : Rp {saldo:,.0f}"
+            f"[BOT] 💰 SALDO\nMasuk: Rp {masuk:,.0f}\nKeluar: Rp {keluar:,.0f}\nSaldo: Rp {saldo:,.0f}"
         )
 
         return jsonify({"status": True})
@@ -203,12 +198,12 @@ def webhook():
     # =========================
     # MASUK
     # =========================
-    elif cmd.startswith("masuk"):
+    if cmd.startswith("masuk"):
 
         try:
             parts = message.split()
             nominal = int(parts[1])
-            keterangan = " ".join(parts[2:])
+            keterangan = " ".join(parts[2:]) if len(parts) > 2 else "-"
 
             trx = Transaksi(
                 tanggal=datetime.now(),
@@ -223,30 +218,23 @@ def webhook():
 
             kirim_wa(
                 sender,
-                f"✅ Pemasukan tersimpan\n\n"
-                f"Nominal : Rp {nominal:,.0f}\n"
-                f"Keterangan : {keterangan}"
+                f"[BOT] ✅ MASUK tersimpan\nRp {nominal:,.0f}\n{keterangan}"
             )
 
         except Exception as e:
-            print("ERROR MASUK :", str(e))
-
-            kirim_wa(
-                sender,
-                "Format salah\ncontoh:\nmasuk 100000 gaji"
-            )
+            kirim_wa(sender, "Format: masuk 100000 gaji")
 
         return jsonify({"status": True})
 
     # =========================
     # KELUAR
     # =========================
-    elif cmd.startswith("keluar"):
+    if cmd.startswith("keluar"):
 
         try:
             parts = message.split()
             nominal = int(parts[1])
-            keterangan = " ".join(parts[2:])
+            keterangan = " ".join(parts[2:]) if len(parts) > 2 else "-"
 
             trx = Transaksi(
                 tanggal=datetime.now(),
@@ -261,25 +249,18 @@ def webhook():
 
             kirim_wa(
                 sender,
-                f"✅ Pengeluaran tersimpan\n\n"
-                f"Nominal : Rp {nominal:,.0f}\n"
-                f"Keterangan : {keterangan}"
+                f"[BOT] ✅ KELUAR tersimpan\nRp {nominal:,.0f}\n{keterangan}"
             )
 
-        except Exception as e:
-            print("ERROR KELUAR :", str(e))
-
-            kirim_wa(
-                sender,
-                "Format salah\ncontoh:\nkeluar 25000 makan"
-            )
+        except Exception:
+            kirim_wa(sender, "Format: keluar 25000 makan")
 
         return jsonify({"status": True})
 
     # =========================
     # HARI INI
     # =========================
-    elif cmd == "hariini":
+    if cmd == "hariini":
 
         today = datetime.now().date()
 
@@ -291,27 +272,20 @@ def webhook():
 
         kirim_wa(
             sender,
-            f"📅 TRANSAKSI HARI INI\n\n"
-            f"Jumlah : {len(data)}\n"
-            f"Total : Rp {total:,.0f}"
+            f"[BOT] 📅 HARI INI\nJumlah: {len(data)}\nTotal: Rp {total:,.0f}"
         )
 
         return jsonify({"status": True})
 
     # =========================
-    # HELP
+    # DEFAULT HELP
     # =========================
     kirim_wa(
         sender,
-        "📌 Perintah:\n\n"
-        "masuk 100000 gaji\n"
-        "keluar 25000 makan\n"
-        "saldo\n"
-        "hariini"
+        "📌 MENU:\nmasuk 100000 gaji\nkeluar 25000 makan\nsaldo\nhariini"
     )
 
     return jsonify({"status": True})
-
 
 # =========================
 # TEST
