@@ -200,24 +200,44 @@ def export_excel():
 FONTE_TOKEN = os.getenv("FONTE_TOKEN")
 
 def kirim_wa(nomor, pesan):
+
     try:
+
+        waktu = datetime.now().strftime("%d %b %Y • %H:%M")
+
+        template = f"""
+╭────────────────────────
+💼 *Finance Assistant*
+────────────────────────
+
+{pesan}
+
+────────────────────────
+🕒 {waktu}
+╰────────────────────────
+""".strip()
+
         response = requests.post(
             "https://api.fonnte.com/send",
-            headers={"Authorization": FONTE_TOKEN},
+            headers={
+                "Authorization": FONTE_TOKEN
+            },
             data={
                 "target": nomor,
-                "message": pesan
+                "message": template
             },
             timeout=30
         )
 
-        print("========== FONNTE ==========")
+        print("=" * 70)
+        print("FONNTE")
         print("STATUS :", response.status_code)
-        print("BODY :", response.text)
-        print("============================")
+        print("BODY   :", response.text)
+        print("=" * 70)
 
     except Exception as e:
-        print("ERROR FONNTE :", str(e))
+
+        print("ERROR :", e)
 
 
 # =========================
@@ -330,10 +350,23 @@ def webhook():
 
         kirim_wa(
             sender,
-            f"[BOT] 💰 SALDO\n"
-            f"Masuk : Rp {masuk:,.0f}\n"
-            f"Keluar: Rp {keluar:,.0f}\n"
-            f"Saldo : Rp {saldo:,.0f}"
+            f"""
+        💰 *INFORMASI SALDO*
+
+        ━━━━━━━━━━━━━━━━━━
+
+        📥 *Pemasukan*
+        Rp {masuk:,.0f}
+
+        📤 *Pengeluaran*
+        Rp {keluar:,.0f}
+
+        ━━━━━━━━━━━━━━━━━━
+
+        💳 *Saldo Saat Ini*
+
+        Rp {saldo:,.0f}
+        """
         )
 
         return jsonify({"status": True})
@@ -368,9 +401,24 @@ def webhook():
 
             kirim_wa(
                 sender,
-                f"[BOT] ✅ MASUK tersimpan\n"
-                f"Rp {nominal:,.0f}\n"
-                f"{keterangan}"
+                f"""
+            ✅ *PEMASUKAN BERHASIL*
+
+            ━━━━━━━━━━━━━━━━━━
+
+            💵 Nominal
+
+            Rp {nominal:,.0f}
+
+            📝 Keterangan
+
+            {keterangan}
+
+            ━━━━━━━━━━━━━━━━━━
+
+            Terima kasih 🙏
+            Data berhasil disimpan.
+            """
             )
 
         except Exception:
@@ -412,9 +460,23 @@ def webhook():
 
             kirim_wa(
                 sender,
-                f"[BOT] ✅ KELUAR tersimpan\n"
-                f"Rp {nominal:,.0f}\n"
-                f"{keterangan}"
+                f"""
+            💸 *PENGELUARAN BERHASIL*
+
+            ━━━━━━━━━━━━━━━━━━
+
+            💰 Nominal
+
+            Rp {nominal:,.0f}
+
+            📝 Keterangan
+
+            {keterangan}
+
+            ━━━━━━━━━━━━━━━━━━
+
+            Data berhasil dicatat.
+            """
             )
 
         except Exception:
@@ -441,9 +503,19 @@ def webhook():
 
         kirim_wa(
             sender,
-            f"[BOT] 📅 HARI INI\n"
-            f"Jumlah Transaksi : {len(data)}\n"
-            f"Total            : Rp {total:,.0f}"
+            f"""
+        📅 *RINGKASAN HARI INI*
+
+        ━━━━━━━━━━━━━━━━━━
+
+        📄 Jumlah Transaksi
+
+        {len(data)}
+
+        💰 Total Transaksi
+
+        Rp {total:,.0f}
+        """
         )
 
         return jsonify({"status": True})
