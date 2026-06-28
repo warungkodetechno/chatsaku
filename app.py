@@ -703,82 +703,82 @@ def webhook():
 
         return jsonify({"status": True})
 
-    if cmd.startswith("budget"):
+    # =========================
+    # BUDGET
+    # =========================
+    if cmd == "budget":
+        try:
+            parts = message.split()
+            if len(parts) < 3:
 
-    try:
+                kirim_wa(
+                    sender,
+                    "Format:\nbudget makanan 1500000"
+                )
 
-        parts = message.split()
+                return jsonify({"status": True})
 
-        if len(parts) < 3:
+            kategori = parts[1].lower()
+
+            nominal = int(parts[2])
+
+            periode = periode_sekarang()
+
+            budget = Budget.query.filter_by(
+                nomor_wa=sender,
+                kategori=kategori,
+                periode=periode
+            ).first()
+
+            if budget:
+
+                budget.nominal = nominal
+
+                status = "diperbarui"
+
+            else:
+
+                budget = Budget(
+                    nomor_wa=sender,
+                    kategori=kategori,
+                    nominal=nominal,
+                    periode=periode
+                )
+
+                db.session.add(budget)
+
+                status = "dibuat"
+
+            db.session.commit()
+
+            kirim_wa(
+                sender,
+                f"""🎯 *Budget Berhasil {status.title()}*
+
+                ━━━━━━━━━━━━━━
+
+                📂 Kategori
+                {kategori.title()}
+
+                💰 Budget
+                Rp {nominal:,.0f}
+
+                📅 Periode
+                {periode}
+
+                ━━━━━━━━━━━━━━
+                🤖 Finance Assistant
+                """
+            )
+
+        except:
 
             kirim_wa(
                 sender,
                 "Format:\nbudget makanan 1500000"
             )
 
-            return jsonify({"status": True})
-
-        kategori = parts[1].lower()
-
-        nominal = int(parts[2])
-
-        periode = periode_sekarang()
-
-        budget = Budget.query.filter_by(
-            nomor_wa=sender,
-            kategori=kategori,
-            periode=periode
-        ).first()
-
-        if budget:
-
-            budget.nominal = nominal
-
-            status = "diperbarui"
-
-        else:
-
-            budget = Budget(
-                nomor_wa=sender,
-                kategori=kategori,
-                nominal=nominal,
-                periode=periode
-            )
-
-            db.session.add(budget)
-
-            status = "dibuat"
-
-        db.session.commit()
-
-        kirim_wa(
-            sender,
-            f"""🎯 *Budget Berhasil {status.title()}*
-
-            ━━━━━━━━━━━━━━
-
-            📂 Kategori
-            {kategori.title()}
-
-            💰 Budget
-            Rp {nominal:,.0f}
-
-            📅 Periode
-            {periode}
-
-            ━━━━━━━━━━━━━━
-            🤖 Finance Assistant
-            """
-        )
-
-    except:
-
-        kirim_wa(
-            sender,
-            "Format:\nbudget makanan 1500000"
-        )
-
-    return jsonify({"status": True})
+        return jsonify({"status": True})
 
     # =========================
     # DEFAULT
