@@ -11,9 +11,6 @@ from zoneinfo import ZoneInfo
 
 app = Flask(__name__)
 
-def sekarang():
-    return datetime.now(ZoneInfo("Asia/Jakarta"))
-
 # =========================
 # CONFIG DB
 # =========================
@@ -32,6 +29,9 @@ db.init_app(app)
 
 with app.app_context():
     db.create_all()
+
+def sekarang():
+    return datetime.now(ZoneInfo("Asia/Jakarta"))
 
 # =========================
 # GLOBAL ANTI DUPLICATE
