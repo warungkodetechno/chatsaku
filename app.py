@@ -205,62 +205,6 @@ def log_all():
 def home():
     return render_template("home.html")
 
-# @app.route("/")
-# def index():
-
-#     page = request.args.get("page", 1, type=int)
-#     per_page = 10
-
-#     start_date = request.args.get("start_date", "")
-#     end_date = request.args.get("end_date", "")
-
-#     query = Transaksi.query
-
-#     if start_date:
-#         query = query.filter(
-#             db.func.date(Transaksi.tanggal) >= start_date
-#         )
-
-#     if end_date:
-#         query = query.filter(
-#             db.func.date(Transaksi.tanggal) <= end_date
-#         )
-
-#     data_paginated = query.order_by(
-#         Transaksi.tanggal.desc()
-#     ).paginate(
-#         page=page,
-#         per_page=per_page,
-#         error_out=False
-#     )
-
-#     all_data = query.order_by(
-#         Transaksi.tanggal.desc()
-#     ).all()
-
-#     total_masuk = sum(
-#         x.nominal for x in all_data
-#         if x.tipe == "MASUK"
-#     )
-
-#     total_keluar = sum(
-#         x.nominal for x in all_data
-#         if x.tipe == "KELUAR"
-#     )
-
-#     saldo = total_masuk - total_keluar
-
-#     return render_template(
-#         "index.html",
-#         data=all_data,
-#         data_paginated=data_paginated,
-#         total_masuk=total_masuk,
-#         total_keluar=total_keluar,
-#         saldo=saldo,
-#         start_date=start_date,
-#         end_date=end_date
-#     )
-
 # =========================
 # EXPORT EXCEL
 # =========================
@@ -513,25 +457,28 @@ def webhook():
 
         kirim_wa(
             sender,
-            f"""💰 *Saldo Keuangan*
+            f"""💳 *Saldo Keuangan*
 
-        ------------------
+        ━━━━━━━━━━━━━━
 
-        📥 *Pemasukan*
+        📥 *Total Pemasukan*
         Rp {masuk:,.0f}
 
-        📤 *Pengeluaran*
+        📤 *Total Pengeluaran*
         Rp {keluar:,.0f}
 
-        ------------------
+        ━━━━━━━━━━━━━━
 
-        💳 *Saldo Saat Ini*
-
-        *Rp {saldo:,.0f}*
+        💰 *Saldo Saat Ini*
+        Rp {saldo:,.0f}
 
         📊 *Dashboard*
         {link}
-        🔒 Link berlaku 24 jam.
+
+        🔒 Link berlaku selama *24 jam*.
+
+        ━━━━━━━━━━━━━━
+        🤖 *Finance Assistant*
         """
         )
 
@@ -567,22 +514,47 @@ def webhook():
             db.session.add(trx)
             db.session.commit()
 
+            masuk = transaksi_user(sender).filter(
+                Transaksi.tipe == "MASUK"
+            ).with_entities(
+                db.func.sum(Transaksi.nominal)
+            ).scalar() or 0
+
+            keluar = transaksi_user(sender).filter(
+                Transaksi.tipe == "KELUAR"
+            ).with_entities(
+                db.func.sum(Transaksi.nominal)
+            ).scalar() or 0
+
+            saldo = masuk - keluar
+
             kirim_wa(
                 sender,
-                f"""✅ *Pemasukan Berhasil*
+                f"""💰 *Pemasukan Berhasil*
 
-            💵 Nominal
-            *Rp {nominal:,.0f}*
+            ━━━━━━━━━━━━━━
 
-            📝 Keterangan
+            💵 *Nominal*
+            Rp {nominal:,.0f}
+
+            📝 *Keterangan*
             {keterangan}
 
-            📅 {sekarang().strftime("%d %B %Y")}
-            🕒 {sekarang().strftime("%H:%M")}
+            📅 *Waktu*
+            {sekarang().strftime("%d %b %Y • %H:%M")}
+
+            ━━━━━━━━━━━━━━
+
+            💳 *Saldo Saat Ini*
+            Rp {saldo:,.0f}
 
             📊 *Dashboard*
             {link}
-            🔒 Link berlaku 24 jam.
+
+            🔒 Link berlaku selama *24 jam*.
+
+            ━━━━━━━━━━━━━━
+            🤖 *Finance Assistant*
             """
             )
 
@@ -623,22 +595,47 @@ def webhook():
             db.session.add(trx)
             db.session.commit()
 
+            masuk = transaksi_user(sender).filter(
+                Transaksi.tipe == "MASUK"
+            ).with_entities(
+                db.func.sum(Transaksi.nominal)
+            ).scalar() or 0
+
+            keluar = transaksi_user(sender).filter(
+                Transaksi.tipe == "KELUAR"
+            ).with_entities(
+                db.func.sum(Transaksi.nominal)
+            ).scalar() or 0
+
+            saldo = masuk - keluar
+
             kirim_wa(
                 sender,
                 f"""💸 *Pengeluaran Berhasil*
 
-            💰 Nominal
-            *Rp {nominal:,.0f}*
+            ━━━━━━━━━━━━━━
 
-            📝 Keterangan
+            💵 *Nominal*
+            Rp {nominal:,.0f}
+
+            📝 *Keterangan*
             {keterangan}
 
-            📅 {sekarang().strftime("%d %B %Y")}
-            🕒 {sekarang().strftime("%H:%M")}
+            📅 *Waktu*
+            {sekarang().strftime("%d %b %Y • %H:%M")}
+
+            ━━━━━━━━━━━━━━
+
+            💳 *Saldo Saat Ini*
+            Rp {saldo:,.0f}
 
             📊 *Dashboard*
             {link}
-            🔒 Link berlaku 24 jam.
+
+            🔒 Link berlaku selama *24 jam*.
+
+            ━━━━━━━━━━━━━━
+            🤖 *Finance Assistant*
             """
             )
 
@@ -664,19 +661,43 @@ def webhook():
 
         total = sum(x.nominal for x in data)
         link = generate_dashboard_link(sender)
+        masuk_hari_ini = sum(
+            x.nominal for x in data
+            if x.tipe == "MASUK"
+        )
+
+        keluar_hari_ini = sum(
+            x.nominal for x in data
+            if x.tipe == "KELUAR"
+        )
+
         kirim_wa(
             sender,
             f"""📊 *Ringkasan Hari Ini*
 
-        Jumlah Transaksi
-        *{len(data)}*
+        ━━━━━━━━━━━━━━
 
-        Total Nominal
-        *Rp {total:,.0f}*
+        🧾 *Jumlah Transaksi*
+        {len(data)}
+
+        📥 *Pemasukan*
+        Rp {masuk_hari_ini:,.0f}
+
+        📤 *Pengeluaran*
+        Rp {keluar_hari_ini:,.0f}
+
+        ━━━━━━━━━━━━━━
+
+        💰 *Total Aktivitas*
+        Rp {total:,.0f}
 
         📊 *Dashboard*
-            {link}
-            🔒 Link berlaku 24 jam.
+        {link}
+
+        🔒 Link berlaku selama *24 jam*.
+
+        ━━━━━━━━━━━━━━
+        🤖 *Finance Assistant*
         """
         )
 
