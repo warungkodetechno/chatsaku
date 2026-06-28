@@ -229,6 +229,10 @@ def kirim_wa(nomor, pesan):
     except Exception as e:
         print("ERROR FONNTE :", str(e))
 
+def transaksi_user(sender):
+    return Transaksi.query.filter(
+        Transaksi.nomor_wa == sender
+    )
 
 # =========================
 # WEBHOOK
@@ -324,16 +328,16 @@ def webhook():
     # =========================
     if cmd == "saldo":
 
-        masuk = db.session.query(
-            db.func.sum(Transaksi.nominal)
-        ).filter(
+        masuk = transaksi_user(sender).filter(
             Transaksi.tipe == "MASUK"
+        ).with_entities(
+            db.func.sum(Transaksi.nominal)
         ).scalar() or 0
 
-        keluar = db.session.query(
-            db.func.sum(Transaksi.nominal)
-        ).filter(
+        keluar = transaksi_user(sender).filter(
             Transaksi.tipe == "KELUAR"
+        ).with_entities(
+            db.func.sum(Transaksi.nominal)
         ).scalar() or 0
 
         saldo = masuk - keluar
@@ -471,7 +475,7 @@ def webhook():
 
         today = sekarang().date()
 
-        data = Transaksi.query.filter(
+        data = transaksi_user(sender).filter(
             db.func.date(Transaksi.tanggal) == today
         ).all()
 
