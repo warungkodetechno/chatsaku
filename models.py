@@ -18,3 +18,31 @@ class Transaksi(db.Model):
     keterangan = db.Column(db.String(255))
 
     nomor_wa = db.Column(db.String(30))
+
+class Budget(db.Model):
+
+    __tablename__ = "budget"
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    nomor_wa = db.Column(db.String(30), nullable=False, index=True)
+
+    kategori = db.Column(db.String(100), nullable=False)
+
+    nominal = db.Column(db.Integer, nullable=False)
+
+    periode = db.Column(db.String(7), nullable=False)   # contoh: 2026-06
+
+    dibuat = db.Column(
+        db.DateTime,
+        default=db.func.now()
+    )
+
+    __table_args__ = (
+        db.UniqueConstraint(
+            "nomor_wa",
+            "kategori",
+            "periode",
+            name="uq_budget"
+        ),
+    )
