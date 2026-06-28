@@ -256,55 +256,84 @@ def webhook():
     # =========================
     # ANTI LOOP INTELLIGENT FILTER
     # =========================
-
     lower_msg = message.lower()
 
-    # 1. IGNORE MESSAGE FROM BOT SYSTEM ITSELF
+    # 1. Ignore pesan dari bot sendiri
     if sender == os.getenv("BOT_NUMBER", ""):
         return jsonify({"status": True})
 
-    # 2. IGNORE FONNTE SYSTEM MESSAGE
+    # 2. Ignore footer Fonnte
     if "sent via fonnte" in lower_msg:
         return jsonify({"status": True})
 
-    # 3. IGNORE BOT RESPONSE (CRITICAL LOOP STOP)
-    if lower_msg.startswith("[bot]") or lower_msg.startswith("📌") or lower_msg.startswith("✅"):
+    # 3. Ignore balasan bot
+    if (
+        lower_msg.startswith("[bot]")
+        or lower_msg.startswith("📌")
+        or lower_msg.startswith("✅")
+    ):
         return jsonify({"status": True})
 
     # =========================
-    # SAFE MSG ID (NO FALLBACK TO MESSAGE)
+    # SAFE MSG ID
     # =========================
     if not msg_id:
         msg_id = f"{sender}:{int(time.time())}"
 
     # =========================
-    # OPTIONAL DEDUP (LIGHT)
+    # DUPLICATE FILTER
     # =========================
     if is_duplicate(msg_id):
         return jsonify({"status": True})
 
     cmd = lower_msg.strip()
 
-    print("SENDER:", sender)
+    print("SENDER :", sender)
     print("MESSAGE:", message)
-    print("CMD:", cmd)
+    print("CMD    :", cmd)
+
+    # =====================================================
+    # HANYA RESPON COMMAND YANG DIKENAL
+    # =====================================================
+    valid_command = (
+        cmd == "saldo"
+        or cmd == "hariini"
+        or cmd.startswith("masuk")
+        or cmd.startswith("keluar")
+    )
+
+    if not valid_command:
+        print("IGNORE NON COMMAND")
+        return jsonify({
+            "status": True,
+            "ignored": True
+        })
 
     # =========================
     # SALDO
     # =========================
     if cmd == "saldo":
 
-        masuk = db.session.query(db.func.sum(Transaksi.nominal))\
-            .filter(Transaksi.tipe == "MASUK").scalar() or 0
+        masuk = db.session.query(
+            db.func.sum(Transaksi.nominal)
+        ).filter(
+            Transaksi.tipe == "MASUK"
+        ).scalar() or 0
 
-        keluar = db.session.query(db.func.sum(Transaksi.nominal))\
-            .filter(Transaksi.tipe == "KELUAR").scalar() or 0
+        keluar = db.session.query(
+            db.func.sum(Transaksi.nominal)
+        ).filter(
+            Transaksi.tipe == "KELUAR"
+        ).scalar() or 0
 
         saldo = masuk - keluar
 
         kirim_wa(
             sender,
-            f"[BOT] 💰 SALDO\nMasuk: Rp {masuk:,.0f}\nKeluar: Rp {keluar:,.0f}\nSaldo: Rp {saldo:,.0f}"
+            f"[BOT] 💰 SALDO\n"
+            f"Masuk : Rp {masuk:,.0f}\n"
+            f"Keluar: Rp {keluar:,.0f}\n"
+            f"Saldo : Rp {saldo:,.0f}"
         )
 
         return jsonify({"status": True})
@@ -315,9 +344,16 @@ def webhook():
     if cmd.startswith("masuk"):
 
         try:
+
             parts = message.split()
+
             nominal = int(parts[1])
-            keterangan = " ".join(parts[2:]) if len(parts) > 2 else "-"
+
+            keterangan = (
+                " ".join(parts[2:])
+                if len(parts) > 2
+                else "-"
+            )
 
             trx = Transaksi(
                 tanggal=datetime.now(),
@@ -332,11 +368,17 @@ def webhook():
 
             kirim_wa(
                 sender,
-                f"[BOT] ✅ MASUK tersimpan\nRp {nominal:,.0f}\n{keterangan}"
+                f"[BOT] ✅ MASUK tersimpan\n"
+                f"Rp {nominal:,.0f}\n"
+                f"{keterangan}"
             )
 
-        except Exception as e:
-            kirim_wa(sender, "Format: masuk 100000 gaji")
+        except Exception:
+
+            kirim_wa(
+                sender,
+                "Format:\nmasuk 100000 gaji"
+            )
 
         return jsonify({"status": True})
 
@@ -346,9 +388,16 @@ def webhook():
     if cmd.startswith("keluar"):
 
         try:
+
             parts = message.split()
+
             nominal = int(parts[1])
-            keterangan = " ".join(parts[2:]) if len(parts) > 2 else "-"
+
+            keterangan = (
+                " ".join(parts[2:])
+                if len(parts) > 2
+                else "-"
+            )
 
             trx = Transaksi(
                 tanggal=datetime.now(),
@@ -363,11 +412,17 @@ def webhook():
 
             kirim_wa(
                 sender,
-                f"[BOT] ✅ KELUAR tersimpan\nRp {nominal:,.0f}\n{keterangan}"
+                f"[BOT] ✅ KELUAR tersimpan\n"
+                f"Rp {nominal:,.0f}\n"
+                f"{keterangan}"
             )
 
         except Exception:
-            kirim_wa(sender, "Format: keluar 25000 makan")
+
+            kirim_wa(
+                sender,
+                "Format:\nkeluar 25000 makan"
+            )
 
         return jsonify({"status": True})
 
@@ -386,20 +441,19 @@ def webhook():
 
         kirim_wa(
             sender,
-            f"[BOT] 📅 HARI INI\nJumlah: {len(data)}\nTotal: Rp {total:,.0f}"
+            f"[BOT] 📅 HARI INI\n"
+            f"Jumlah Transaksi : {len(data)}\n"
+            f"Total            : Rp {total:,.0f}"
         )
 
         return jsonify({"status": True})
 
     # =========================
-    # DEFAULT HELP
+    # DEFAULT
     # =========================
-    kirim_wa(
-        sender,
-        "📌 MENU:\nmasuk 100000 gaji\nkeluar 25000 makan\nsaldo\nhariini"
-    )
-
-    return jsonify({"status": True})
+    return jsonify({
+        "status": True
+    })
 
 # =========================
 # TEST
