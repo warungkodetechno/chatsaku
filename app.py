@@ -200,22 +200,7 @@ def export_excel():
 FONTE_TOKEN = os.getenv("FONTE_TOKEN")
 
 def kirim_wa(nomor, pesan):
-
     try:
-
-        waktu = datetime.now().strftime("%d %b %Y • %H:%M")
-
-        template = f"""
-╭────────────────────────
-💼 *Finance Assistant*
-────────────────────────
-
-{pesan}
-
-────────────────────────
-🕒 {waktu}
-╰────────────────────────
-""".strip()
 
         response = requests.post(
             "https://api.fonnte.com/send",
@@ -224,20 +209,21 @@ def kirim_wa(nomor, pesan):
             },
             data={
                 "target": nomor,
-                "message": template
+                "message": pesan,
+                "delay": 2
             },
             timeout=30
         )
 
-        print("=" * 70)
-        print("FONNTE")
+        print("=" * 60)
+        print("FONNTE SEND")
+        print("TO     :", nomor)
         print("STATUS :", response.status_code)
         print("BODY   :", response.text)
-        print("=" * 70)
+        print("=" * 60)
 
     except Exception as e:
-
-        print("ERROR :", e)
+        print("ERROR FONNTE :", str(e))
 
 
 # =========================
@@ -350,8 +336,7 @@ def webhook():
 
         kirim_wa(
             sender,
-            f"""
-        💰 *INFORMASI SALDO*
+            f"""💰 *Saldo Keuangan*
 
         ━━━━━━━━━━━━━━━━━━
 
@@ -365,7 +350,7 @@ def webhook():
 
         💳 *Saldo Saat Ini*
 
-        Rp {saldo:,.0f}
+        *Rp {saldo:,.0f}*
         """
         )
 
@@ -401,23 +386,16 @@ def webhook():
 
             kirim_wa(
                 sender,
-                f"""
-            ✅ *PEMASUKAN BERHASIL*
-
-            ━━━━━━━━━━━━━━━━━━
+                f"""✅ *Pemasukan Berhasil*
 
             💵 Nominal
-
-            Rp {nominal:,.0f}
+            *Rp {nominal:,.0f}*
 
             📝 Keterangan
-
             {keterangan}
 
-            ━━━━━━━━━━━━━━━━━━
-
-            Terima kasih 🙏
-            Data berhasil disimpan.
+            📅 {datetime.now().strftime("%d %B %Y")}
+            🕒 {datetime.now().strftime("%H:%M")}
             """
             )
 
@@ -460,22 +438,16 @@ def webhook():
 
             kirim_wa(
                 sender,
-                f"""
-            💸 *PENGELUARAN BERHASIL*
-
-            ━━━━━━━━━━━━━━━━━━
+                f"""💸 *Pengeluaran Berhasil*
 
             💰 Nominal
-
-            Rp {nominal:,.0f}
+            *Rp {nominal:,.0f}*
 
             📝 Keterangan
-
             {keterangan}
 
-            ━━━━━━━━━━━━━━━━━━
-
-            Data berhasil dicatat.
+            📅 {datetime.now().strftime("%d %B %Y")}
+            🕒 {datetime.now().strftime("%H:%M")}
             """
             )
 
@@ -503,18 +475,13 @@ def webhook():
 
         kirim_wa(
             sender,
-            f"""
-        📅 *RINGKASAN HARI INI*
+            f"""📊 *Ringkasan Hari Ini*
 
-        ━━━━━━━━━━━━━━━━━━
+        Jumlah Transaksi
+        *{len(data)}*
 
-        📄 Jumlah Transaksi
-
-        {len(data)}
-
-        💰 Total Transaksi
-
-        Rp {total:,.0f}
+        Total Nominal
+        *Rp {total:,.0f}*
         """
         )
 
