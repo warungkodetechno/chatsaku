@@ -7,7 +7,6 @@ import os
 import time
 import pandas as pd
 import io
-import pytz
 from zoneinfo import ZoneInfo
 
 app = Flask(__name__)
