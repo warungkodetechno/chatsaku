@@ -816,7 +816,7 @@
         <!-- FILTER -->
         <div class="filter-panel mb-4">
 
-            <form method="GET">
+            <form method="GET" action="/dashboard/{{ token }}">
 
                 <input type="hidden" name="token" value="{{ token }}">
 
@@ -865,12 +865,9 @@
 
                     </button>
 
-                    <a href="/?token={{ token }}" class="btn btn-light">
-
+                    <a href="/dashboard/{{ token }}" class="btn btn-light">
                         <i class="bi bi-arrow-clockwise"></i>
-
                         Reset
-
                     </a>
 
                     <a href="/export-excel?token={{ token }}&start_date={{ start_date }}&end_date={{ end_date }}"

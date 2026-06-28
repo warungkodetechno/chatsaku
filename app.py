@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify, render_template, send_file
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
+from datetime import datetime, timedelta
 from models import db, Transaksi
 import requests
 import os
@@ -100,13 +100,49 @@ def dashboard(token):
     if not nomor:
         return "Link sudah tidak berlaku.", 403
 
-    page = request.args.get("page", 1, type=int)
+    # =========================
+    # PARAMETER
+    # =========================
 
+    page = request.args.get("page", 1, type=int)
     per_page = 10
+
+    start_date = request.args.get("start_date", "").strip()
+    end_date = request.args.get("end_date", "").strip()
+
+    # =========================
+    # QUERY DASAR
+    # =========================
 
     query = Transaksi.query.filter(
         Transaksi.nomor_wa == nomor
     )
+
+    # =========================
+    # FILTER TANGGAL
+    # =========================
+
+    try:
+        if start_date:
+            start = datetime.strptime(start_date, "%Y-%m-%d")
+            query = query.filter(
+                Transaksi.tanggal >= start
+            )
+
+        if end_date:
+            # +1 hari agar seluruh transaksi pada tanggal tersebut ikut terambil
+            end = datetime.strptime(end_date, "%Y-%m-%d") + timedelta(days=1)
+            query = query.filter(
+                Transaksi.tanggal < end
+            )
+
+    except ValueError:
+        # Abaikan jika format tanggal tidak valid
+        pass
+
+    # =========================
+    # PAGINATION
+    # =========================
 
     data_paginated = query.order_by(
         Transaksi.tanggal.desc()
@@ -115,6 +151,10 @@ def dashboard(token):
         per_page=per_page,
         error_out=False
     )
+
+    # =========================
+    # DATA UNTUK CHART & SUMMARY
+    # =========================
 
     all_data = query.order_by(
         Transaksi.tanggal.desc()
@@ -134,6 +174,10 @@ def dashboard(token):
 
     saldo = total_masuk - total_keluar
 
+    # =========================
+    # RENDER
+    # =========================
+
     return render_template(
         "index.html",
         data=all_data,
@@ -141,8 +185,8 @@ def dashboard(token):
         total_masuk=total_masuk,
         total_keluar=total_keluar,
         saldo=saldo,
-        start_date="",
-        end_date="",
+        start_date=start_date,
+        end_date=end_date,
         token=token
     )
 
