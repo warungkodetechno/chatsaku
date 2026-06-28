@@ -236,7 +236,6 @@ def export_excel():
     query = Transaksi.query.filter(
         Transaksi.nomor_wa == nomor
     )
-)
 
     if start_date:
         query = query.filter(
