@@ -14,6 +14,155 @@ from itsdangerous import SignatureExpired
 
 app = Flask(__name__)
 
+KATEGORI_BUDGET = [
+    "makanan",
+    "minuman",
+    "transport",
+    "belanja",
+    "tagihan",
+    "hiburan",
+    "kesehatan",
+    "pendidikan",
+    "rumah",
+    "keluarga",
+    "investasi",
+    "tabungan",
+    "lainnya"
+]
+
+KATEGORI = {
+
+    "makanan": [
+        "bakso",
+        "mie",
+        "ayam",
+        "geprek",
+        "pizza",
+        "burger",
+        "kebab",
+        "martabak",
+        "sate",
+        "nasi",
+        "warteg",
+        "padang",
+        "seafood",
+        "pempek",
+        "siomay",
+        "batagor",
+        "snack",
+        "cemilan"
+    ],
+
+    "minuman": [
+        "kopi",
+        "es kopi",
+        "teh",
+        "es teh",
+        "jus",
+        "boba",
+        "chatime",
+        "starbucks",
+        "janji jiwa",
+        "kopi kenangan",
+        "air",
+        "galon",
+        "susu"
+    ],
+
+    "transport": [
+        "grab",
+        "gojek",
+        "maxim",
+        "gocar",
+        "goride",
+        "bensin",
+        "pertalite",
+        "pertamax",
+        "solar",
+        "parkir",
+        "tol",
+        "kereta",
+        "bus"
+    ],
+
+    "belanja": [
+        "indomaret",
+        "alfamart",
+        "superindo",
+        "hypermart",
+        "sayur",
+        "buah",
+        "beras",
+        "telur",
+        "daging",
+        "sembako"
+    ],
+
+    "tagihan": [
+        "pln",
+        "listrik",
+        "air",
+        "pam",
+        "wifi",
+        "internet",
+        "indihome",
+        "biznet",
+        "pulsa",
+        "bpjs"
+    ],
+
+    "hiburan": [
+        "netflix",
+        "spotify",
+        "bioskop",
+        "xxi",
+        "cgv",
+        "steam",
+        "game",
+        "playstation"
+    ],
+
+    "kesehatan": [
+        "dokter",
+        "obat",
+        "apotek",
+        "vitamin",
+        "rumah sakit",
+        "lab"
+    ],
+
+    "pendidikan": [
+        "sekolah",
+        "kampus",
+        "buku",
+        "kursus",
+        "sertifikasi"
+    ],
+
+    "investasi": [
+        "saham",
+        "reksadana",
+        "emas",
+        "crypto",
+        "bitcoin",
+        "obligasi"
+    ]
+}
+
+def cari_kategori(keterangan):
+
+    teks = keterangan.lower()
+
+    for kategori, subkategori in KATEGORI.items():
+
+        for sub in subkategori:
+
+            if sub in teks:
+
+                return kategori, sub
+
+    return "lainnya", "lainnya"
+
 secret = os.getenv("SECRET_KEY")
 
 if not secret:
@@ -708,20 +857,102 @@ def webhook():
     # BUDGET
     # =========================
     if cmd.startswith("budget"):
+
         try:
-            parts = message.split()
+
+            parts = message.lower().split()
+
+            # =========================
+            # LIHAT BUDGET
+            # =========================
+            if len(parts) == 1:
+
+                periode = periode_sekarang()
+
+                budgets = Budget.query.filter_by(
+                    nomor_wa=sender,
+                    periode=periode
+                ).order_by(
+                    Budget.kategori.asc()
+                ).all()
+
+                if not budgets:
+
+                    kirim_wa(
+                        sender,
+                        "📭 Belum ada budget bulan ini.\n\n"
+                        "Contoh:\n"
+                        "budget makanan 1500000"
+                    )
+
+                    return jsonify({"status":True})
+
+                pesan = f"🎯 *Budget {periode}*\n"
+                pesan += "━━━━━━━━━━━━━━\n\n"
+
+                total = 0
+
+                for b in budgets:
+
+                    total += b.nominal
+
+                    pesan += (
+                        f"📂 {b.kategori.title()}\n"
+                        f"💰 Rp {b.nominal:,.0f}\n\n"
+                    )
+
+                pesan += "━━━━━━━━━━━━━━\n"
+                pesan += f"💵 Total Budget\nRp {total:,.0f}"
+
+                kirim_wa(sender,pesan)
+
+                return jsonify({"status":True})
+
+            # =========================
+            # FORMAT
+            # =========================
             if len(parts) < 3:
 
                 kirim_wa(
                     sender,
-                    "Format:\nbudget makanan 1500000"
+                    "Format:\n"
+                    "budget makanan 1500000"
                 )
 
-                return jsonify({"status": True})
+                return jsonify({"status":True})
 
             kategori = parts[1].lower()
 
-            nominal = int(parts[2])
+            # =========================
+            # VALIDASI KATEGORI
+            # =========================
+            if kategori not in KATEGORI.keys():
+
+                daftar = "\n".join(
+                    f"• {x.title()}"
+                    for x in KATEGORI.keys()
+                )
+
+                kirim_wa(
+                    sender,
+                    f"""❌ Kategori tidak tersedia.
+
+    Kategori:
+
+    {daftar}
+
+    Contoh:
+    budget makanan 1500000
+    """
+                )
+
+                return jsonify({"status":True})
+
+            nominal = int(
+                parts[2]
+                .replace(".","")
+                .replace(",","")
+            )
 
             periode = periode_sekarang()
 
@@ -735,7 +966,7 @@ def webhook():
 
                 budget.nominal = nominal
 
-                status = "diperbarui"
+                status = "Diperbarui"
 
             else:
 
@@ -748,38 +979,42 @@ def webhook():
 
                 db.session.add(budget)
 
-                status = "dibuat"
+                status = "Dibuat"
 
             db.session.commit()
 
             kirim_wa(
                 sender,
-                f"""🎯 *Budget Berhasil {status.title()}*
+                f"""🎯 *Budget {status}*
 
-                ━━━━━━━━━━━━━━
+    ━━━━━━━━━━━━━━
 
-                📂 Kategori
-                {kategori.title()}
+    📂 Kategori
+    {kategori.title()}
 
-                💰 Budget
-                Rp {nominal:,.0f}
+    💰 Budget
+    Rp {nominal:,.0f}
 
-                📅 Periode
-                {periode}
+    📅 Periode
+    {periode}
 
-                ━━━━━━━━━━━━━━
-                🤖 Finance Assistant
-                """
+    ━━━━━━━━━━━━━━
+
+    Ketik *budget*
+    untuk melihat semua budget.
+    """
             )
 
-        except:
+        except Exception as e:
+
+            print(e)
 
             kirim_wa(
                 sender,
-                "Format:\nbudget makanan 1500000"
+                f"Terjadi kesalahan.\n\n{e}"
             )
 
-        return jsonify({"status": True})
+        return jsonify({"status":True})
 
     # =========================
     # DEFAULT

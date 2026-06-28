@@ -19,6 +19,10 @@ class Transaksi(db.Model):
 
     nomor_wa = db.Column(db.String(30))
 
+    kategori = db.Column(db.String(50))
+
+    subkategori = db.Column(db.String(100))
+
 class Budget(db.Model):
 
     __tablename__ = "budget"
