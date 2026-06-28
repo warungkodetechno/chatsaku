@@ -159,11 +159,8 @@ def log_all():
 
 @app.route("/")
 def home():
-    return """
-    <h2>Finance Assistant</h2>
+    return render_template("home.html")
 
-    Silakan buka dashboard melalui link WhatsApp.
-    """
 # @app.route("/")
 # def index():
 
@@ -474,7 +471,7 @@ def webhook():
             sender,
             f"""💰 *Saldo Keuangan*
 
-        ━━━━━━━━━━━━━━━━━━
+        ------------------
 
         📥 *Pemasukan*
         Rp {masuk:,.0f}
@@ -482,7 +479,7 @@ def webhook():
         📤 *Pengeluaran*
         Rp {keluar:,.0f}
 
-        ━━━━━━━━━━━━━━━━━━
+        ------------------
 
         💳 *Saldo Saat Ini*
 
