@@ -15,13 +15,13 @@ class Transaksi(db.Model):
 
     nominal = db.Column(db.Integer)
 
-    keterangan = db.Column(db.String(255))
-
-    nomor_wa = db.Column(db.String(30))
-
     kategori = db.Column(db.String(50))
 
     subkategori = db.Column(db.String(100))
+
+    keterangan = db.Column(db.String(255))
+
+    nomor_wa = db.Column(db.String(30))
 
 class Budget(db.Model):
 

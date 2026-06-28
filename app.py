@@ -710,20 +710,24 @@ def webhook():
 
             parts = message.split()
 
-            nominal = int(parts[1])
+            if len(parts) < 3:
 
-            keterangan = (
-                " ".join(parts[2:])
-                if len(parts) > 2
-                else "-"
+                kirim_wa(
+                    sender,
+                    "Format:\nkeluar 25000 grab"
+                )
+
+                return jsonify({"status": True})
+
+            nominal = int(
+                parts[1]
+                .replace(".", "")
+                .replace(",", "")
             )
 
+            keterangan = " ".join(parts[2:])
+
             kategori, subkategori = cari_kategori(keterangan)
-
-            print(kategori)
-            print(subkategori)
-
-            link = generate_dashboard_link(sender)
 
             trx = Transaksi(
                 tanggal=sekarang(),
@@ -737,6 +741,10 @@ def webhook():
 
             db.session.add(trx)
             db.session.commit()
+
+            # ======================================
+            # TOTAL SALDO
+            # ======================================
 
             masuk = transaksi_user(sender).filter(
                 Transaksi.tipe == "MASUK"
@@ -752,47 +760,161 @@ def webhook():
 
             saldo = masuk - keluar
 
+            # ======================================
+            # DASHBOARD
+            # ======================================
+
+            link = generate_dashboard_link(sender)
+
+            # ======================================
+            # BUDGET
+            # ======================================
+
+            periode = periode_sekarang()
+
+            budget = Budget.query.filter_by(
+                nomor_wa=sender,
+                kategori=kategori,
+                periode=periode
+            ).first()
+
+            budget_text = ""
+
+            if budget:
+
+                total_keluar = transaksi_user(sender).filter(
+                    Transaksi.tipe == "KELUAR",
+                    Transaksi.kategori == kategori
+                ).with_entities(
+                    db.func.sum(Transaksi.nominal)
+                ).scalar() or 0
+
+                persen = (
+                    total_keluar /
+                    budget.nominal
+                ) * 100
+
+                sisa = budget.nominal - total_keluar
+
+                # progress bar
+                blok = min(10, int(persen / 10))
+
+                bar = (
+                    "🟩" * blok +
+                    "⬜" * (10 - blok)
+                )
+
+                # status
+                if persen <= 50:
+                    status = "🟢 Aman"
+
+                elif persen <= 80:
+                    status = "🟡 Waspada"
+
+                elif persen <= 100:
+                    status = "🟠 Hampir Habis"
+
+                else:
+                    status = "🔴 Budget Terlampaui"
+
+                budget_text = f"""
+
+    ━━━━━━━━━━━━━━
+
+    🎯 *Budget {kategori.title()}*
+
+    💰 Budget
+    Rp {budget.nominal:,.0f}
+
+    📉 Terpakai
+    Rp {total_keluar:,.0f}
+
+    💵 Sisa
+    Rp {max(sisa,0):,.0f}
+
+    📊 Progress
+    {persen:.1f}%
+
+    {bar}
+
+    {status}
+    """
+
+                if persen > 100:
+
+                    over = total_keluar - budget.nominal
+
+                    budget_text += f"""
+
+    ⚠️ Melebihi budget
+    Rp {over:,.0f}
+    """
+
+            else:
+
+                budget_text = """
+
+    ━━━━━━━━━━━━━━
+
+    ℹ️ Belum ada budget untuk kategori ini.
+
+    Contoh:
+
+    budget transport 1000000
+    """
+
             kirim_wa(
                 sender,
                 f"""💸 *Pengeluaran Berhasil*
 
-            ━━━━━━━━━━━━━━
+    ━━━━━━━━━━━━━━
 
-            💵 *Nominal*
-            Rp {nominal:,.0f}
+    💵 *Nominal*
+    Rp {nominal:,.0f}
 
-            📝 *Keterangan*
-            {keterangan}
+    🏷️ *Kategori*
+    {kategori.title()}
 
-            📅 *Waktu*
-            {sekarang().strftime("%d %b %Y • %H:%M")}
+    📌 *Subkategori*
+    {subkategori.title()}
 
-            🏷️ Kategori
-            {kategori.title()}
+    📝 *Keterangan*
+    {keterangan}
 
-            📌 Subkategori
-            {subkategori.title()}
+    📅 *Waktu*
+    {sekarang().strftime("%d %b %Y • %H:%M")}
 
-            ━━━━━━━━━━━━━━
+    {budget_text}
 
-            💳 *Saldo Saat Ini*
-            Rp {saldo:,.0f}
+    ━━━━━━━━━━━━━━
 
-            📊 *Dashboard*
-            {link}
+    💳 *Saldo Saat Ini*
+    Rp {saldo:,.0f}
 
-            🔒 Link berlaku selama *24 jam*.
+    📊 *Dashboard*
+    {link}
 
-            ━━━━━━━━━━━━━━
-            🤖 *Finance Assistant*
-            """
+    🔒 Link berlaku 24 jam.
+
+    ━━━━━━━━━━━━━━
+    🤖 *Finance Assistant*
+    """
             )
 
-        except Exception:
+        except Exception as e:
+
+            print(e)
 
             kirim_wa(
                 sender,
-                "Format:\nkeluar 25000 makan"
+                f"""❌ Terjadi kesalahan
+
+    {e}
+
+    Format:
+
+    keluar 25000 grab
+    """
             )
 
         return jsonify({"status": True})
@@ -1022,6 +1144,11 @@ def webhook():
         "status": True
     })
 
+def progress_bar(persen):
+
+    penuh = int(persen / 10)
+
+    return "🟩" * penuh + "⬜" * (10 - penuh)
 # =========================
 # TEST
 # =========================
