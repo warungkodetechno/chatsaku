@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, render_template, send_file
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
-from models import db, Transaksi
+from models import db, Transaksi, Budget
 import requests
 import os
 import time
