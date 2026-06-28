@@ -1006,28 +1006,92 @@ def webhook():
                         "budget makanan 1500000"
                     )
 
-                    return jsonify({"status":True})
+                    return jsonify({"status": True})
 
-                pesan = f"🎯 *Budget {periode}*\n"
+                pesan = f"🎯 *Budget Bulan {periode}*\n"
                 pesan += "━━━━━━━━━━━━━━\n\n"
 
-                total = 0
+                total_budget = 0
+                total_terpakai = 0
 
                 for b in budgets:
 
-                    total += b.nominal
+                    total_budget += b.nominal
+
+                    # =============================
+                    # TOTAL PENGELUARAN KATEGORI
+                    # =============================
+                    terpakai = transaksi_user(sender).filter(
+                        Transaksi.tipe == "KELUAR",
+                        Transaksi.kategori == b.kategori
+                    ).with_entities(
+                        db.func.sum(Transaksi.nominal)
+                    ).scalar() or 0
+
+                    total_terpakai += terpakai
+
+                    persen = (
+                        (terpakai / b.nominal) * 100
+                        if b.nominal > 0 else 0
+                    )
+
+                    sisa = b.nominal - terpakai
+
+                    blok = min(10, int(persen / 10))
+
+                    progress = (
+                        "🟩" * blok +
+                        "⬜" * (10 - blok)
+                    )
+
+                    if persen < 50:
+                        status = "🟢 Aman"
+
+                    elif persen < 80:
+                        status = "🟡 Waspada"
+
+                    elif persen <= 100:
+                        status = "🟠 Hampir Habis"
+
+                    else:
+                        status = "🔴 Terlampaui"
 
                     pesan += (
-                        f"📂 {b.kategori.title()}\n"
-                        f"💰 Rp {b.nominal:,.0f}\n\n"
+                        f"📂 *{b.kategori.title()}*\n"
+                        f"💰 Budget   : Rp {b.nominal:,.0f}\n"
+                        f"📉 Terpakai : Rp {terpakai:,.0f}\n"
+                        f"💵 Sisa     : Rp {max(sisa,0):,.0f}\n"
+                        f"📊 {persen:.1f}%\n"
+                        f"{progress}\n"
+                        f"{status}\n\n"
                     )
 
                 pesan += "━━━━━━━━━━━━━━\n"
-                pesan += f"💵 Total Budget\nRp {total:,.0f}"
 
-                kirim_wa(sender,pesan)
+                total_persen = (
+                    (total_terpakai / total_budget) * 100
+                    if total_budget > 0 else 0
+                )
 
-                return jsonify({"status":True})
+                blok = min(10, int(total_persen / 10))
+
+                progress = (
+                    "🟩" * blok +
+                    "⬜" * (10 - blok)
+                )
+
+                pesan += (
+                    f"💼 *TOTAL BUDGET*\n\n"
+                    f"💰 Budget   : Rp {total_budget:,.0f}\n"
+                    f"📉 Terpakai : Rp {total_terpakai:,.0f}\n"
+                    f"💵 Sisa     : Rp {max(total_budget-total_terpakai,0):,.0f}\n\n"
+                    f"📊 {total_persen:.1f}%\n"
+                    f"{progress}"
+                )
+
+                kirim_wa(sender, pesan)
+
+                return jsonify({"status": True})
 
             # =========================
             # FORMAT
