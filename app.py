@@ -556,6 +556,7 @@ def webhook():
     valid_command = (
         cmd == "saldo"
         or cmd == "hariini"
+        or cmd == "insight"
         or cmd.startswith("masuk")
         or cmd.startswith("keluar")
         or cmd.startswith("budget")
@@ -1202,6 +1203,205 @@ def webhook():
         return jsonify({"status":True})
 
     # =========================
+    # AI INSIGHT
+    # =========================
+    if cmd == "insight":
+
+        try:
+
+            periode = periode_sekarang()
+
+            data = transaksi_user(sender).filter(
+                Transaksi.tipe == "KELUAR"
+            ).all()
+
+            if not data:
+
+                kirim_wa(
+                    sender,
+                    "📭 Belum ada transaksi yang dapat dianalisis."
+                )
+
+                return jsonify({"status": True})
+
+            # =====================================
+            # TOTAL
+            # =====================================
+
+            total = sum(x.nominal for x in data)
+
+            # =====================================
+            # KATEGORI
+            # =====================================
+
+            kategori = {}
+
+            for trx in data:
+
+                key = trx.kategori or "Lainnya"
+
+                kategori[key] = kategori.get(key, 0) + trx.nominal
+
+            kategori_terbesar = max(
+                kategori,
+                key=kategori.get
+            )
+
+            nominal_terbesar = kategori[kategori_terbesar]
+
+            persen = nominal_terbesar / total * 100
+
+            # =====================================
+            # BUDGET
+            # =====================================
+
+            budget = Budget.query.filter_by(
+                nomor_wa=sender,
+                kategori=kategori_terbesar,
+                periode=periode
+            ).first()
+
+            budget_info = ""
+
+            if budget:
+
+                persen_budget = (
+                    nominal_terbesar /
+                    budget.nominal
+                ) * 100
+
+                sisa = budget.nominal - nominal_terbesar
+
+                budget_info = f"""
+
+    🎯 Budget {kategori_terbesar.title()}
+    Rp {budget.nominal:,.0f}
+
+    📉 Terpakai
+    Rp {nominal_terbesar:,.0f}
+
+    💵 Sisa
+    Rp {max(sisa,0):,.0f}
+
+    📊 {persen_budget:.1f}%
+    """
+
+            # =====================================
+            # FINANCE SCORE
+            # =====================================
+
+            score = 100
+
+            if persen > 50:
+                score -= 20
+
+            elif persen > 35:
+                score -= 10
+
+            if budget:
+
+                if persen_budget > 100:
+                    score -= 25
+
+                elif persen_budget > 80:
+                    score -= 10
+
+            if score >= 90:
+                status = "🟢 Sangat Sehat"
+
+            elif score >= 75:
+                status = "🟢 Sehat"
+
+            elif score >= 60:
+                status = "🟡 Cukup"
+
+            elif score >= 40:
+                status = "🟠 Perlu Perhatian"
+
+            else:
+                status = "🔴 Boros"
+
+            # =====================================
+            # REKOMENDASI
+            # =====================================
+
+            rekomendasi = []
+
+            if persen > 50:
+
+                rekomendasi.append(
+                    f"• Kurangi pengeluaran {kategori_terbesar.title()}."
+                )
+
+            if budget and persen_budget > 100:
+
+                rekomendasi.append(
+                    "• Budget kategori sudah terlampaui."
+                )
+
+            elif budget and persen_budget > 80:
+
+                rekomendasi.append(
+                    "• Budget hampir habis."
+                )
+
+            if not rekomendasi:
+
+                rekomendasi.append(
+                    "• Pengeluaran masih terkendali."
+                )
+
+            kirim_wa(
+                sender,
+                f"""🤖 *AI Finance Insight*
+
+    ━━━━━━━━━━━━━━
+
+    💸 Total Pengeluaran
+    Rp {total:,.0f}
+
+    🏆 Kategori Terbesar
+    {kategori_terbesar.title()}
+
+    💰 Nominal
+    Rp {nominal_terbesar:,.0f}
+
+    📊 Persentase
+    {persen:.1f}% dari total
+
+    {budget_info}
+
+    ━━━━━━━━━━━━━━
+
+    🧠 *Finance Score*
+
+    {score}/100
+
+    {status}
+
+    ━━━━━━━━━━━━━━
+
+    💡 *Rekomendasi AI*
+
+    {chr(10).join(rekomendasi)}
+
+    ━━━━━━━━━━━━━━
+    🤖 Finance Assistant
+    """
+            )
+
+        except Exception as e:
+
+            print(e)
+
+            kirim_wa(
+                sender,
+                f"Terjadi kesalahan\n\n{e}"
+            )
+
+        return jsonify({"status": True})
+
+    # =========================
     # DEFAULT
     # =========================
     return jsonify({
@@ -1213,6 +1413,62 @@ def progress_bar(persen):
     penuh = int(persen / 10)
 
     return "🟩" * penuh + "⬜" * (10 - penuh)
+
+def ai_insight(sender):
+
+    bulan = periode_sekarang()
+
+    data = transaksi_user(sender).filter(
+        Transaksi.tipe == "KELUAR"
+    ).all()
+
+    if not data:
+        return "Belum ada data untuk dianalisis."
+
+    total = sum(x.nominal for x in data)
+
+    kategori = {}
+
+    for trx in data:
+
+        kategori.setdefault(trx.kategori, 0)
+
+        kategori[trx.kategori] += trx.nominal
+
+    kategori_terbesar = max(
+        kategori,
+        key=kategori.get
+    )
+
+    nominal = kategori[kategori_terbesar]
+
+    persen = nominal / total * 100
+
+    insight = []
+
+    insight.append(
+        f"📊 Pengeluaran terbesar berada pada kategori *{kategori_terbesar.title()}* ({persen:.1f}%)."
+    )
+
+    if persen > 50:
+
+        insight.append(
+            f"⚠️ Lebih dari setengah pengeluaran berasal dari {kategori_terbesar}."
+        )
+
+    elif persen > 30:
+
+        insight.append(
+            f"💡 Pengeluaran {kategori_terbesar} mulai mendominasi bulan ini."
+        )
+
+    else:
+
+        insight.append(
+            "✅ Pengeluaran masih cukup seimbang antar kategori."
+        )
+
+    return "\n".join(insight)
 # =========================
 # TEST
 # =========================
