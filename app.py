@@ -596,27 +596,21 @@ def webhook():
             sender,
             f"""💳 *Saldo Keuangan*
 
-        ━━━━━━━━━━━━━━
+            ┌────────────────┐
+            📥 Masuk   : Rp {masuk:,.0f}
+            📤 Keluar  : Rp {keluar:,.0f}
+            ─────────────────
+            💰 Saldo   : *Rp {saldo:,.0f}*
+            └────────────────┘
 
-        📥 *Total Pemasukan*
-        Rp {masuk:,.0f}
+            📊 Dashboard
+            {link}
 
-        📤 *Total Pengeluaran*
-        Rp {keluar:,.0f}
+            🕒 Berlaku 24 jam
 
-        ━━━━━━━━━━━━━━
-
-        💰 *Saldo Saat Ini*
-        Rp {saldo:,.0f}
-
-        📊 *Dashboard*
-        {link}
-
-        🔒 Link berlaku selama *24 jam*.
-
-        ━━━━━━━━━━━━━━
-        🤖 *Finance Assistant*
-        """
+            🤖 ChatSaku Finance Assistant
+            💚 Kelola keuangan langsung dari WhatsApp
+            """
         )
 
         return jsonify({"status": True})
