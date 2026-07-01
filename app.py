@@ -562,10 +562,12 @@ def transaksi_user(sender):
 # VALIDASI USER
 # =========================
 def user_terdaftar(nomor):
+
     nomor = normalize_wa(nomor)
-    return User.query.filter_by(
-        nomor_wa=nomor,
-        aktif=True
+
+    return User.query.filter(
+        User.nomor_wa == nomor,
+        User.aktif.is_(True)
     ).first()
 
 # =========================
@@ -598,90 +600,124 @@ def webhook():
     print(payload)
     print("=" * 80)
 
-    # =========================
-    # IGNORE STATUS / DELIVERY EVENTS
-    # =========================
+    # ======================================
+    # IGNORE STATUS EVENT
+    # ======================================
+
     if payload.get("status") or payload.get("state"):
-        return jsonify({"status": True})
+        return jsonify(status=True)
 
-    if payload.get("event") in ["sent", "delivered", "read"]:
-        return jsonify({"status": True})
+    if payload.get("event") in [
+        "sent",
+        "delivered",
+        "read"
+    ]:
+        return jsonify(status=True)
 
-    # =========================
-    # EXTRACT DATA (SAFE)
-    # =========================
-    # sender = str(payload.get("sender") or payload.get("from") or "").strip()
+    # ======================================
+    # AMBIL DATA
+    # ======================================
+
     sender = normalize_wa(
-        payload.get("sender") or payload.get("from") or ""
+        payload.get("sender")
+        or payload.get("pengirim")
+        or payload.get("from")
+        or ""
     )
-    message = str(payload.get("message") or payload.get("text") or "").strip()
+
+    message = str(
+        payload.get("message")
+        or payload.get("pesan")
+        or ""
+    ).strip()
+
+    msg_id = (
+        payload.get("id")
+        or payload.get("inboxid")
+        or f"{sender}:{int(time.time())}"
+    )
+
+    if not sender:
+        return jsonify(status=True)
+
+    if not message:
+        return jsonify(status=True)
+
+    lower_msg = message.lower()
+
     print("Sender :", sender)
+    print("Message:", message)
 
-    msg_id = payload.get("id") or payload.get("inboxid")
+    # ======================================
+    # ANTI LOOP
+    # ======================================
 
-    if not sender or not message:
-        return jsonify({"status": True})
+    # pesan dari bot sendiri
+    if message.startswith("[BOT]"):
+        return jsonify(status=True)
 
-    # =========================
-    # CEK USER TERDAFTAR
-    # =========================
+    # footer fonnte
+    if "sent via fonnte" in lower_msg:
+        return jsonify(status=True)
+
+    # balasan bot
+    if "chatsaku finance assistant" in lower_msg:
+        return jsonify(status=True)
+
+    if "nomor belum terdaftar" in lower_msg:
+        return jsonify(status=True)
+
+    # nomor bot sendiri
+    bot_number = normalize_wa(
+        os.getenv("BOT_NUMBER", "")
+    )
+
+    if sender == bot_number:
+        return jsonify(status=True)
+
+    # ======================================
+    # DUPLICATE FILTER
+    # ======================================
+
+    if is_duplicate(msg_id):
+        return jsonify(status=True)
+
+    # ======================================
+    # VALIDASI USER
+    # ======================================
 
     user = user_terdaftar(sender)
+
     print("User :", user)
 
     if not user:
+
+        print("UNREGISTERED :", sender)
 
         kirim_wa(
             sender,
             """🚫 *Nomor Belum Terdaftar*
 
-    Maaf, nomor WhatsApp Anda belum terdaftar pada sistem *ChatSaku Finance*.
+Maaf, nomor WhatsApp Anda belum terdaftar pada sistem *ChatSaku Finance*.
 
-    Silakan hubungi Admin untuk mengaktifkan akun Anda.
+Silakan hubungi Admin untuk mengaktifkan akun Anda.
 
-    💚 ChatSaku Finance Assistant
-    """
+💚 ChatSaku Finance Assistant
+"""
         )
 
-        return jsonify({
-            "status": True,
-            "registered": False
-        })
+        return jsonify(
+            status=True,
+            registered=False
+        )
 
-    # =========================
-    # ANTI LOOP INTELLIGENT FILTER
-    # =========================
-    lower_msg = message.lower()
-
-    # 1. Ignore pesan dari bot sendiri
-    if sender == os.getenv("BOT_NUMBER", ""):
-        return jsonify({"status": True})
-
-    # 2. Ignore footer Fonnte
-    if "sent via fonnte" in lower_msg:
-        return jsonify({"status": True})
-
-    # 3. Ignore balasan bot
-    if (
-        lower_msg.startswith("[bot]")
-        or lower_msg.startswith("📌")
-        or lower_msg.startswith("✅")
-    ):
-        return jsonify({"status": True})
-
-    # =========================
-    # SAFE MSG ID
-    # =========================
-    if not msg_id:
-        msg_id = f"{sender}:{int(time.time())}"
-
-    # =========================
-    # DUPLICATE FILTER
-    # =========================
-    if is_duplicate(msg_id):
-        return jsonify({"status": True})
+    # ======================================
+    # COMMAND
+    # ======================================
 
     cmd = lower_msg.strip()
+
+    print("CMD :", cmd)
 
     print("SENDER :", sender)
     print("MESSAGE:", message)
