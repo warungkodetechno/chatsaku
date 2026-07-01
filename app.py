@@ -661,32 +661,31 @@ def webhook():
 
             kirim_wa(
                 sender,
-                f"""💰 *Pemasukan Berhasil*
+                f"""✅ *Transaksi Berhasil*
 
-            ━━━━━━━━━━━━━━
+                    ┌────────────────────
+                    💰 *KREDIT MASUK*
 
-            💵 *Nominal*
-            Rp {nominal:,.0f}
+                    💵 Nominal
+                    Rp {nominal:,.0f}
 
-            📝 *Keterangan*
-            {keterangan}
+                    📝 Keterangan
+                    {keterangan}
 
-            📅 *Waktu*
-            {sekarang().strftime("%d %b %Y • %H:%M")}
+                    🕒 {sekarang().strftime("%d %b %Y • %H:%M")}
+                    └────────────────────
 
-            ━━━━━━━━━━━━━━
+                    💳 *Saldo Saat Ini*
+                    Rp {saldo:,.0f}
 
-            💳 *Saldo Saat Ini*
-            Rp {saldo:,.0f}
+                    📊 Dashboard
+                    {link}
 
-            📊 *Dashboard*
-            {link}
+                    ⏳ Link aktif 24 jam
 
-            🔒 Link berlaku selama *24 jam*.
-
-            ━━━━━━━━━━━━━━
-            🤖 *Finance Assistant*
-            """
+                    ━━━━━━━━━━━━━━━━━━
+                    🤖 ChatSaku Finance Assistant
+                """
             )
 
         except Exception:
@@ -816,26 +815,29 @@ def webhook():
 
                 budget_text = f"""
 
-    ━━━━━━━━━━━━━━
+                ──────────────────
 
-    🎯 *Budget {kategori.title()}*
+                🏦 *Status Budget*
 
-    💰 Budget
-    Rp {budget.nominal:,.0f}
+                🏷️ Kategori
+                {kategori.title()}
 
-    📉 Terpakai
-    Rp {total_keluar:,.0f}
+                💰 Budget
+                Rp {budget.nominal:,.0f}
 
-    💵 Sisa
-    Rp {max(sisa,0):,.0f}
+                💸 Terpakai
+                Rp {total_keluar:,.0f}
 
-    📊 Progress
-    {persen:.1f}%
+                💳 Sisa Budget
+                Rp {max(sisa,0):,.0f}
 
-    {bar}
+                📊 Progress
+                {persen:.1f}%
 
-    {status}
-    """
+                {bar}
+
+                {status}
+                """
 
                 if persen > 100:
 
@@ -843,59 +845,58 @@ def webhook():
 
                     budget_text += f"""
 
-    ⚠️ Melebihi budget
-    Rp {over:,.0f}
-    """
+                ⚠️ Over Budget
+                Rp {over:,.0f}
+                """
 
-            else:
+                else:
 
-                budget_text = """
+                    budget_text = """
 
-    ━━━━━━━━━━━━━━
+                ──────────────────
 
-    ℹ️ Belum ada budget untuk kategori ini.
+                ℹ️ Budget belum tersedia.
 
-    Contoh:
-
-    budget transport 1000000
-    """
+                Contoh:
+                budget transport 1000000
+                """
 
             kirim_wa(
                 sender,
-                f"""💸 *Pengeluaran Berhasil*
+                f"""🏦 *Notifikasi Transaksi*
 
-    ━━━━━━━━━━━━━━
+                ──────────────────
 
-    💵 *Nominal*
-    Rp {nominal:,.0f}
+                ✅ *Debit Berhasil*
 
-    🏷️ *Kategori*
-    {kategori.title()}
+                💸 - Rp {nominal:,.0f}
 
-    📌 *Subkategori*
-    {subkategori.title()}
+                🏷️ Kategori
+                {kategori.title()}
 
-    📝 *Keterangan*
-    {keterangan}
+                📂 Subkategori
+                {subkategori.title()}
 
-    📅 *Waktu*
-    {sekarang().strftime("%d %b %Y • %H:%M")}
+                📝 Keterangan
+                {keterangan}
 
-    {budget_text}
+                🕒 {sekarang().strftime("%d %b %Y • %H:%M")}
 
-    ━━━━━━━━━━━━━━
+                {budget_text}
 
-    💳 *Saldo Saat Ini*
-    Rp {saldo:,.0f}
+                ──────────────────
 
-    📊 *Dashboard*
-    {link}
+                💳 Saldo Tersedia
+                *Rp {saldo:,.0f}*
 
-    🔒 Link berlaku 24 jam.
+                📈 Dashboard
+                {link}
 
-    ━━━━━━━━━━━━━━
-    🤖 *Finance Assistant*
-    """
+                ⏳ Link aktif 24 jam
+
+                ──────────────────
+                🤖 ChatSaku Finance Assistant
+                """
             )
 
         except Exception as e:
@@ -943,30 +944,30 @@ def webhook():
             sender,
             f"""📊 *Ringkasan Hari Ini*
 
-        ━━━━━━━━━━━━━━
+            ━━━━━━━━━━━━━━
 
-        🧾 *Jumlah Transaksi*
-        {len(data)}
+            🧾 *Jumlah Transaksi*
+            {len(data)}
 
-        📥 *Pemasukan*
-        Rp {masuk_hari_ini:,.0f}
+            📥 *Pemasukan*
+            Rp {masuk_hari_ini:,.0f}
 
-        📤 *Pengeluaran*
-        Rp {keluar_hari_ini:,.0f}
+            📤 *Pengeluaran*
+            Rp {keluar_hari_ini:,.0f}
 
-        ━━━━━━━━━━━━━━
+            ━━━━━━━━━━━━━━
 
-        💰 *Total Aktivitas*
-        Rp {total:,.0f}
+            💰 *Total Aktivitas*
+            Rp {total:,.0f}
 
-        📊 *Dashboard*
-        {link}
+            📊 *Dashboard*
+            {link}
 
-        🔒 Link berlaku selama *24 jam*.
+            🔒 Link berlaku selama *24 jam*.
 
-        ━━━━━━━━━━━━━━
-        🤖 *Finance Assistant*
-        """
+            ━━━━━━━━━━━━━━
+            🤖 *Finance Assistant*
+            """
         )
 
         return jsonify({"status": True})
@@ -1270,17 +1271,17 @@ def webhook():
 
                 budget_info = f"""
 
-    🎯 Budget {kategori_terbesar.title()}
-    Rp {budget.nominal:,.0f}
+                🎯 Budget {kategori_terbesar.title()}
+                Rp {budget.nominal:,.0f}
 
-    📉 Terpakai
-    Rp {nominal_terbesar:,.0f}
+                📉 Terpakai
+                Rp {nominal_terbesar:,.0f}
 
-    💵 Sisa
-    Rp {max(sisa,0):,.0f}
+                💵 Sisa
+                Rp {max(sisa,0):,.0f}
 
-    📊 {persen_budget:.1f}%
-    """
+                📊 {persen_budget:.1f}%
+                """
 
             # =====================================
             # FINANCE SCORE
@@ -1349,41 +1350,45 @@ def webhook():
 
             kirim_wa(
                 sender,
-                f"""🤖 *AI Finance Insight*
+                f"""🏦 *AI Finance Insight*
 
-    ━━━━━━━━━━━━━━
+                ──────────────────
 
-    💸 Total Pengeluaran
-    Rp {total:,.0f}
+                📊 Analisis Pengeluaran
 
-    🏆 Kategori Terbesar
-    {kategori_terbesar.title()}
+                💸 Total Debit
+                Rp {total:,.0f}
 
-    💰 Nominal
-    Rp {nominal_terbesar:,.0f}
+                🏷️ Kategori Terbesar
+                {kategori_terbesar.title()}
 
-    📊 Persentase
-    {persen:.1f}% dari total
+                💰 Nominal
+                Rp {nominal_terbesar:,.0f}
 
-    {budget_info}
+                📈 Kontribusi
+                {persen:.1f}% dari total
 
-    ━━━━━━━━━━━━━━
+                {budget_info}
 
-    🧠 *Finance Score*
+                ──────────────────
 
-    {score}/100
+                💳 *Finance Score*
 
-    {status}
+                ✨ {score}/100
 
-    ━━━━━━━━━━━━━━
+                {status}
 
-    💡 *Rekomendasi AI*
+                ──────────────────
 
-    {chr(10).join(rekomendasi)}
+                🧠 *Rekomendasi AI*
 
-    ━━━━━━━━━━━━━━
-    🤖 Finance Assistant
-    """
+                {chr(10).join(rekomendasi)}
+
+                ──────────────────
+
+                🤖 ChatSaku Finance Assistant
+                💚 AI Powered • WhatsApp Finance
+                """
             )
 
         except Exception as e:
@@ -1520,22 +1525,22 @@ def webhook():
                 sender,
                 f"""🔔 *Reminder {status}*
 
-    ━━━━━━━━━━━━━━
+                ━━━━━━━━━━━━━━
 
-    📄 Tagihan
-    {nama.title()}
+                📄 Tagihan
+                {nama.title()}
 
-    📅 Jatuh Tempo
-    Tanggal {tanggal}
+                📅 Jatuh Tempo
+                Tanggal {tanggal}
 
-    💰 Estimasi
-    Rp {nominal:,.0f}
+                💰 Estimasi
+                Rp {nominal:,.0f}
 
-    ━━━━━━━━━━━━━━
+                ━━━━━━━━━━━━━━
 
-    Ketik *reminder*
-    untuk melihat seluruh reminder.
-    """
+                Ketik *reminder*
+                untuk melihat seluruh reminder.
+                """
             )
 
         except Exception as e:
