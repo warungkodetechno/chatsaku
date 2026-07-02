@@ -387,6 +387,50 @@ def dashboard(token):
 
     saldo = total_masuk - total_keluar
 
+    # ==========================================
+    # BUDGET BULAN INI
+    # ==========================================
+
+    periode = periode_sekarang()
+
+    budget_list = Budget.query.filter_by(
+        nomor_wa=nomor_wa,
+        periode=periode
+    ).all()
+
+    budget_data = []
+
+    for b in budget_list:
+
+        terpakai = db.session.query(
+            db.func.coalesce(db.func.sum(Transaksi.nominal), 0)
+        ).filter(
+            Transaksi.nomor_wa == nomor_wa,
+            Transaksi.tipe == "KELUAR",
+            Transaksi.kategori == b.kategori,
+            db.func.to_char(
+                Transaksi.tanggal,
+                "YYYY-MM"
+            ) == periode
+        ).scalar()
+
+        sisa = b.nominal - terpakai
+
+        persen = 0
+
+        if b.nominal > 0:
+            persen = round((terpakai / b.nominal) * 100)
+
+        budget_data.append({
+
+            "kategori": b.kategori,
+            "budget": b.nominal,
+            "terpakai": terpakai,
+            "sisa": sisa,
+            "persen": persen
+
+        })
+
     # =========================
     # RENDER
     # =========================
@@ -400,7 +444,8 @@ def dashboard(token):
         saldo=saldo,
         start_date=start_date,
         end_date=end_date,
-        token=token
+        token=token,
+        budget_data=budget_data
     )
 
 # =========================

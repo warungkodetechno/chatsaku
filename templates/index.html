@@ -906,6 +906,316 @@
 
             }
         </style>
+        <!-- ========================================= -->
+        <!-- BUDGET BULAN INI -->
+        <!-- ========================================= -->
+
+        <div class="budget-wrapper mb-4">
+
+            <div class="budget-header">
+
+                <div>
+
+                    <div class="budget-title">
+                        <i class="bi bi-pie-chart-fill"></i>
+                        Budget Bulan Ini
+                    </div>
+
+                    <div class="budget-subtitle">
+                        Pantau penggunaan anggaran setiap kategori.
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% if budget_data %}
+
+            <div class="row g-3">
+
+                {% for item in budget_data %}
+
+                {% if item.persen >= 100 %}
+                {% set warna = "danger" %}
+                {% elif item.persen >= 90 %}
+                {% set warna = "warning" %}
+                {% else %}
+                {% set warna = "success" %}
+                {% endif %}
+
+                <div class="col-lg-6">
+
+                    <div class="budget-card">
+
+                        <div class="budget-top">
+
+                            <div>
+
+                                <div class="budget-category">
+                                    {{ item.kategori }}
+                                </div>
+
+                                <div class="budget-used">
+
+                                    Rp {{ "{:,.0f}".format(item.terpakai) }}
+
+                                    /
+
+                                    Rp {{ "{:,.0f}".format(item.budget) }}
+
+                                </div>
+
+                            </div>
+
+                            <div class="budget-percent text-{{ warna }}">
+                                {{ item.persen }}%
+                            </div>
+
+                        </div>
+
+                        <div class="progress budget-progress">
+
+                            <div class="progress-bar bg-{{ warna }}"
+                                style="width:{{ 100 if item.persen > 100 else item.persen }}%">
+                            </div>
+
+                        </div>
+
+                        <div class="budget-footer">
+
+                            {% if item.sisa >= 0 %}
+
+                            <span class="text-success">
+
+                                <i class="bi bi-check-circle-fill"></i>
+
+                                Sisa
+                                Rp {{ "{:,.0f}".format(item.sisa) }}
+
+                            </span>
+
+                            {% else %}
+
+                            <span class="text-danger">
+
+                                <i class="bi bi-exclamation-triangle-fill"></i>
+
+                                Melebihi
+                                Rp {{ "{:,.0f}".format(item.sisa|abs) }}
+
+                            </span>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+            {% else %}
+
+            <div class="budget-empty">
+
+                <i class="bi bi-wallet2"></i>
+
+                <div>
+
+                    <h6>Belum ada budget bulan ini</h6>
+
+                    <small>
+                        Tambahkan budget melalui WhatsApp agar penggunaan anggaran dapat dipantau.
+                    </small>
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+        <style>
+            .budget-wrapper {
+
+                background: #fff;
+                border: 1px solid var(--border);
+                border-radius: 22px;
+                padding: 20px;
+                box-shadow: 0 8px 24px rgba(7, 94, 84, .06);
+
+            }
+
+            .budget-header {
+
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 18px;
+
+            }
+
+            .budget-title {
+
+                font-family: 'Baloo 2', sans-serif;
+                font-size: 16px;
+                font-weight: 700;
+                color: var(--primary-deep);
+
+            }
+
+            .budget-title i {
+
+                color: #25D366;
+                margin-right: 6px;
+
+            }
+
+            .budget-subtitle {
+
+                color: var(--muted);
+                font-size: 12px;
+
+            }
+
+            .budget-card {
+
+                background: linear-gradient(180deg, #fff, #f8fffb);
+                border: 1px solid var(--border);
+                border-radius: 18px;
+                padding: 16px;
+                transition: .25s;
+
+            }
+
+            .budget-card:hover {
+
+                transform: translateY(-2px);
+                box-shadow: 0 10px 22px rgba(37, 211, 102, .12);
+
+            }
+
+            .budget-top {
+
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 12px;
+
+            }
+
+            .budget-category {
+
+                font-weight: 700;
+                font-size: 15px;
+                color: var(--primary-deep);
+
+            }
+
+            .budget-used {
+
+                font-size: 12px;
+                color: var(--muted);
+
+            }
+
+            .budget-percent {
+
+                font-size: 18px;
+                font-weight: 800;
+                font-family: 'Baloo 2', sans-serif;
+
+            }
+
+            .budget-progress {
+
+                height: 12px;
+                border-radius: 50px;
+                background: #edf7f1;
+                overflow: hidden;
+
+            }
+
+            .budget-progress .progress-bar {
+
+                border-radius: 50px;
+
+            }
+
+            .budget-footer {
+
+                margin-top: 12px;
+                font-size: 13px;
+                font-weight: 600;
+
+            }
+
+            .budget-empty {
+
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                background: #f8fffb;
+                border: 1px dashed #ccefdc;
+                border-radius: 18px;
+                padding: 25px;
+
+            }
+
+            .budget-empty i {
+
+                font-size: 42px;
+                color: #25D366;
+
+            }
+
+            .budget-empty h6 {
+
+                margin-bottom: 4px;
+                font-weight: 700;
+
+            }
+
+            .budget-empty small {
+
+                color: #777;
+
+            }
+
+            @media(max-width:768px) {
+
+                .budget-wrapper {
+
+                    padding: 16px;
+
+                }
+
+                .budget-card {
+
+                    padding: 14px;
+
+                }
+
+                .budget-top {
+
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 8px;
+
+                }
+
+                .budget-percent {
+
+                    font-size: 16px;
+
+                }
+
+            }
+        </style>
         <!-- FILTER -->
         <div class="filter-panel mb-4">
 
