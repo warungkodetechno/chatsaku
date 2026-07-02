@@ -698,14 +698,14 @@ def webhook():
             sender,
             """🚫 *Nomor Belum Terdaftar*
 
-            Maaf, nomor WhatsApp Anda belum terdaftar pada sistem *ChatSaku Finance*.
+Maaf, nomor WhatsApp Anda belum terdaftar pada sistem *ChatSaku Finance*.
 
-            Silakan hubungi Admin untuk mengaktifkan akun Anda.
+Silakan hubungi Admin untuk mengaktifkan akun Anda.
 
-            https://www.chatsaku.com
+https://www.chatsaku.com
 
-            💚 ChatSaku Finance Assistant
-            """
+💚 ChatSaku Finance Assistant
+"""
         )
 
         return jsonify(
