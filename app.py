@@ -394,7 +394,7 @@ def dashboard(token):
     periode = periode_sekarang()
 
     budget_list = Budget.query.filter_by(
-        nomor_wa=nomor_wa,
+        nomor_wa=nomor,
         periode=periode
     ).all()
 
@@ -405,7 +405,7 @@ def dashboard(token):
         terpakai = db.session.query(
             db.func.coalesce(db.func.sum(Transaksi.nominal), 0)
         ).filter(
-            Transaksi.nomor_wa == nomor_wa,
+            Transaksi.nomor_wa == nomor,
             Transaksi.tipe == "KELUAR",
             Transaksi.kategori == b.kategori,
             db.func.to_char(
