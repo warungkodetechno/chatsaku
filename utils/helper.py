@@ -144,6 +144,9 @@ KATEGORI = {
     ]
 }
 
+def periode_sekarang():
+    return datetime.now().strftime("%Y-%m")
+
 def sekarang():
     return datetime.now(ZoneInfo("Asia/Jakarta"))
 

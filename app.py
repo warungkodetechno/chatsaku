@@ -516,10 +516,5 @@ def debug_token():
         "length": len(token) if token else 0
     }
 
-
-def periode_sekarang():
-    return datetime.now().strftime("%Y-%m")
-
-
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
