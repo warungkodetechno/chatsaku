@@ -25,6 +25,125 @@ BASE_URL = os.getenv(
     "https://inout-production-88e5.up.railway.app"
 )
 
+KATEGORI = {
+
+    "makanan": [
+        "bakso",
+        "mie",
+        "ayam",
+        "geprek",
+        "pizza",
+        "burger",
+        "kebab",
+        "martabak",
+        "sate",
+        "nasi",
+        "warteg",
+        "padang",
+        "seafood",
+        "pempek",
+        "siomay",
+        "batagor",
+        "snack",
+        "cemilan"
+    ],
+
+    "minuman": [
+        "kopi",
+        "es kopi",
+        "teh",
+        "es teh",
+        "jus",
+        "boba",
+        "chatime",
+        "starbucks",
+        "janji jiwa",
+        "kopi kenangan",
+        "air",
+        "galon",
+        "susu"
+    ],
+
+    "transport": [
+        "grab",
+        "gojek",
+        "maxim",
+        "gocar",
+        "goride",
+        "bensin",
+        "pertalite",
+        "pertamax",
+        "solar",
+        "parkir",
+        "tol",
+        "kereta",
+        "bus"
+    ],
+
+    "belanja": [
+        "indomaret",
+        "alfamart",
+        "superindo",
+        "hypermart",
+        "sayur",
+        "buah",
+        "beras",
+        "telur",
+        "daging",
+        "sembako"
+    ],
+
+    "tagihan": [
+        "pln",
+        "listrik",
+        "air",
+        "pam",
+        "wifi",
+        "internet",
+        "indihome",
+        "biznet",
+        "pulsa",
+        "bpjs"
+    ],
+
+    "hiburan": [
+        "netflix",
+        "spotify",
+        "bioskop",
+        "xxi",
+        "cgv",
+        "steam",
+        "game",
+        "playstation"
+    ],
+
+    "kesehatan": [
+        "dokter",
+        "obat",
+        "apotek",
+        "vitamin",
+        "rumah sakit",
+        "lab"
+    ],
+
+    "pendidikan": [
+        "sekolah",
+        "kampus",
+        "buku",
+        "kursus",
+        "sertifikasi"
+    ],
+
+    "investasi": [
+        "saham",
+        "reksadana",
+        "emas",
+        "crypto",
+        "bitcoin",
+        "obligasi"
+    ]
+}
+
 def cari_kategori(keterangan):
 
     teks = keterangan.lower()
