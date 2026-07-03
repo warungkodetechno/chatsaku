@@ -37,11 +37,6 @@ app.register_blueprint(webhook_bp)
 with app.app_context():
     db.create_all()
 
-def sekarang():
-    return datetime.now(ZoneInfo("Asia/Jakarta"))
-
-
-
 @app.route("/admin/users")
 def admin_users():
 

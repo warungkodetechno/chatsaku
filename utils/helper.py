@@ -144,6 +144,9 @@ KATEGORI = {
     ]
 }
 
+def sekarang():
+    return datetime.now(ZoneInfo("Asia/Jakarta"))
+
 def cari_kategori(keterangan):
 
     teks = keterangan.lower()
