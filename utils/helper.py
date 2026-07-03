@@ -1,3 +1,5 @@
+from models import db, Transaksi, Budget, Reminder, User
+
 # =========================
 # VALIDASI FORMAT PENOMORAN
 # =========================
