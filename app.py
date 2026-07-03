@@ -749,6 +749,24 @@ def normalize_wa(nomor):
 
     return nomor
 
+def hitung_saldo(nomor_wa):
+
+    total_masuk = db.session.query(
+        db.func.coalesce(db.func.sum(Transaksi.nominal), 0)
+    ).filter(
+        Transaksi.nomor_wa == nomor_wa,
+        Transaksi.tipe == "MASUK"
+    ).scalar()
+
+    total_keluar = db.session.query(
+        db.func.coalesce(db.func.sum(Transaksi.nominal), 0)
+    ).filter(
+        Transaksi.nomor_wa == nomor_wa,
+        Transaksi.tipe == "KELUAR"
+    ).scalar()
+
+    return total_masuk - total_keluar
+
 # =========================
 # WEBHOOK
 # =========================
