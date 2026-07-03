@@ -29,3 +29,8 @@ def user_terdaftar(nomor):
         User.nomor_wa == nomor,
         User.aktif.is_(True)
     ).first()
+
+def transaksi_user(sender):
+    return Transaksi.query.filter(
+        Transaksi.nomor_wa == sender
+    )
