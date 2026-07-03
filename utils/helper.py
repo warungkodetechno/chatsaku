@@ -1,6 +1,17 @@
 from models import db, Transaksi, Budget, Reminder, User
 import os
 
+secret = os.getenv("SECRET_KEY")
+
+if not secret:
+    raise RuntimeError("SECRET_KEY belum diset.")
+
+app.config["SECRET_KEY"] = secret
+
+serializer = URLSafeTimedSerializer(
+    app.config["SECRET_KEY"]
+)
+
 BASE_URL = "https://inout-production-88e5.up.railway.app"
 
 
