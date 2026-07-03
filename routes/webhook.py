@@ -15,6 +15,8 @@ from itsdangerous import URLSafeTimedSerializer
 from itsdangerous import BadSignature
 from itsdangerous import SignatureExpired
 
+from utils.duplicate import is_duplicate
+
 webhook_bp = Blueprint("webhook", __name__)
 
 # =========================
