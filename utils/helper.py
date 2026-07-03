@@ -1,6 +1,16 @@
 from models import db, Transaksi, Budget, Reminder, User
 import os
 
+BASE_URL = "https://inout-production-88e5.up.railway.app"
+
+
+def generate_dashboard_link(nomor_wa):
+
+    token = serializer.dumps(nomor_wa)
+
+    return f"{BASE_URL}/dashboard/{token}"
+
+
 # =========================
 # VALIDASI FORMAT PENOMORAN
 # =========================
