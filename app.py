@@ -135,21 +135,6 @@ KATEGORI = {
     ]
 }
 
-def cari_kategori(keterangan):
-
-    teks = keterangan.lower()
-
-    for kategori, daftar in KATEGORI.items():
-
-        for sub in daftar:
-
-            if sub in teks:
-
-                return kategori, sub
-
-    return "lainnya", "lainnya"
-
-
 
 # =========================
 # CONFIG DB

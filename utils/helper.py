@@ -25,6 +25,19 @@ BASE_URL = os.getenv(
     "https://inout-production-88e5.up.railway.app"
 )
 
+def cari_kategori(keterangan):
+
+    teks = keterangan.lower()
+
+    for kategori, daftar in KATEGORI.items():
+
+        for sub in daftar:
+
+            if sub in teks:
+
+                return kategori, sub
+
+    return "lainnya", "lainnya"
 
 def generate_dashboard_link(nomor_wa):
 
