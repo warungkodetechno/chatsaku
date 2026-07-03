@@ -16,6 +16,7 @@ from itsdangerous import BadSignature
 from itsdangerous import SignatureExpired
 
 from utils.duplicate import is_duplicate
+from utils.helper import user_terdaftar
 
 webhook_bp = Blueprint("webhook", __name__)
 
