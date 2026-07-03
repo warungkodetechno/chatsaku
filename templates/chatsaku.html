@@ -198,55 +198,61 @@
 
         .navbar {
 
-            padding: 18px 0;
+            margin: 18px auto;
+
+            width: min(1180px, 95%);
+
+            border-radius: 22px;
 
             background: rgba(255, 255, 255, .82);
 
             backdrop-filter: blur(18px);
 
-            border-bottom: 1px solid rgba(255, 255, 255, .6);
+            -webkit-backdrop-filter: blur(18px);
 
-            box-shadow: 0 5px 20px rgba(0, 0, 0, .03);
+            border: 1px solid rgba(255, 255, 255, .6);
+
+            box-shadow:
+                0 12px 35px rgba(18, 140, 126, .08),
+                inset 0 1px rgba(255, 255, 255, .7);
+
+            padding: 12px 18px;
 
         }
 
+        /* Logo */
+
         .navbar-brand {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
 
             font-family: 'Baloo 2', sans-serif;
 
-            font-size: 34px;
+            font-size: 30px;
 
             font-weight: 800;
 
             color: var(--wa-deep) !important;
 
-            display: flex;
-
-            align-items: center;
-
-            gap: 10px;
-
         }
 
-        .logo-circle {
+        .navbar-brand img {
 
-            width: 46px;
-            height: 46px;
+            width: 48px;
+
+            height: 48px;
 
             border-radius: 16px;
 
-            display: flex;
+            background: white;
 
-            justify-content: center;
-            align-items: center;
+            padding: 6px;
 
-            background: linear-gradient(135deg, var(--wa), var(--wa-dark));
-
-            color: white;
-
-            font-size: 22px;
-
-            box-shadow: 0 12px 25px rgba(37, 211, 102, .30);
+            box-shadow: 0 8px 20px rgba(37, 211, 102, .18);
 
         }
 
@@ -256,62 +262,63 @@
 
         }
 
-        .nav-link {
+        /* Menu */
 
-            font-weight: 600;
+        .navbar-nav {
 
-            margin-left: 20px;
-
-            color: #5b6a63 !important;
-
-            transition: .25s;
-
-            position: relative;
+            gap: 6px;
 
         }
 
-        .nav-link:hover {
+        .nav-link {
 
-            color: var(--wa) !important;
+            padding: 10px 18px !important;
+
+            border-radius: 14px;
+
+            color: #4f5d57 !important;
+
+            font-weight: 600;
+
+            transition: .25s;
 
         }
 
         .nav-link::after {
 
-            content: "";
-
-            position: absolute;
-
-            left: 0;
-            bottom: -6px;
-
-            width: 0;
-
-            height: 3px;
-
-            border-radius: 99px;
-
-            background: var(--wa);
-
-            transition: .3s;
+            display: none;
 
         }
 
-        .nav-link:hover::after {
+        .nav-link:hover {
 
-            width: 100%;
+            background: var(--soft);
+
+            color: var(--wa-dark) !important;
 
         }
+
+        .nav-link.active {
+
+            background: linear-gradient(135deg, #e8fff2, #d8ffea);
+
+            color: var(--wa-deep) !important;
+
+        }
+
+        /* Login */
 
         .btn-login {
 
-            padding: 11px 22px;
+            border-radius: 14px;
 
-            border-radius: 99px;
+            padding: 10px 22px;
 
-            border: 2px solid var(--wa);
+            border: 1.8px solid var(--border);
 
-            color: var(--wa);
+            background: white;
+
+            color: var(--wa-dark);
 
             font-weight: 700;
 
@@ -321,25 +328,31 @@
 
         .btn-login:hover {
 
-            background: var(--wa);
+            background: #effff5;
 
-            color: white;
+            border-color: var(--wa);
+
+            color: var(--wa);
 
         }
 
+        /* CTA */
+
         .btn-start {
 
-            padding: 12px 28px;
+            border: none;
 
-            border-radius: 999px;
+            border-radius: 14px;
 
-            font-weight: 700;
+            padding: 11px 26px;
 
             color: white;
 
-            background: linear-gradient(135deg, #25D366, #1bbf5d);
+            font-weight: 700;
 
-            box-shadow: 0 15px 35px rgba(37, 211, 102, .25);
+            background: linear-gradient(135deg, #25D366, #1ab95a);
+
+            box-shadow: 0 12px 28px rgba(37, 211, 102, .30);
 
             transition: .25s;
 
@@ -347,9 +360,21 @@
 
         .btn-start:hover {
 
-            transform: translateY(-3px);
+            transform: translateY(-2px);
+
+            box-shadow: 0 18px 35px rgba(37, 211, 102, .35);
 
             color: white;
+
+        }
+
+        /* Mobile */
+
+        .navbar-toggler {
+
+            border: none;
+
+            box-shadow: none !important;
 
         }
 
@@ -666,23 +691,65 @@
     <div class="bubble-bg b3"></div>
     <!--===========================NAVBAR===========================-->
     <nav class="navbar navbar-expand-lg sticky-top">
-        <div class="container"><a class="navbar-brand" href="#">
-                <div class="logo-circle"><i class="bi bi-chat-heart-fill"></i></div>Chat<span>Saku</span>
-            </a><button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#menu"><span
-                    class="navbar-toggler-icon"></span></button>
+
+        <div class="container-fluid">
+
+            <a class="navbar-brand" href="#">
+                <img src="assets/logo-chatsaku.png" alt="">
+                <div>
+                    <span>Chat</span>saku
+                </div>
+            </a>
+
+            <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#menu">
+                <i class="bi bi-list fs-2"></i>
+            </button>
+
             <div class="collapse navbar-collapse" id="menu">
+
                 <ul class="navbar-nav ms-auto align-items-lg-center">
-                    <li class="nav-item"><a class="nav-link" href="#">🏠 Home </a></li>
-                    <!-- <li class="nav-item"><a class="nav-link" href="#">✨ Features </a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">💬 How It Works </a></li> -->
-                    <li class="nav-item"><a class="nav-link" href="pricing.html">💎 Pricing </a></li>
-                    <li class="nav-item ms-lg-3"><a href="#" class="btn btn-login"><i
-                                class="bi bi-box-arrow-in-right"></i>Login </a></li>
-                    <li class="nav-item ms-lg-2"><a href="#" class="btn btn-start"><i class="bi bi-whatsapp"></i>Try
-                            Free </a></li>
+
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">
+                            <i class="bi bi-house-door me-1"></i>
+                            Home
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="bi bi-stars me-1"></i>
+                            Features
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="pricing.html">
+                            <i class="bi bi-gem me-1"></i>
+                            Pricing
+                        </a>
+                    </li>
+
+                    <li class="nav-item ms-lg-3 mt-3 mt-lg-0">
+                        <a href="#" class="btn btn-login">
+                            <i class="bi bi-box-arrow-in-right me-1"></i>
+                            Login
+                        </a>
+                    </li>
+
+                    <li class="nav-item ms-lg-2 mt-2 mt-lg-0">
+                        <a href="#" class="btn btn-start">
+                            <i class="bi bi-whatsapp me-1"></i>
+                            Try Free
+                        </a>
+                    </li>
+
                 </ul>
+
             </div>
+
         </div>
+
     </nav>
     <!--===========================HERO===========================-->
     <section class="hero">
@@ -748,33 +815,7 @@
                                         tetap sehat
                                     </div>
                                 </div>
-                                <div class="dashboard-card">
-                                    <h6>📊 Dashboard Hari Ini </h6>
-                                    <div class="balance">Rp12.450.000 </div>
-                                    <div class="row mt-3 g-3">
-                                        <div class="col-4">
-                                            <div class="small-box">
-                                                <div style="font-size:26px">💸 </div>
-                                                <h5>18 </h5>
-                                                <p>Transaksi </p>
-                                            </div>
-                                        </div>
-                                        <div class="col-4">
-                                            <div class="small-box">
-                                                <div style="font-size:26px">🎯 </div>
-                                                <h5>92% </h5>
-                                                <p>Budget </p>
-                                            </div>
-                                        </div>
-                                        <div class="col-4">
-                                            <div class="small-box">
-                                                <div style="font-size:26px">🤖 </div>
-                                                <h5>A+</h5>
-                                                <p>AI Score </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+
                             </div>
                         </div>
                     </div>

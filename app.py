@@ -1509,6 +1509,63 @@ budget makanan 1500000
 
             periode = periode_sekarang()
 
+            # =========================
+            # VALIDASI SALDO
+            # =========================
+
+            # Hitung saldo saat ini
+            saldo = hitung_saldo(sender)
+
+            # Budget yang sudah ada (jika edit)
+            budget_lama = Budget.query.filter_by(
+                nomor_wa=sender,
+                kategori=kategori,
+                periode=periode
+            ).first()
+
+            # Total budget bulan ini
+            total_budget = db.session.query(
+                db.func.coalesce(db.func.sum(Budget.nominal), 0)
+            ).filter(
+                Budget.nomor_wa == sender,
+                Budget.periode == periode
+            ).scalar()
+
+            # Jika sedang mengubah budget,
+            # kurangi budget lama agar tidak dihitung dua kali
+            if budget_lama:
+                total_budget -= budget_lama.nominal
+
+            total_setelah = total_budget + nominal
+
+            # Tidak boleh melebihi saldo
+            if total_setelah > saldo:
+
+                sisa = max(saldo - total_budget, 0)
+
+                kirim_wa(
+                    sender,
+                    f"""⚠️ *Budget Tidak Dapat Dibuat*
+━━━━━━━━━━━━━━
+
+💰 Saldo Anda
+Rp {saldo:,.0f}
+
+📊 Total Budget Setelah Disimpan
+Rp {total_setelah:,.0f}
+
+❌ Budget melebihi saldo yang tersedia.
+
+Sisa budget yang masih bisa dibuat:
+
+💵 Rp {sisa:,.0f}
+
+Silakan kurangi nominal budget atau tambahkan saldo terlebih dahulu.
+"""
+                )
+
+                return jsonify({"status": True})
+
             budget = Budget.query.filter_by(
                 nomor_wa=sender,
                 kategori=kategori,
