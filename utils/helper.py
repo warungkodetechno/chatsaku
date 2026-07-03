@@ -1,18 +1,19 @@
 from models import db, Transaksi, Budget, Reminder, User
 import os
 
-secret = os.getenv("SECRET_KEY")
+from itsdangerous import URLSafeTimedSerializer
 
-if not secret:
+SECRET_KEY = os.getenv("SECRET_KEY")
+
+if not SECRET_KEY:
     raise RuntimeError("SECRET_KEY belum diset.")
 
-app.config["SECRET_KEY"] = secret
+serializer = URLSafeTimedSerializer(SECRET_KEY)
 
-serializer = URLSafeTimedSerializer(
-    app.config["SECRET_KEY"]
+BASE_URL = os.getenv(
+    "BASE_URL",
+    "https://inout-production-88e5.up.railway.app"
 )
-
-BASE_URL = "https://inout-production-88e5.up.railway.app"
 
 
 def generate_dashboard_link(nomor_wa):
@@ -21,6 +22,20 @@ def generate_dashboard_link(nomor_wa):
 
     return f"{BASE_URL}/dashboard/{token}"
 
+def verify_token(token):
+
+    try:
+
+        nomor = serializer.loads(
+            token,
+            max_age=60 * 60 * 24  # 1 hari
+        )
+
+        return nomor
+
+    except (BadSignature, SignatureExpired):
+
+        return None
 
 # =========================
 # VALIDASI FORMAT PENOMORAN

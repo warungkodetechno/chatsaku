@@ -148,20 +148,7 @@ def cari_kategori(keterangan):
 
     return "lainnya", "lainnya"
 
-def verify_token(token):
 
-    try:
-
-        nomor = serializer.loads(
-            token,
-            max_age=60 * 60 * 24  # 1 hari
-        )
-
-        return nomor
-
-    except (BadSignature, SignatureExpired):
-
-        return None
 
 # =========================
 # CONFIG DB
