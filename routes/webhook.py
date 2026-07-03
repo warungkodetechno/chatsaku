@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from utils.helper import normalize_wa
 
 webhook_bp = Blueprint("webhook", __name__)
 
