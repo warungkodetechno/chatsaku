@@ -131,8 +131,31 @@ def toggle_user(id):
 @app.route("/admin/users/delete/<int:id>")
 def delete_user(id):
 
-    user=User.query.get_or_404(id)
+    user = User.query.get_or_404(id)
 
+    nomor = user.nomor_wa
+
+    # Hapus semua transaksi
+    Transaksi.query.filter_by(
+        nomor_wa=nomor
+    ).delete()
+
+    # Hapus semua budget
+    Budget.query.filter_by(
+        nomor_wa=nomor
+    ).delete()
+
+    # Hapus semua reminder
+    Reminder.query.filter_by(
+        nomor_wa=nomor
+    ).delete()
+
+    # Hapus request demo
+    RequestDemo.query.filter_by(
+        nomor_wa=nomor
+    ).delete()
+
+    # Hapus user
     db.session.delete(user)
 
     db.session.commit()
