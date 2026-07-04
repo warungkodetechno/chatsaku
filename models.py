@@ -115,3 +115,20 @@ class Reminder(db.Model):
         db.DateTime,
         default=datetime.utcnow
     )
+
+class RequestDemo(db.Model):
+
+    __tablename__ = "request_demo"
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    nomor_wa = db.Column(db.String(30), nullable=False, unique=True)
+
+    nama = db.Column(db.String(150))
+
+    status = db.Column(db.String(20), default="BARU")
+
+    created_at = db.Column(
+        db.DateTime,
+        default=datetime.utcnow
+    )

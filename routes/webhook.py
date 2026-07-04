@@ -3,7 +3,7 @@ import os
 from flask import Blueprint,Flask, request, jsonify, render_template, send_file, redirect
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
-from models import db, Transaksi, Budget, Reminder, User
+from models import db, Transaksi, Budget, Reminder, User, RequestDemo
 import requests
 import os
 import time
@@ -169,6 +169,7 @@ https://www.chatsaku.com
         or cmd.startswith("budget")
         or cmd.startswith("reminder")
         or cmd.startswith("hapusreminder")
+        or cmd.startswith("Halo ChatSaku, saya ingin mencoba versi gratis.")
     )
 
     if not valid_command:
@@ -1312,3 +1313,44 @@ untuk melihat seluruh reminder.
     return jsonify({
         "status": True
     })
+
+    if cmd.startswith("Halo ChatSaku, saya ingin mencoba versi gratis."):
+
+    demo = RequestDemo.query.filter_by(
+        nomor_wa=sender
+    ).first()
+
+    if not demo:
+
+        demo = RequestDemo(
+            nomor_wa=sender,
+            nama=data.get("pushname", "")
+        )
+
+        db.session.add(demo)
+        db.session.commit()
+
+        kirim_wa(
+            sender,
+            """🎉 Terima kasih telah mendaftar ChatSaku Free.
+
+Permintaan Anda sudah kami terima.
+
+Silakan kirim transaksi seperti contoh berikut:
+
+• pemasukan 500000 gaji
+• pengeluaran 25000 makan
+
+Selamat mencoba 😊"""
+        )
+
+    else:
+
+        kirim_wa(
+            sender,
+            """✅ Anda sudah pernah mendaftar ChatSaku Free.
+
+Silakan langsung gunakan ChatSaku dengan mengirim transaksi."""
+        )
+
+    return jsonify({"status": True})
