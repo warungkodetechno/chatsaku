@@ -28,120 +28,194 @@ BASE_URL = os.getenv(
 KATEGORI = {
 
     "makanan": [
-        "bakso",
-        "mie",
-        "ayam",
-        "geprek",
-        "pizza",
-        "burger",
-        "kebab",
-        "martabak",
-        "sate",
-        "nasi",
-        "warteg",
-        "padang",
-        "seafood",
-        "pempek",
-        "siomay",
-        "batagor",
-        "snack",
-        "cemilan"
+
+        "bakso","mie","mie ayam","ayam","ayam geprek","ayam bakar",
+        "ayam goreng","ayam penyet","pizza","burger","kebab",
+        "martabak","sate","nasi","warteg","padang","seafood",
+        "pempek","siomay","batagor","snack","cemilan","roti",
+        "donat","croissant","sosis","bakpao","dimsum","pecel",
+        "gado gado","soto","rawon","sop","iga","bebek","lele",
+        "pecel lele","lalapan","bakmi","kwetiau","capcay",
+        "rice bowl","steak","ramen","sushi","takoyaki",
+        "okonomiyaki","kfc","mcd","mcdonald","hokben",
+        "a&w","solaria","cfc","sabana","burger king",
+        "dominos","pizza hut","wingstop","marugame",
+        "yoshinoya","shihlin","mixue","warung","resto",
+        "restoran","catering","prasmanan","sarapan",
+        "makan siang","makan malam"
+
     ],
 
     "minuman": [
-        "kopi",
-        "es kopi",
-        "teh",
-        "es teh",
-        "jus",
-        "boba",
-        "chatime",
-        "starbucks",
-        "janji jiwa",
-        "kopi kenangan",
-        "air",
-        "galon",
-        "susu"
+
+        "kopi","es kopi","americano","latte","cappuccino",
+        "espresso","mocha","teh","es teh","teh tarik",
+        "jus","boba","chatime","xing fu tang","starbucks",
+        "janji jiwa","kopi kenangan","tomoro","fore",
+        "excelso","point coffee","good day","air","galon",
+        "aqua","le minerale","club","susu","yakult",
+        "vit","pocari","isotonik","redbull","sprite",
+        "fanta","coca cola","cola","pepsi","orange juice",
+        "alpukat","mangga","kelapa","es jeruk","es campur"
+
     ],
 
     "transport": [
-        "grab",
-        "gojek",
-        "maxim",
-        "gocar",
-        "goride",
-        "bensin",
-        "pertalite",
-        "pertamax",
-        "solar",
-        "parkir",
-        "tol",
-        "kereta",
-        "bus"
+
+        "grab","grabcar","grabfood","grabexpress",
+        "gojek","gocar","goride","gopay","gobox",
+        "maxim","indrive","bensin","pertalite",
+        "pertamax","dexlite","solar","parkir",
+        "tol","kereta","kai","whoosh","lrt","mrt",
+        "bus","damri","angkot","ojek","taksi",
+        "bluebird","transjakarta","kapal","pesawat",
+        "citilink","lion","batik air","garuda"
+
     ],
 
     "belanja": [
-        "indomaret",
-        "alfamart",
-        "superindo",
-        "hypermart",
-        "sayur",
-        "buah",
-        "beras",
-        "telur",
-        "daging",
-        "sembako"
+
+        "indomaret","alfamart","alfamidi","superindo",
+        "hypermart","lottemart","transmart","hari hari",
+        "yogya","ramayana","ace","ikea","mr diy",
+        "sayur","buah","beras","telur","daging",
+        "ikan","ayam","minyak","gula","garam",
+        "tepung","mie instan","sabun","shampoo",
+        "pasta gigi","tissue","popok","detergen",
+        "sembako","belanja","grosir","pasar"
+
     ],
 
     "tagihan": [
-        "pln",
-        "listrik",
-        "air",
-        "pam",
-        "wifi",
-        "internet",
-        "indihome",
-        "biznet",
-        "pulsa",
-        "bpjs"
+
+        "pln","listrik","token","air","pam",
+        "wifi","internet","indihome","biznet",
+        "myrepublic","iconnet","oxygen",
+        "pulsa","paket data","telkomsel",
+        "indosat","tri","xl","axis","smartfren",
+        "bpjs","pdam","tv kabel","first media",
+        "icloud","google one","hosting","domain"
+
     ],
 
     "hiburan": [
-        "netflix",
-        "spotify",
-        "bioskop",
-        "xxi",
-        "cgv",
-        "steam",
-        "game",
-        "playstation"
+
+        "netflix","spotify","youtube premium",
+        "disney","viu","wetv","iqiyi","bioskop",
+        "xxi","cgv","cinepolis","steam","game",
+        "playstation","ps","xbox","nintendo",
+        "valorant","mobile legends","ml","pubg",
+        "free fire","ff","genshin","honkai",
+        "roblox","minecraft","dota","csgo"
+
     ],
 
     "kesehatan": [
-        "dokter",
-        "obat",
-        "apotek",
-        "vitamin",
-        "rumah sakit",
-        "lab"
+
+        "dokter","obat","apotek","kimia farma",
+        "k24","century","vitamin","rumah sakit",
+        "rs","lab","laboratorium","klinik",
+        "medical checkup","tes darah",
+        "bpjs kesehatan","vaksin","fisioterapi",
+        "dokter gigi","tambal","cabut gigi",
+        "optik","kacamata"
+
     ],
 
     "pendidikan": [
-        "sekolah",
-        "kampus",
-        "buku",
-        "kursus",
-        "sertifikasi"
+
+        "sekolah","kampus","universitas",
+        "kuliah","ukt","spp","les","kursus",
+        "sertifikasi","udemy","coursera",
+        "dicoding","buku","ebook","modul",
+        "alat tulis","pensil","pulpen","print",
+        "fotocopy","skripsi","wisuda"
+
     ],
 
     "investasi": [
-        "saham",
-        "reksadana",
-        "emas",
-        "crypto",
-        "bitcoin",
-        "obligasi"
-    ]
+
+        "saham","stockbit","ajaib","bibit",
+        "reksadana","obligasi","sbn",
+        "emas","antam","pegadaian",
+        "crypto","bitcoin","ethereum",
+        "bnb","solana","dogecoin",
+        "deposito","p2p","peer to peer"
+
+    ],
+
+    "gaji": [
+
+        "gaji","salary","honor","honorarium",
+        "bonus","thr","insentif","komisi",
+        "fee","upah","lembur","tunjangan"
+
+    ],
+
+    "usaha": [
+
+        "penjualan","jualan","omset","cash",
+        "transfer masuk","pelanggan","customer",
+        "invoice","project","freelance",
+        "jasa","order","pesanan"
+
+    ],
+
+    "keluarga": [
+
+        "istri","suami","anak","orang tua",
+        "ayah","ibu","adik","kakak",
+        "uang jajan","nafkah"
+
+    ],
+
+    "donasi": [
+
+        "sedekah","zakat","infak","donasi",
+        "masjid","gereja","yayasan",
+        "bantuan","amal"
+
+    ],
+
+    "fashion": [
+
+        "baju","celana","sepatu","sendal",
+        "tas","jaket","kaos","kemeja",
+        "hijab","topi","jam tangan",
+        "aksesoris"
+
+    ],
+
+    "perawatan": [
+
+        "barber","potong rambut","salon",
+        "spa","facial","skincare",
+        "makeup","kosmetik","parfum",
+        "sabun muka"
+
+    ],
+
+    "rumah": [
+
+        "kontrakan","kos","sewa rumah",
+        "cicilan rumah","kpr","furniture",
+        "meja","kursi","lemari","kasur",
+        "kipas","ac","kulkas","tv",
+        "kompor","tabung gas","elpiji"
+
+    ],
+
+    "kendaraan": [
+
+        "service","servis","oli",
+        "ban","aki","bengkel",
+        "motor","mobil","stnk",
+        "pajak kendaraan","cuci mobil",
+        "cuci motor"
+
+    ],
+
+    "lainnya": []
 }
 
 def periode_sekarang():
