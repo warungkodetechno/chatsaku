@@ -1317,7 +1317,7 @@ untuk melihat seluruh reminder.
 
             demo = RequestDemo(
                 nomor_wa=sender,
-                nama=data.get("pushname", "")
+                nama=pushname
             )
 
             db.session.add(demo)
