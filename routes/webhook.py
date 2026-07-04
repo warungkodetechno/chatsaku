@@ -1313,15 +1313,22 @@ untuk melihat seluruh reminder.
 
     if cmd.startswith("halo chatsaku, saya ingin mencoba versi gratis"):
 
+        print("="*50)
+        print("REQUEST DEMO")
+        print("Sender :", sender)
+        print("Pushname :", pushname)
+        print("="*50)
+
+
         demo = RequestDemo.query.filter_by(
             nomor_wa=sender
         ).first()
 
-        if not demo:
+        if demo is None:
 
             demo = RequestDemo(
                 nomor_wa=sender,
-                nama=pushname
+                nama=pushname or ""
             )
 
             db.session.add(demo)
@@ -1331,9 +1338,9 @@ untuk melihat seluruh reminder.
                 sender,
                 """🎉 Terima kasih telah mendaftar ChatSaku Free.
 
-    Permintaan Anda sudah kami terima.
+    Permintaan Anda berhasil diterima.
 
-    Silakan kirim transaksi seperti contoh berikut:
+    Silakan mulai menggunakan ChatSaku dengan contoh berikut:
 
     • masuk 500000 gaji
     • keluar 25000 makan
@@ -1345,7 +1352,12 @@ untuk melihat seluruh reminder.
 
             kirim_wa(
                 sender,
-                "✅ Anda sudah pernah mendaftar ChatSaku Free."
+                """✅ Anda sudah pernah mendaftar ChatSaku Free.
+
+    Silakan langsung kirim transaksi, misalnya:
+
+    • masuk 500000 gaji
+    • keluar 25000 makan"""
             )
 
         return jsonify({"status": True})
