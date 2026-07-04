@@ -115,6 +115,18 @@
 
                                 </div>
 
+                                <select name="paket" class="form-select">
+
+                                    <option value="FREE">FREE</option>
+
+                                    <option value="BULANAN">Bulanan</option>
+
+                                    <option value="TAHUNAN">Tahunan</option>
+
+                                </select>
+
+                                <input type="date" name="akhir_langganan" class="form-control">
+
                                 <div class="col-md-2">
 
                                     <button class="btn btn-success w-100">
@@ -148,6 +160,7 @@
                                     <th>WhatsApp</th>
 
                                     <th>Status</th>
+                                    <th>Berakhir</th>
 
                                     <th width="120"></th>
 
@@ -184,6 +197,11 @@
                                         </span>
 
                                         {% endif %}
+
+                                    </td>
+                                    <td>
+
+                                        {{ u.akhir_langganan.strftime("%d-%m-%Y") }}
 
                                     </td>
 

@@ -27,6 +27,11 @@ class User(db.Model):
         db.DateTime,
         default=datetime.utcnow
     )
+    mulai_langganan = db.Column(db.Date)
+
+    akhir_langganan = db.Column(db.Date)
+
+    paket = db.Column(db.String(30), default="FREE")
 
 class Transaksi(db.Model):
 

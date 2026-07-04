@@ -91,12 +91,16 @@ def admin_users():
         search=search
     )
 
-@app.route("/admin/users/add",methods=["POST"])
+from datetime import date, timedelta
+
+@app.route("/admin/users/add", methods=["POST"])
 def add_user():
 
-    nama=request.form["nama"]
+    nama = request.form["nama"].strip()
 
-    nomor=request.form["nomor"]
+    nomor = request.form["nomor"].strip()
+
+    durasi = int(request.form.get("durasi", 30))
 
     if User.query.filter_by(
         nomor_wa=nomor
@@ -104,25 +108,42 @@ def add_user():
 
         return redirect("/admin/users")
 
-    db.session.add(
+    mulai = date.today()
 
-        User(
-            nama=nama,
-            nomor_wa=nomor
-        )
+    akhir = mulai + timedelta(days=durasi)
 
+    user = User(
+        nama=nama,
+        nomor_wa=nomor,
+        aktif=True,
+        mulai_langganan=mulai,
+        akhir_langganan=akhir
     )
+
+    db.session.add(user)
 
     db.session.commit()
 
     return redirect("/admin/users")
 
+from datetime import date, timedelta
+
 @app.route("/admin/users/toggle/<int:id>")
 def toggle_user(id):
 
-    user=User.query.get_or_404(id)
+    user = User.query.get_or_404(id)
 
-    user.aktif=not user.aktif
+    if user.aktif:
+
+        user.aktif = False
+
+    else:
+
+        user.aktif = True
+
+        user.mulai_langganan = date.today()
+
+        user.akhir_langganan = date.today() + timedelta(days=30)
 
     db.session.commit()
 
