@@ -1307,6 +1307,10 @@ untuk melihat seluruh reminder.
 
         return jsonify({"status": True})
 
+    # ======================================
+    # REQUEST DEMO
+    # ======================================
+
     if cmd.startswith("halo chatsaku, saya ingin mencoba versi gratis"):
 
         demo = RequestDemo.query.filter_by(
@@ -1331,8 +1335,8 @@ untuk melihat seluruh reminder.
 
     Silakan kirim transaksi seperti contoh berikut:
 
-    • pemasukan 500000 gaji
-    • pengeluaran 25000 makan
+    • masuk 500000 gaji
+    • keluar 25000 makan
 
     Selamat mencoba 😊"""
             )
@@ -1341,9 +1345,7 @@ untuk melihat seluruh reminder.
 
             kirim_wa(
                 sender,
-                """✅ Anda sudah pernah mendaftar ChatSaku Free.
-
-    Silakan langsung gunakan ChatSaku dengan mengirim transaksi."""
+                "✅ Anda sudah pernah mendaftar ChatSaku Free."
             )
 
         return jsonify({"status": True})
