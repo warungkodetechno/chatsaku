@@ -40,13 +40,23 @@ with app.app_context():
 @app.route("/admin/users")
 def admin_users():
 
-    search = request.args.get("search","")
+    search = request.args.get("search", "")
 
     page = request.args.get(
         "page",
         1,
         type=int
     )
+
+    page_request = request.args.get(
+        "page_request",
+        1,
+        type=int
+    )
+
+    # =====================================
+    # REGISTERED USER
+    # =====================================
 
     query = User.query
 
@@ -63,9 +73,21 @@ def admin_users():
         per_page=15
     )
 
+    # =====================================
+    # REQUEST DEMO
+    # =====================================
+
+    request_users = RequestDemo.query.order_by(
+        RequestDemo.created_at.desc()
+    ).paginate(
+        page=page_request,
+        per_page=15
+    )
+
     return render_template(
         "admin_users.html",
         users=users,
+        request_users=request_users,
         search=search
     )
 
