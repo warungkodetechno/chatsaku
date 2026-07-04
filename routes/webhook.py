@@ -169,7 +169,7 @@ https://www.chatsaku.com
         or cmd.startswith("budget")
         or cmd.startswith("reminder")
         or cmd.startswith("hapusreminder")
-        or cmd.startswith("Halo ChatSaku, saya ingin mencoba versi gratis.")
+        or cmd.startswith("halo chatsaku, saya ingin mencoba versi gratis")
     )
 
     if not valid_command:
@@ -1314,7 +1314,7 @@ untuk melihat seluruh reminder.
         "status": True
     })
 
-    if cmd.startswith("Halo ChatSaku, saya ingin mencoba versi gratis."):
+    if cmd.startswith("halo chatsaku, saya ingin mencoba versi gratis"):
 
         demo = RequestDemo.query.filter_by(
             nomor_wa=sender
