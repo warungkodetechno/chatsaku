@@ -80,6 +80,8 @@ def webhook():
     print("Sender :", sender)
     print("Message:", message)
 
+    pushname = str(payload.get("pushname") or "").strip()
+
     # ======================================
     # ANTI LOOP
     # ======================================
