@@ -1307,13 +1307,6 @@ untuk melihat seluruh reminder.
 
         return jsonify({"status": True})
 
-    # =========================
-    # DEFAULT
-    # =========================
-    return jsonify({
-        "status": True
-    })
-
     if cmd.startswith("halo chatsaku, saya ingin mencoba versi gratis"):
 
         demo = RequestDemo.query.filter_by(
@@ -1354,3 +1347,10 @@ untuk melihat seluruh reminder.
             )
 
         return jsonify({"status": True})
+
+    # =========================
+    # DEFAULT
+    # =========================
+    return jsonify({
+        "status": True
+    })
