@@ -13,6 +13,8 @@ from itsdangerous import URLSafeTimedSerializer
 from itsdangerous import BadSignature
 from itsdangerous import SignatureExpired
 
+JAKARTA = ZoneInfo("Asia/Jakarta")
+
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 if not SECRET_KEY:
@@ -218,8 +220,11 @@ KATEGORI = {
     "lainnya": []
 }
 
+def now_jakarta():
+    return datetime.now(JAKARTA)
+
 def periode_sekarang():
-    return datetime.now().strftime("%Y-%m")
+    return now_jakarta().strftime("%Y-%m")
 
 def sekarang():
     return datetime.now(ZoneInfo("Asia/Jakarta"))

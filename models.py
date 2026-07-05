@@ -1,7 +1,14 @@
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
+from zoneinfo import ZoneInfo
 
 db = SQLAlchemy()
+
+JAKARTA = ZoneInfo("Asia/Jakarta")
+
+
+def now_jakarta():
+    return datetime.now(JAKARTA)
 
 class User(db.Model):
 
@@ -24,8 +31,8 @@ class User(db.Model):
     )
 
     created_at = db.Column(
-        db.DateTime,
-        default=datetime.utcnow
+        db.DateTime(timezone=True),
+        default=now_jakarta
     )
     mulai_langganan = db.Column(db.Date)
 
@@ -39,7 +46,10 @@ class Transaksi(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
 
-    tanggal = db.Column(db.DateTime)
+    tanggal = db.Column(
+        db.DateTime(timezone=True),
+        default=now_jakarta
+    )
 
     tipe = db.Column(db.String(20))
 
@@ -68,8 +78,8 @@ class Budget(db.Model):
     periode = db.Column(db.String(7), nullable=False)   # contoh: 2026-06
 
     dibuat = db.Column(
-        db.DateTime,
-        default=db.func.now()
+        db.DateTime(timezone=True),
+        default=now_jakarta
     )
 
     __table_args__ = (
@@ -117,8 +127,8 @@ class Reminder(db.Model):
     )
 
     created_at = db.Column(
-        db.DateTime,
-        default=datetime.utcnow
+        db.DateTime(timezone=True),
+        default=now_jakarta
     )
 
 class RequestDemo(db.Model):
@@ -134,6 +144,6 @@ class RequestDemo(db.Model):
     status = db.Column(db.String(20), default="BARU")
 
     created_at = db.Column(
-        db.DateTime,
-        default=datetime.utcnow
+        db.DateTime(timezone=True),
+        default=now_jakarta
     )
