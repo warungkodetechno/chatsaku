@@ -563,7 +563,81 @@ def export_excel():
     )
 
 
+@app.route("/fitur")
+def fitur():
 
+    commands = [
+
+        {
+            "icon": "💰",
+            "title": "Pemasukan",
+            "command": "masuk",
+            "example": "masuk 500000 gaji",
+            "desc": "Mencatat pemasukan secara otomatis."
+        },
+
+        {
+            "icon": "💸",
+            "title": "Pengeluaran",
+            "command": "keluar",
+            "example": "keluar 25000 makan",
+            "desc": "Mencatat pengeluaran beserta kategori otomatis."
+        },
+
+        {
+            "icon": "💳",
+            "title": "Saldo",
+            "command": "saldo",
+            "example": "saldo",
+            "desc": "Menampilkan saldo terkini, total pemasukan, pengeluaran, dan link dashboard."
+        },
+
+        {
+            "icon": "📊",
+            "title": "Ringkasan Hari Ini",
+            "command": "hariini",
+            "example": "hariini",
+            "desc": "Melihat total transaksi hari ini."
+        },
+
+        {
+            "icon": "🎯",
+            "title": "Budget Bulanan",
+            "command": "budget",
+            "example": "budget makanan 1500000",
+            "desc": "Membuat dan memonitor budget tiap kategori."
+        },
+
+        {
+            "icon": "🤖",
+            "title": "AI Insight",
+            "command": "insight",
+            "example": "insight",
+            "desc": "AI menganalisis pola pengeluaran dan memberikan rekomendasi."
+        },
+
+        {
+            "icon": "🔔",
+            "title": "Reminder Tagihan",
+            "command": "reminder",
+            "example": "reminder listrik 20 500000",
+            "desc": "Mengingatkan tagihan bulanan."
+        },
+
+        {
+            "icon": "🗑️",
+            "title": "Hapus Reminder",
+            "command": "hapusreminder",
+            "example": "hapusreminder listrik",
+            "desc": "Menghapus reminder yang sudah tidak digunakan."
+        }
+
+    ]
+
+    return render_template(
+        "fitur.html",
+        commands=commands
+    )
 
 # =========================
 # TEST

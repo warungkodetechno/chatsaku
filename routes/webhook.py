@@ -172,6 +172,9 @@ https://www.chatsaku.com
         or cmd.startswith("reminder")
         or cmd.startswith("hapusreminder")
         or cmd.startswith("halo chatsaku, saya ingin mencoba versi gratis")
+        or cmd == "menu"
+        or cmd == "fitur"
+        or cmd == "help"
     )
 
     if not valid_command:
@@ -1363,6 +1366,66 @@ untuk melihat seluruh reminder.
             )
 
         return jsonify({"status": True})
+
+    # ==========================
+    # MENU
+    # ==========================
+    if cmd in ["menu", "fitur", "help"]:
+
+        kirim_wa(
+            sender,
+    f"""🤖 *ChatSaku Finance Assistant*
+
+    Berikut menu yang tersedia:
+
+    💰 *masuk*
+    Contoh:
+    masuk 500000 gaji
+
+    💸 *keluar*
+    Contoh:
+    keluar 25000 makan
+
+    💳 *saldo*
+    Melihat saldo saat ini.
+
+    📊 *hariini*
+    Ringkasan transaksi hari ini.
+
+    🎯 *budget*
+    Lihat Budget:
+    budget
+
+    Buat Budget:
+    budget makanan 1500000
+
+    🤖 *insight*
+    Analisis AI pengeluaran.
+
+    🔔 *reminder*
+    Lihat Reminder:
+    reminder
+
+    Tambah Reminder:
+    reminder listrik 20 500000
+
+    🗑️ *hapusreminder*
+    hapusreminder listrik
+
+    ━━━━━━━━━━━━━━
+
+    🌐 Website
+    https://chatsaku.com
+
+    📊 Dashboard
+    tersedia otomatis setelah transaksi.
+
+    💚 ChatSaku
+    100% WhatsApp • AI Powered
+    """
+        )
+
+        return jsonify(status=True)
 
     # =========================
     # DEFAULT
