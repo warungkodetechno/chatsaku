@@ -480,7 +480,7 @@ def dashboard_data(token):
     for t in transaksi:
 
         rows.append({
-
+            "id": t.id,
             "tanggal":t.tanggal.strftime("%d/%m/%Y %H:%M"),
             "tipe":t.tipe,
             "nominal":t.nominal,

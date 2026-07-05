@@ -2169,6 +2169,7 @@
     </div>
     <div class="toast-container position-fixed bottom-0 end-0 p-3" id="toastContainer" style="z-index:9999">
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
 
         let lastTransaction = "";
@@ -2258,6 +2259,8 @@
     </script>
     <script>
         const TOKEN = "{{ token }}";
+        let lastID = 0;
+
         async function loadDashboard() {
 
             const res = await fetch(`/dashboard-data/${TOKEN}`);
@@ -2265,32 +2268,6 @@
             if (!res.ok) return;
 
             const data = await res.json();
-
-            if (data.rows.length) {
-
-                const newest = data.rows[0];
-
-                const key =
-                    newest.tanggal +
-                    newest.nominal +
-                    newest.tipe;
-
-                if (lastTransaction === "") {
-
-                    lastTransaction = key;
-
-                }
-                else if (lastTransaction !== key) {
-
-                    lastTransaction = key;
-
-                    showTransactionToast(newest);
-
-                }
-
-            }
-
-            console.log(data);
 
             document.getElementById("masuk").innerHTML =
                 "Rp " + data.masuk.toLocaleString("id-ID");
@@ -2301,7 +2278,58 @@
             document.getElementById("saldo").innerHTML =
                 "Rp " + data.saldo.toLocaleString("id-ID");
 
+            if (data.rows.length) {
+
+                const trx = data.rows[0];
+
+                if (lastID === 0) {
+
+                    lastID = trx.id;
+
+                } else if (trx.id != lastID) {
+
+                    lastID = trx.id;
+
+                    showPopup(trx);
+
+                }
+
+            }
+
         }
+
+        function showPopup(trx) {
+
+            const title = document.getElementById("toastTitle");
+            const body = document.getElementById("toastBody");
+
+            if (trx.tipe == "MASUK") {
+
+                title.innerHTML = "💚 Pemasukan Baru";
+
+            } else {
+
+                title.innerHTML = "💸 Pengeluaran Baru";
+
+            }
+
+            body.innerHTML = `
+        <div><b>${trx.keterangan}</b></div>
+        <div>Kategori : ${trx.kategori}</div>
+        <div>Nominal : Rp ${Number(trx.nominal).toLocaleString("id-ID")}</div>
+    `;
+
+            const toast = new bootstrap.Toast(
+                document.getElementById("trxToast"),
+                {
+                    delay: 5000
+                }
+            );
+
+            toast.show();
+
+        }
+
         loadDashboard();
 
         setInterval(loadDashboard, 3000);
@@ -2403,7 +2431,30 @@
         }
     });
     </script>
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
 
+        <div id="trxToast" class="toast border-0 shadow" role="alert">
+
+            <div class="toast-header">
+
+                <strong class="me-auto" id="toastTitle">
+                    ChatSaku
+                </strong>
+
+                <small>Sekarang</small>
+
+                <button class="btn-close" data-bs-dismiss="toast">
+                </button>
+
+            </div>
+
+            <div class="toast-body" id="toastBody">
+
+            </div>
+
+        </div>
+
+    </div>
 </body>
 
 </html>
