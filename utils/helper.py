@@ -220,6 +220,60 @@ KATEGORI = {
     "lainnya": []
 }
 
+FEATURES = {
+
+    "FREE": {
+
+        "transaksi",
+        "dashboard"
+
+    },
+
+    "PRO": {
+
+        "transaksi",
+        "dashboard",
+        "budget",
+        "reminder",
+        "ai",
+        "statistik",
+        "excel"
+
+    },
+
+    "PREMIUM": {
+
+        "transaksi",
+        "dashboard",
+        "budget",
+        "reminder",
+        "ai",
+        "statistik",
+        "excel",
+        "pdf",
+        "priority"
+
+    }
+
+}
+
+def has_feature(sender, feature):
+
+    user = User.query.filter_by(
+        nomor_wa=sender,
+        aktif=True
+    ).first()
+
+    if not user:
+        return False
+
+    paket = (user.paket or "FREE").upper()
+
+    return feature in FEATURES.get(
+        paket,
+        set()
+    )
+
 def now_jakarta():
     return datetime.now(JAKARTA)
 
