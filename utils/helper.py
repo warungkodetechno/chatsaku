@@ -236,6 +236,7 @@ FEATURES = {
         "budget",
         "reminder",
         "ai",
+        "reminder",
         "statistik",
         "excel"
 

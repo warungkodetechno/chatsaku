@@ -1029,7 +1029,7 @@ untuk melihat semua budget.
 
             kirim_wa(
                 sender,
-                "🔒 AI Insight tersedia pada paket PRO."
+                "🔒 AI Insight tersedia pada paket PREMIUM."
             )
 
             return jsonify(status=True)
