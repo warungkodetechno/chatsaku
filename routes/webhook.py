@@ -117,6 +117,18 @@ def webhook():
         return jsonify(status=True)
 
     # ======================================
+    # COMMAND
+    # ======================================
+
+    cmd = lower_msg.strip()
+
+    print("CMD :", cmd)
+
+    print("SENDER :", sender)
+    print("MESSAGE:", message)
+    print("CMD    :", cmd)
+
+    # ======================================
     # REQUEST DEMO
     # ======================================
 
@@ -202,17 +214,7 @@ https://www.chatsaku.com
             registered=False
         )
 
-    # ======================================
-    # COMMAND
-    # ======================================
 
-    cmd = lower_msg.strip()
-
-    print("CMD :", cmd)
-
-    print("SENDER :", sender)
-    print("MESSAGE:", message)
-    print("CMD    :", cmd)
 
     # =====================================================
     # HANYA RESPON COMMAND YANG DIKENAL
