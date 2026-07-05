@@ -2167,7 +2167,95 @@
         </style>
 
     </div>
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" id="toastContainer" style="z-index:9999">
+    </div>
+    <script>
 
+        let lastTransaction = "";
+
+        function showTransactionToast(trx) {
+
+            const id = "toast_" + Date.now();
+
+            const isMasuk = trx.tipe === "MASUK";
+
+            const color = isMasuk
+                ? "success"
+                : "danger";
+
+            const icon = isMasuk
+                ? "⬇️"
+                : "⬆️";
+
+            const sign = isMasuk
+                ? "+"
+                : "-";
+
+            const html = `
+
+            <div id="${id}"
+                class="toast align-items-center border-0 text-bg-${color}"
+                role="alert">
+
+                <div class="d-flex">
+
+                    <div class="toast-body">
+
+                        <div class="fw-bold">
+
+                            ${icon}
+                            ${isMasuk ? "Pemasukan Baru" : "Pengeluaran Baru"}
+
+                        </div>
+
+                        <div>
+
+                            ${sign} Rp ${Number(trx.nominal).toLocaleString("id-ID")}
+
+                        </div>
+
+                        <small>
+
+                            ${trx.keterangan}
+
+                        </small>
+
+                    </div>
+
+                    <button
+                        class="btn-close btn-close-white me-2 m-auto"
+                        data-bs-dismiss="toast">
+                    </button>
+
+                </div>
+
+            </div>
+
+    `;
+
+            document
+                .getElementById("toastContainer")
+                .insertAdjacentHTML("beforeend", html);
+
+            const toastElement =
+                document.getElementById(id);
+
+            const toast =
+                new bootstrap.Toast(toastElement, {
+                    delay: 4000
+                });
+
+            toast.show();
+
+            toastElement.addEventListener("hidden.bs.toast", () => {
+
+                toastElement.remove();
+
+            });
+
+        }
+
+    </script>
     <script>
         const TOKEN = "{{ token }}";
         async function loadDashboard() {
@@ -2177,6 +2265,30 @@
             if (!res.ok) return;
 
             const data = await res.json();
+
+            if (data.rows.length) {
+
+                const newest = data.rows[0];
+
+                const key =
+                    newest.tanggal +
+                    newest.nominal +
+                    newest.tipe;
+
+                if (lastTransaction === "") {
+
+                    lastTransaction = key;
+
+                }
+                else if (lastTransaction !== key) {
+
+                    lastTransaction = key;
+
+                    showTransactionToast(newest);
+
+                }
+
+            }
 
             console.log(data);
 
@@ -2258,7 +2370,7 @@
                     data: [
                         {{ total_masuk }},
                 {{ total_keluar }}
-                ],
+            ],
             backgroundColor: ['#25D366', '#ef4444'],
             borderWidth: 0
         }]
@@ -2272,14 +2384,14 @@
             data: {
                 labels: [
                     {% for row in data %}
-                    "{{ row.tanggal }}",
-                {% endfor %}
+            "{{ row.tanggal }}",
+            {% endfor %}
             ],
             datasets: [{
                 label: 'Transaksi',
                 data: [
                     {% for row in data %}
-                        {{ row.nominal }},
+            {{ row.nominal }},
             {% endfor %}
         ],
             borderColor: '#128C7E',
