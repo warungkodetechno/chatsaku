@@ -2169,22 +2169,29 @@
     </div>
 
     <script>
-        setInterval(async () => {
+        async function loadDashboard() {
 
-            const res = await fetch(window.location.pathname + "/api");
+            const res = await fetch(`/dashboard-data/${TOKEN}`);
+
+            if (!res.ok) return;
 
             const data = await res.json();
 
+            console.log(data);
+
             document.getElementById("masuk").innerHTML =
-                "Rp " + data.total_masuk.toLocaleString("id-ID");
+                "Rp " + data.masuk.toLocaleString("id-ID");
 
             document.getElementById("keluar").innerHTML =
-                "Rp " + data.total_keluar.toLocaleString("id-ID");
+                "Rp " + data.keluar.toLocaleString("id-ID");
 
             document.getElementById("saldo").innerHTML =
                 "Rp " + data.saldo.toLocaleString("id-ID");
 
-        }, 5000);
+        }
+        loadDashboard();
+
+        setInterval(loadDashboard, 3000);
     </script>
 
     <script>
