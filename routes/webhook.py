@@ -668,22 +668,22 @@ Rp {total:,.0f}
     if cmd.startswith("budget"):
         if not has_feature(sender, "budget"):
 
-        kirim_wa(sender,
-"""
-🔒 Fitur Budget hanya tersedia pada paket PRO.
+            kirim_wa(sender,
+    """
+    🔒 Fitur Budget hanya tersedia pada paket PRO.
 
-Upgrade sekarang agar dapat:
+    Upgrade sekarang agar dapat:
 
-✅ Budget Bulanan
-✅ Reminder
-✅ AI Insight
-✅ Dashboard Lengkap
+    ✅ Budget Bulanan
+    ✅ Reminder
+    ✅ AI Insight
+    ✅ Dashboard Lengkap
 
-Ketik:
-upgrade
-""")
+    Ketik:
+    upgrade
+    """)
 
-        return jsonify(status=True)
+            return jsonify(status=True)
 
         try:
 
