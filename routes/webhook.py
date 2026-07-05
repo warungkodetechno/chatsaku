@@ -214,7 +214,52 @@ https://www.chatsaku.com
             registered=False
         )
 
+    # ======================================
+    # CEK MASA BERLANGGANAN
+    # ======================================
 
+    from datetime import date
+
+    if user.paket != "FREE" and user.akhir_langganan:
+
+        if date.today() > user.akhir_langganan:
+
+            if user.aktif:
+
+                user.aktif = False
+                db.session.commit()
+
+            kirim_wa(
+                sender,
+                f"""🔒 *Langganan ChatSaku Telah Berakhir*
+
+    Paket : {user.paket}
+
+    Berakhir pada:
+    {user.akhir_langganan.strftime("%d-%m-%Y")}
+
+    Silakan lakukan perpanjangan agar seluruh fitur dapat digunakan kembali.
+
+    https://www.chatsaku.com
+
+    💚 ChatSaku Finance Assistant"""
+            )
+
+            return jsonify(status=True)
+
+    # Jika admin menonaktifkan akun
+    if not user.aktif:
+
+        kirim_wa(
+            sender,
+            """🚫 *Akun Anda Nonaktif*
+
+    Silakan hubungi Admin ChatSaku untuk mengaktifkan kembali akun Anda.
+
+    https://www.chatsaku.com"""
+        )
+
+        return jsonify(status=True)
 
     # =====================================================
     # HANYA RESPON COMMAND YANG DIKENAL
@@ -980,6 +1025,14 @@ untuk melihat semua budget.
     # AI INSIGHT
     # =========================
     if cmd == "insight":
+        if not has_feature(sender,"ai"):
+
+            kirim_wa(
+                sender,
+                "🔒 AI Insight tersedia pada paket PRO."
+            )
+
+            return jsonify(status=True)
 
         try:
 
@@ -1182,6 +1235,14 @@ Rp {nominal_terbesar:,.0f}
     # REMINDER
     # =========================
     if cmd.startswith("reminder"):
+        if not has_feature(sender, "reminder"):
+
+            kirim_wa(
+                sender,
+                "🔒 Reminder tersedia di paket PRO."
+            )
+
+            return jsonify(status=True)
 
         try:
 
