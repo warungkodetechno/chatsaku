@@ -300,7 +300,7 @@ https://www.chatsaku.com
 
             kirim_wa(
                 sender,
-                "🔒 AI Insight tersedia pada paket PREMIUM."
+                "🔒 Target Tabungan Pembelian tersedia pada paket PREMIUM."
             )
 
             return jsonify(status=True)
@@ -388,6 +388,15 @@ https://www.chatsaku.com
 
     if cmd.startswith("tabung "):
 
+        if not has_feature(sender,"tabung"):
+
+            kirim_wa(
+                sender,
+                "🔒 Target Tabungan Pembelian tersedia pada paket PREMIUM."
+            )
+
+            return jsonify(status=True)
+
         bagian = message.split()
 
         if len(bagian) < 3:
@@ -472,7 +481,7 @@ https://www.chatsaku.com
 
             kirim_wa(
                 sender,
-                "🔒 AI Insight tersedia pada paket PREMIUM."
+                "🔒 Target Tabungan Pembelian tersedia pada paket PREMIUM."
             )
 
             return jsonify(status=True)
@@ -528,6 +537,15 @@ https://www.chatsaku.com
     # ======================================
     if cmd.startswith("target "):
 
+        if not has_feature(sender,"target"):
+
+            kirim_wa(
+                sender,
+                "🔒 Target Tabungan Pembelian tersedia pada paket PREMIUM."
+            )
+
+            return jsonify(status=True)
+
         nama = message[7:]
 
         target = TargetPembelian.query.filter_by(
@@ -574,6 +592,15 @@ https://www.chatsaku.com
     # ======================================
 
     if cmd.startswith("hapustarget"):
+
+        if not has_feature(sender,"hapustarget"):
+
+            kirim_wa(
+                sender,
+                "🔒 Target Tabungan Pembelian tersedia pada paket PREMIUM."
+            )
+
+            return jsonify(status=True)
 
         nama = message.replace(
             "hapustarget",
@@ -1825,11 +1852,11 @@ Menampilkan transaksi hari ini.
 
 🎯 *Budget Bulanan*
 
-Lihat Budget
+Lihat Budget:
 
 budget
 
-Tambah Budget
+Tambah Budget:
 
 budget makanan 1500000
 
@@ -1837,23 +1864,23 @@ budget makanan 1500000
 
 🎁 *Target Pembelian*
 
-Lihat Semua Target
+Lihat Semua Target:
 
 target
 
-Buat Target
+Buat Target:
 
 target laptop 12000000 31-12-2026
 
-Lihat Detail Target
+Lihat Detail Target:
 
 target laptop
 
-Tambah Tabungan
+Tambah Tabungan:
 
 tabung laptop 500000
 
-Hapus Target
+Hapus Target:
 
 hapustarget laptop
 
@@ -1869,15 +1896,15 @@ Analisis otomatis kondisi keuangan.
 
 🔔 *Reminder Tagihan*
 
-Lihat Reminder
+Lihat Reminder:
 
 reminder
 
-Tambah Reminder
+Tambah Reminder:
 
 reminder listrik 20 500000
 
-Hapus Reminder
+Hapus Reminder:
 
 hapusreminder listrik
 

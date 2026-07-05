@@ -251,7 +251,9 @@ FEATURES = {
         "statistik",
         "excel",
         "pdf",
-        "target"
+        "target",
+        "tabung",
+        "hapustarget"
 
     }
 
