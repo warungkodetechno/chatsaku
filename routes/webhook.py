@@ -117,6 +117,61 @@ def webhook():
         return jsonify(status=True)
 
     # ======================================
+    # REQUEST DEMO
+    # ======================================
+
+    if cmd.startswith("halo chatsaku, saya ingin mencoba versi gratis"):
+
+        print("="*50)
+        print("REQUEST DEMO")
+        print("Sender :", sender)
+        print("Pushname :", pushname)
+        print("="*50)
+
+
+        demo = RequestDemo.query.filter_by(
+            nomor_wa=sender
+        ).first()
+
+        if demo is None:
+
+            demo = RequestDemo(
+                nomor_wa=sender,
+                nama=pushname or ""
+            )
+
+            db.session.add(demo)
+            db.session.commit()
+
+            kirim_wa(
+                sender,
+                """🎉 Terima kasih telah mendaftar ChatSaku Free.
+
+    Permintaan Anda berhasil diterima.
+
+    Silakan mulai menggunakan ChatSaku dengan contoh berikut:
+
+    • masuk 500000 gaji
+    • keluar 25000 makan
+
+    Selamat mencoba 😊"""
+            )
+
+        else:
+
+            kirim_wa(
+                sender,
+                """✅ Anda sudah pernah mendaftar ChatSaku Free.
+
+    Silakan langsung kirim transaksi, misalnya:
+
+    • masuk 500000 gaji
+    • keluar 25000 makan"""
+            )
+
+        return jsonify({"status": True})
+
+    # ======================================
     # VALIDASI USER
     # ======================================
 
@@ -1308,61 +1363,6 @@ untuk melihat seluruh reminder.
             kirim_wa(
                 sender,
                 str(e)
-            )
-
-        return jsonify({"status": True})
-
-    # ======================================
-    # REQUEST DEMO
-    # ======================================
-
-    if cmd.startswith("halo chatsaku, saya ingin mencoba versi gratis"):
-
-        print("="*50)
-        print("REQUEST DEMO")
-        print("Sender :", sender)
-        print("Pushname :", pushname)
-        print("="*50)
-
-
-        demo = RequestDemo.query.filter_by(
-            nomor_wa=sender
-        ).first()
-
-        if demo is None:
-
-            demo = RequestDemo(
-                nomor_wa=sender,
-                nama=pushname or ""
-            )
-
-            db.session.add(demo)
-            db.session.commit()
-
-            kirim_wa(
-                sender,
-                """🎉 Terima kasih telah mendaftar ChatSaku Free.
-
-    Permintaan Anda berhasil diterima.
-
-    Silakan mulai menggunakan ChatSaku dengan contoh berikut:
-
-    • masuk 500000 gaji
-    • keluar 25000 makan
-
-    Selamat mencoba 😊"""
-            )
-
-        else:
-
-            kirim_wa(
-                sender,
-                """✅ Anda sudah pernah mendaftar ChatSaku Free.
-
-    Silakan langsung kirim transaksi, misalnya:
-
-    • masuk 500000 gaji
-    • keluar 25000 makan"""
             )
 
         return jsonify({"status": True})
