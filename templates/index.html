@@ -500,7 +500,7 @@
             }
         </style>
 
-        <div class="summary-wrapper">
+        <div class="summary-wrapper" id="summary-wrapper">
 
             <div class="summary-top">
 
@@ -516,51 +516,67 @@
 
                 </div>
 
+                <div>
+                    <span class="badge bg-success" id="last-update">
+                        <i class="bi bi-arrow-repeat"></i>
+                        Live
+                    </span>
+                </div>
+
             </div>
 
             <div class="metric-grid">
 
-                <div class="metric-box">
+                <div class="metric-box" id="card-masuk">
 
                     <div class="metric-icon metric-success">
                         <i class="bi bi-arrow-down-circle-fill"></i>
                     </div>
 
                     <div class="metric-text">
+
                         <small>Total Pemasukan</small>
-                        <h4 class="text-success">
+
+                        <h4 class="text-success" id="masuk">
                             Rp {{ "{:,.0f}".format(total_masuk) }}
                         </h4>
+
                     </div>
 
                 </div>
 
-                <div class="metric-box">
+                <div class="metric-box" id="card-keluar">
 
                     <div class="metric-icon metric-danger">
                         <i class="bi bi-arrow-up-circle-fill"></i>
                     </div>
 
                     <div class="metric-text">
+
                         <small>Total Pengeluaran</small>
-                        <h4 class="text-danger">
+
+                        <h4 class="text-danger" id="keluar">
                             Rp {{ "{:,.0f}".format(total_keluar) }}
                         </h4>
+
                     </div>
 
                 </div>
 
-                <div class="metric-box">
+                <div class="metric-box" id="card-saldo">
 
                     <div class="metric-icon metric-primary">
                         <i class="bi bi-wallet2"></i>
                     </div>
 
                     <div class="metric-text">
+
                         <small>Saldo Saat Ini</small>
-                        <h4 class="text-primary">
+
+                        <h4 class="text-primary" id="saldo">
                             Rp {{ "{:,.0f}".format(saldo) }}
                         </h4>
+
                     </div>
 
                 </div>
@@ -571,8 +587,16 @@
 
                 <div class="chart-card">
 
-                    <div class="chart-title">
-                        Cashflow
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+
+                        <div class="chart-title">
+                            Cashflow
+                        </div>
+
+                        <span class="badge bg-light text-dark">
+                            Realtime
+                        </span>
+
                     </div>
 
                     <canvas id="pieChart"></canvas>
@@ -581,8 +605,16 @@
 
                 <div class="chart-card">
 
-                    <div class="chart-title">
-                        Trend Transaksi
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+
+                        <div class="chart-title">
+                            Trend Transaksi
+                        </div>
+
+                        <span class="badge bg-light text-dark">
+                            Auto Update
+                        </span>
+
                     </div>
 
                     <canvas id="lineChart"></canvas>
@@ -1869,92 +1901,120 @@
         <div class="content-card compact-ledger">
 
             <div class="card-header-modern">
-                <h5 class="card-title-modern">Riwayat Transaksi</h5>
+
+                <h5 class="card-title-modern">
+                    Riwayat Transaksi
+                </h5>
+
+                <span class="badge bg-success" id="table-status">
+                    Live
+                </span>
+
             </div>
 
-            <!-- LIST MODE (linear compact) -->
-            <div class="ledger-list">
+            <!-- LIST -->
+            <div class="ledger-list" id="ledger-list">
 
                 {% for row in data_paginated.items %}
+
                 <div class="ledger-item">
 
                     <div class="ledger-left">
 
                         <div class="ledger-date">
-                            {{ row.tanggal }}
+                            {{ row.tanggal.strftime("%d %b %Y %H:%M") }}
                         </div>
 
                         <div class="ledger-meta">
-                            {% if row.tipe == 'MASUK' %}
-                            <span class="pill pill-success">MASUK</span>
+
+                            {% if row.tipe=="MASUK" %}
+                            <span class="pill pill-success">
+                                MASUK
+                            </span>
                             {% else %}
-                            <span class="pill pill-danger">KELUAR</span>
+                            <span class="pill pill-danger">
+                                KELUAR
+                            </span>
                             {% endif %}
 
                             <span class="ledger-desc">
                                 {{ row.keterangan }}
                             </span>
+
                         </div>
 
                     </div>
 
                     <div class="ledger-right">
+
                         <div class="ledger-amount">
+
                             Rp {{ "{:,.0f}".format(row.nominal) }}
+
                         </div>
+
                     </div>
 
                 </div>
+
                 {% endfor %}
 
             </div>
 
             <!-- PAGINATION -->
-            <div class="pagination-wrapper compact">
+            <div class="pagination-wrapper compact" id="pagination-wrapper">
 
-                <div class="pagination-info">
+                <div class="pagination-info" id="pagination-info">
+
                     Menampilkan
-                    {{ ((data_paginated.page - 1) * data_paginated.per_page) + 1 }}
+                    {{ ((data_paginated.page-1)*data_paginated.per_page)+1 }}
                     -
-                    {% if data_paginated.page * data_paginated.per_page > data_paginated.total %}
+                    {% if data_paginated.page*data_paginated.per_page > data_paginated.total %}
                     {{ data_paginated.total }}
                     {% else %}
-                    {{ data_paginated.page * data_paginated.per_page }}
+                    {{ data_paginated.page*data_paginated.per_page }}
                     {% endif %}
                     dari {{ data_paginated.total }} transaksi
+
                 </div>
 
-                <nav>
+                <nav id="pagination-nav">
+
                     <ul class="pagination">
+
                         {% if data_paginated.has_prev %}
                         <li class="page-item">
                             <a class="page-link"
-                                href="?token={{ token }}&page={{ data_paginated.prev_num }}&start_date={{ start_date }}&end_date={{ end_date }}">
+                                href="?page={{data_paginated.prev_num}}&start_date={{start_date}}&end_date={{end_date}}">
                                 ‹
                             </a>
                         </li>
                         {% endif %}
 
-                        {% for page_num in data_paginated.iter_pages(
-                        left_edge=1,
-                        right_edge=1,
-                        left_current=2,
-                        right_current=2
-                        ) %}
+                        {% for page_num in
+                        data_paginated.iter_pages(left_edge=1,right_edge=1,left_current=2,right_current=2) %}
 
                         {% if page_num %}
-                        {% if page_num == data_paginated.page %}
+
+                        {% if page_num==data_paginated.page %}
+
                         <li class="page-item active">
-                            <span class="page-link">{{ page_num }}</span>
+                            <span class="page-link">
+                                {{page_num}}
+                            </span>
                         </li>
+
                         {% else %}
+
                         <li class="page-item">
                             <a class="page-link"
-                                href="?token={{ token }}&page={{ page_num }}&start_date={{ start_date }}&end_date={{ end_date }}">
-                                {{ page_num }}
+                                href="?page={{page_num}}&start_date={{start_date}}&end_date={{end_date}}">
+                                {{page_num}}
                             </a>
                         </li>
+
                         {% endif %}
+
                         {% endif %}
 
                         {% endfor %}
@@ -1962,12 +2022,14 @@
                         {% if data_paginated.has_next %}
                         <li class="page-item">
                             <a class="page-link"
-                                href="?token={{ token }}&page={{ data_paginated.next_num }}&start_date={{ start_date }}&end_date={{ end_date }}">
+                                href="?page={{data_paginated.next_num}}&start_date={{start_date}}&end_date={{end_date}}">
                                 ›
                             </a>
                         </li>
                         {% endif %}
+
                     </ul>
+
                 </nav>
 
             </div>
@@ -2105,6 +2167,25 @@
         </style>
 
     </div>
+
+    <script>
+        setInterval(async () => {
+
+            const res = await fetch(window.location.pathname + "/api");
+
+            const data = await res.json();
+
+            document.getElementById("masuk").innerHTML =
+                "Rp " + data.total_masuk.toLocaleString("id-ID");
+
+            document.getElementById("keluar").innerHTML =
+                "Rp " + data.total_keluar.toLocaleString("id-ID");
+
+            document.getElementById("saldo").innerHTML =
+                "Rp " + data.saldo.toLocaleString("id-ID");
+
+        }, 5000);
+    </script>
 
     <script>
         const pieCtx = document.getElementById('pieChart');

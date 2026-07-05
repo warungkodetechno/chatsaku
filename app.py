@@ -443,6 +443,61 @@ def dashboard(token):
         insight=insight
     )
 
+@app.route("/dashboard-data/<token>")
+def dashboard_data(token):
+
+    nomor = verify_token(token)
+
+    if not nomor:
+        return jsonify({"status": False}), 403
+
+    transaksi = (
+        Transaksi.query
+        .filter_by(nomor_wa=nomor)
+        .order_by(Transaksi.tanggal.desc())
+        .limit(10)
+        .all()
+    )
+
+    total_masuk = db.session.query(
+        db.func.coalesce(db.func.sum(Transaksi.nominal),0)
+    ).filter(
+        Transaksi.nomor_wa==nomor,
+        Transaksi.tipe=="MASUK"
+    ).scalar()
+
+    total_keluar = db.session.query(
+        db.func.coalesce(db.func.sum(Transaksi.nominal),0)
+    ).filter(
+        Transaksi.nomor_wa==nomor,
+        Transaksi.tipe=="KELUAR"
+    ).scalar()
+
+    saldo = total_masuk-total_keluar
+
+    rows=[]
+
+    for t in transaksi:
+
+        rows.append({
+
+            "tanggal":t.tanggal.strftime("%d/%m/%Y %H:%M"),
+            "tipe":t.tipe,
+            "nominal":t.nominal,
+            "kategori":t.kategori or "-",
+            "keterangan":t.keterangan or "-"
+
+        })
+
+    return jsonify({
+
+        "saldo":saldo,
+        "masuk":total_masuk,
+        "keluar":total_keluar,
+        "rows":rows
+
+    })
+
 # =========================
 # LOG REQUEST
 # =========================
