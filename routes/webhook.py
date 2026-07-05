@@ -1767,53 +1767,117 @@ untuk melihat seluruh reminder.
             sender,
     f"""🤖 *ChatSaku Finance Assistant*
 
-    Berikut menu yang tersedia:
+Berikut menu yang tersedia:
 
-    💰 *masuk*
-    Contoh:
-    masuk 500000 gaji
+━━━━━━━━━━━━━━
 
-    💸 *keluar*
-    Contoh:
-    keluar 25000 makan
+💰 *Pemasukan*
 
-    💳 *saldo*
-    Melihat saldo saat ini.
+masuk 500000 gaji
 
-    📊 *hariini*
-    Ringkasan transaksi hari ini.
+Contoh:
+masuk 2500000 gaji
 
-    🎯 *budget*
-    Lihat Budget:
-    budget
+━━━━━━━━━━━━━━
 
-    Buat Budget:
-    budget makanan 1500000
+💸 *Pengeluaran*
 
-    🤖 *insight*
-    Analisis AI pengeluaran.
+keluar 25000 makan
 
-    🔔 *reminder*
-    Lihat Reminder:
-    reminder
+Contoh:
+keluar 150000 bensin
 
-    Tambah Reminder:
-    reminder listrik 20 500000
+━━━━━━━━━━━━━━
 
-    🗑️ *hapusreminder*
-    hapusreminder listrik
+💳 *Saldo*
 
-    ━━━━━━━━━━━━━━
+saldo
 
-    🌐 Website
-    https://chatsaku.com
+Melihat total saldo saat ini.
 
-    📊 Dashboard
-    tersedia otomatis setelah transaksi.
+━━━━━━━━━━━━━━
 
-    💚 ChatSaku
-    100% WhatsApp • AI Powered
-    """
+📊 *Ringkasan Hari Ini*
+
+hariini
+
+Menampilkan transaksi hari ini.
+
+━━━━━━━━━━━━━━
+
+🎯 *Budget Bulanan*
+
+Lihat Budget
+
+budget
+
+Tambah Budget
+
+budget makanan 1500000
+
+━━━━━━━━━━━━━━
+
+🎁 *Target Pembelian*
+
+Lihat Semua Target
+
+target
+
+Buat Target
+
+target laptop 12000000 31-12-2026
+
+Lihat Detail Target
+
+target laptop
+
+Tambah Tabungan
+
+tabung laptop 500000
+
+Hapus Target
+
+hapustarget laptop
+
+━━━━━━━━━━━━━━
+
+🤖 *AI Finance Insight*
+
+insight
+
+Analisis otomatis kondisi keuangan.
+
+━━━━━━━━━━━━━━
+
+🔔 *Reminder Tagihan*
+
+Lihat Reminder
+
+reminder
+
+Tambah Reminder
+
+reminder listrik 20 500000
+
+Hapus Reminder
+
+hapusreminder listrik
+
+━━━━━━━━━━━━━━
+
+🌐 Website
+
+https://chatsaku.com
+
+📊 Dashboard
+
+Dashboard tersedia otomatis setelah Anda melakukan transaksi.
+
+💚 *ChatSaku Finance Assistant*
+
+100% WhatsApp • AI Powered
+Kelola keuangan cukup melalui chat WhatsApp.
+"""
         )
 
         return jsonify(status=True)
