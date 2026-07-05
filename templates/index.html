@@ -2260,6 +2260,7 @@
     <script>
         const TOKEN = "{{ token }}";
         let lastID = 0;
+        let lastTransaction = null;
 
         async function loadDashboard() {
 
@@ -2282,19 +2283,77 @@
 
                 const trx = data.rows[0];
 
-                if (lastID === 0) {
+                const key =
+                    trx.tanggal +
+                    trx.nominal +
+                    trx.tipe +
+                    trx.keterangan;
 
-                    lastID = trx.id;
+                if (lastTransaction && lastTransaction !== key) {
 
-                } else if (trx.id != lastID) {
-
-                    lastID = trx.id;
-
-                    showPopup(trx);
+                    showRealtimeNotification(trx);
 
                 }
 
+                lastTransaction = key;
+
             }
+
+        }
+
+        function showRealtimeNotification(trx) {
+
+            const icon =
+                document.getElementById("toastIcon");
+
+            const iconClass =
+                document.getElementById("toastIconClass");
+
+            const title =
+                document.getElementById("toastTitle");
+
+            const desc =
+                document.getElementById("toastDesc");
+
+            if (trx.tipe === "MASUK") {
+
+                icon.style.background = "#25D366";
+
+                iconClass.className =
+                    "bi bi-arrow-down-circle-fill";
+
+                title.innerHTML =
+                    "💰 Pemasukan Baru";
+
+            } else {
+
+                icon.style.background = "#EF4444";
+
+                iconClass.className =
+                    "bi bi-arrow-up-circle-fill";
+
+                title.innerHTML =
+                    "💸 Pengeluaran Baru";
+
+            }
+
+            desc.innerHTML =
+                `
+        <div><b>Rp ${Number(trx.nominal).toLocaleString("id-ID")}</b></div>
+
+        <div>${trx.keterangan}</div>
+
+        <div class="text-success mt-1">
+            ${trx.kategori}
+        </div>
+        `;
+
+            const toast =
+                new bootstrap.Toast(
+                    document.getElementById("trxToast")
+                );
+
+            toast.show();
 
         }
 
@@ -2431,30 +2490,75 @@
         }
     });
     </script>
-    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <!-- Realtime Notification -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index:99999">
 
-        <div id="trxToast" class="toast border-0 shadow" role="alert">
+        <div id="trxToast" class="toast border-0 shadow-lg" role="alert" data-bs-delay="5000">
 
             <div class="toast-header">
 
-                <strong class="me-auto" id="toastTitle">
-                    ChatSaku
+                <div id="toastIcon" class="rounded-circle d-flex align-items-center justify-content-center me-2"
+                    style="width:34px;height:34px;background:#25D366;color:white">
+
+                    <i id="toastIconClass" class="bi bi-wallet2"></i>
+
+                </div>
+
+                <strong class="me-auto">
+                    ChatSaku Realtime
                 </strong>
 
-                <small>Sekarang</small>
+                <small id="toastTime">
+                    baru saja
+                </small>
 
                 <button class="btn-close" data-bs-dismiss="toast">
                 </button>
 
             </div>
 
-            <div class="toast-body" id="toastBody">
+            <div class="toast-body">
+
+                <div id="toastTitle" class="fw-bold mb-1">
+                </div>
+
+                <div id="toastDesc" class="text-muted small">
+                </div>
 
             </div>
 
         </div>
 
     </div>
+    <style>
+        .toast {
+
+            border-radius: 18px;
+            overflow: hidden;
+            min-width: 340px;
+            background: white;
+
+        }
+
+        .toast-header {
+
+            background: white;
+            border: none;
+
+        }
+
+        #toastTitle {
+
+            font-size: 15px;
+
+        }
+
+        #toastDesc {
+
+            line-height: 1.5;
+
+        }
+    </style>
 </body>
 
 </html>
