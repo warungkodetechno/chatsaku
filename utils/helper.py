@@ -235,7 +235,7 @@ FEATURES = {
         "dashboard",
         "budget",
         "reminder",
-        "statistik",
+        "hapusreminder",
         "excel"
 
     },
@@ -246,11 +246,12 @@ FEATURES = {
         "dashboard",
         "budget",
         "reminder",
+        "hapusreminder",
         "ai",
         "statistik",
         "excel",
         "pdf",
-        "priority"
+        "target"
 
     }
 

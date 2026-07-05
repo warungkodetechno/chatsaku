@@ -296,6 +296,15 @@ https://www.chatsaku.com
 
     if cmd.startswith("target "):
 
+        if not has_feature(sender,"target"):
+
+            kirim_wa(
+                sender,
+                "🔒 AI Insight tersedia pada paket PREMIUM."
+            )
+
+            return jsonify(status=True)
+
         bagian = message.split()
 
         if len(bagian) >= 4:
@@ -458,6 +467,15 @@ https://www.chatsaku.com
     # ======================================
 
     if cmd == "target":
+
+        if not has_feature(sender,"target"):
+
+            kirim_wa(
+                sender,
+                "🔒 AI Insight tersedia pada paket PREMIUM."
+            )
+
+            return jsonify(status=True)
 
         data = TargetPembelian.query.filter_by(
 
