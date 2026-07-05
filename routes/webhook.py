@@ -510,46 +510,46 @@ https://www.chatsaku.com
     # ======================================
     if cmd.startswith("target "):
 
-    nama = message[7:]
+        nama = message[7:]
 
-    target = TargetPembelian.query.filter_by(
+        target = TargetPembelian.query.filter_by(
 
-        nomor_wa=sender,
-        nama=nama,
-        aktif=True
+            nomor_wa=sender,
+            nama=nama,
+            aktif=True
 
-    ).first()
+        ).first()
 
-    if target:
+        if target:
 
-        persen = round(
-            target.terkumpul /
-            target.target *100
-        )
+            persen = round(
+                target.terkumpul /
+                target.target *100
+            )
 
-        sisa = target.target-target.terkumpul
+            sisa = target.target-target.terkumpul
 
-        kirim_wa(
+            kirim_wa(
 
-            sender,
+                sender,
 
-f"""🎯 {target.nama}
+    f"""🎯 {target.nama}
 
-Target
-Rp {target.target:,.0f}
+    Target
+    Rp {target.target:,.0f}
 
-Terkumpul
-Rp {target.terkumpul:,.0f}
+    Terkumpul
+    Rp {target.terkumpul:,.0f}
 
-Sisa
-Rp {sisa:,.0f}
+    Sisa
+    Rp {sisa:,.0f}
 
-Progress
-{persen}%"""
+    Progress
+    {persen}%"""
 
-        )
+            )
 
-        return jsonify(status=True)
+            return jsonify(status=True)
 
     # ======================================
     # HAPUS TARGET
