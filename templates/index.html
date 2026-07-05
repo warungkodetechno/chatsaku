@@ -2174,132 +2174,150 @@
 
         let lastTransaction = "";
 
-        function showTransactionToast(trx) {
 
-            const id = "toast_" + Date.now();
+        document
+            .getElementById("toastContainer")
+            .insertAdjacentHTML("beforeend", html);
 
-            const isMasuk = trx.tipe === "MASUK";
+        const toastElement =
+            document.getElementById(id);
 
-            const color = isMasuk
-                ? "success"
-                : "danger";
-
-            const icon = isMasuk
-                ? "⬇️"
-                : "⬆️";
-
-            const sign = isMasuk
-                ? "+"
-                : "-";
-
-            const html = `
-
-            <div id="${id}"
-                class="toast align-items-center border-0 text-bg-${color}"
-                role="alert">
-
-                <div class="d-flex">
-
-                    <div class="toast-body">
-
-                        <div class="fw-bold">
-
-                            ${icon}
-                            ${isMasuk ? "Pemasukan Baru" : "Pengeluaran Baru"}
-
-                        </div>
-
-                        <div>
-
-                            ${sign} Rp ${Number(trx.nominal).toLocaleString("id-ID")}
-
-                        </div>
-
-                        <small>
-
-                            ${trx.keterangan}
-
-                        </small>
-
-                    </div>
-
-                    <button
-                        class="btn-close btn-close-white me-2 m-auto"
-                        data-bs-dismiss="toast">
-                    </button>
-
-                </div>
-
-            </div>
-
-    `;
-
-            document
-                .getElementById("toastContainer")
-                .insertAdjacentHTML("beforeend", html);
-
-            const toastElement =
-                document.getElementById(id);
-
-            const toast =
-                new bootstrap.Toast(toastElement, {
-                    delay: 4000
-                });
-
-            toast.show();
-
-            toastElement.addEventListener("hidden.bs.toast", () => {
-
-                toastElement.remove();
-
+        const toast =
+            new bootstrap.Toast(toastElement, {
+                delay: 4000
             });
+
+        toast.show();
+
+        toastElement.addEventListener("hidden.bs.toast", () => {
+
+            toastElement.remove();
+
+        });
 
         }
 
     </script>
     <script>
         const TOKEN = "{{ token }}";
-        let lastID = 0;
+
         let lastTransaction = null;
 
         async function loadDashboard() {
 
-            const res = await fetch(`/dashboard-data/${TOKEN}`);
+            try {
 
-            if (!res.ok) return;
+                const res = await fetch(`/dashboard-data/${TOKEN}`);
 
-            const data = await res.json();
+                if (!res.ok) return;
 
-            document.getElementById("masuk").innerHTML =
-                "Rp " + data.masuk.toLocaleString("id-ID");
+                const data = await res.json();
 
-            document.getElementById("keluar").innerHTML =
-                "Rp " + data.keluar.toLocaleString("id-ID");
+                // ==========================
+                // UPDATE SUMMARY
+                // ==========================
 
-            document.getElementById("saldo").innerHTML =
-                "Rp " + data.saldo.toLocaleString("id-ID");
+                document.getElementById("masuk").innerHTML =
+                    "Rp " + Number(data.masuk).toLocaleString("id-ID");
 
-            if (data.rows.length) {
+                document.getElementById("keluar").innerHTML =
+                    "Rp " + Number(data.keluar).toLocaleString("id-ID");
 
-                const trx = data.rows[0];
+                document.getElementById("saldo").innerHTML =
+                    "Rp " + Number(data.saldo).toLocaleString("id-ID");
 
-                const key =
-                    trx.tanggal +
-                    trx.nominal +
-                    trx.tipe +
-                    trx.keterangan;
+                // ==========================
+                // UPDATE TRANSAKSI
+                // ==========================
 
-                if (lastTransaction && lastTransaction !== key) {
+                const list = document.getElementById("ledger-list");
 
-                    showRealtimeNotification(trx);
+                if (list) {
+
+                    list.innerHTML = "";
+
+                    data.rows.forEach(row => {
+
+                        list.innerHTML += `
+                <div class="ledger-item">
+
+                    <div class="ledger-left">
+
+                        <div class="ledger-date">
+                            ${row.tanggal}
+                        </div>
+
+                        <div class="ledger-meta">
+
+                            <span class="pill ${row.tipe == "MASUK" ? "pill-success" : "pill-danger"}">
+
+                                ${row.tipe}
+
+                            </span>
+
+                            <span class="ledger-desc">
+
+                                ${row.keterangan}
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <div class="ledger-right">
+
+                        <div class="ledger-amount">
+
+                            Rp ${Number(row.nominal).toLocaleString("id-ID")}
+
+                        </div>
+
+                    </div>
+
+                </div>
+                `;
+
+                    });
 
                 }
 
-                lastTransaction = key;
+                // ==========================
+                // TOAST
+                // ==========================
+
+                if (data.rows.length > 0) {
+
+                    const trx = data.rows[0];
+
+                    const key = trx.id || (
+                        trx.tanggal +
+                        trx.nominal +
+                        trx.tipe +
+                        trx.keterangan
+                    );
+
+                    if (lastTransaction !== null && lastTransaction !== key) {
+
+                        showRealtimeNotification(trx);
+
+                    }
+
+                    lastTransaction = key;
+
+                }
+
+            } catch (e) {
+
+                console.log(e);
 
             }
 
         }
+
+        loadDashboard();
+
+        setInterval(loadDashboard, 3000);
 
         function showRealtimeNotification(trx) {
 
@@ -2322,128 +2340,56 @@
                 iconClass.className =
                     "bi bi-arrow-down-circle-fill";
 
-                title.innerHTML =
-                    "💰 Pemasukan Baru";
+                title.innerHTML = "💰 Pemasukan Baru";
 
             } else {
 
-                icon.style.background = "#EF4444";
+                icon.style.background = "#ef4444";
 
                 iconClass.className =
                     "bi bi-arrow-up-circle-fill";
 
-                title.innerHTML =
-                    "💸 Pengeluaran Baru";
+                title.innerHTML = "💸 Pengeluaran Baru";
 
             }
 
-            desc.innerHTML =
-                `
-        <div><b>Rp ${Number(trx.nominal).toLocaleString("id-ID")}</b></div>
+            desc.innerHTML = `
 
-        <div>${trx.keterangan}</div>
+        <div class="fw-semibold">
 
-        <div class="text-success mt-1">
-            ${trx.kategori}
+            Rp ${Number(trx.nominal).toLocaleString("id-ID")}
+
         </div>
-        `;
+
+        <div>
+
+            ${trx.keterangan}
+
+        </div>
+
+        <small class="text-success">
+
+            ${trx.kategori}
+
+        </small>
+
+    `;
+
+            const toastElement =
+                document.getElementById("trxToast");
 
             const toast =
-                new bootstrap.Toast(
-                    document.getElementById("trxToast")
+                bootstrap.Toast.getOrCreateInstance(
+                    toastElement,
+                    {
+                        delay: 5000
+                    }
                 );
 
             toast.show();
 
         }
 
-        function showPopup(trx) {
-
-            const title = document.getElementById("toastTitle");
-            const body = document.getElementById("toastBody");
-
-            if (trx.tipe == "MASUK") {
-
-                title.innerHTML = "💚 Pemasukan Baru";
-
-            } else {
-
-                title.innerHTML = "💸 Pengeluaran Baru";
-
-            }
-
-            body.innerHTML = `
-        <div><b>${trx.keterangan}</b></div>
-        <div>Kategori : ${trx.kategori}</div>
-        <div>Nominal : Rp ${Number(trx.nominal).toLocaleString("id-ID")}</div>
-    `;
-
-            const toast = new bootstrap.Toast(
-                document.getElementById("trxToast"),
-                {
-                    delay: 5000
-                }
-            );
-
-            toast.show();
-
-        }
-
-        loadDashboard();
-
-        setInterval(loadDashboard, 3000);
-    </script>
-    <script>
-        const list = document.getElementById("ledger-list");
-
-        list.innerHTML = "";
-
-        data.rows.forEach(row => {
-
-            list.innerHTML += `
-    <div class="ledger-item">
-
-        <div class="ledger-left">
-
-            <div class="ledger-date">
-                ${row.tanggal}
-            </div>
-
-            <div class="ledger-meta">
-
-                <span class="pill ${row.tipe == "MASUK"
-                    ? "pill-success"
-                    : "pill-danger"
-                }">
-
-                    ${row.tipe}
-
-                </span>
-
-                <span class="ledger-desc">
-
-                    ${row.keterangan}
-
-                </span>
-
-            </div>
-
-        </div>
-
-        <div class="ledger-right">
-
-            <div class="ledger-amount">
-
-                Rp ${Number(row.nominal).toLocaleString("id-ID")}
-
-            </div>
-
-        </div>
-
-    </div>
-    `;
-
-        });
     </script>
 
     <script>
