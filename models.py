@@ -147,3 +147,48 @@ class RequestDemo(db.Model):
         db.DateTime(timezone=True),
         default=now_jakarta
     )
+
+class TargetPembelian(db.Model):
+
+    __tablename__ = "target_pembelian"
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+    )
+
+    nomor_wa = db.Column(
+        db.String(30),
+        nullable=False,
+        index=True
+    )
+
+    nama = db.Column(
+        db.String(150),
+        nullable=False
+    )
+
+    target = db.Column(
+        db.Integer,
+        nullable=False
+    )
+
+    terkumpul = db.Column(
+        db.Integer,
+        default=0
+    )
+
+    deadline = db.Column(
+        db.Date,
+        nullable=False
+    )
+
+    aktif = db.Column(
+        db.Boolean,
+        default=True
+    )
+
+    created_at = db.Column(
+        db.DateTime,
+        default=now_jakarta
+    )

@@ -3,7 +3,7 @@ import os
 from flask import Blueprint,Flask, request, jsonify, render_template, send_file, redirect
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
-from models import db, Transaksi, Budget, Reminder, User, RequestDemo
+from models import db, Transaksi, Budget, Reminder, User, RequestDemo, TargetPembelian
 import requests
 import os
 import time
@@ -277,6 +277,10 @@ https://www.chatsaku.com
         or cmd == "menu"
         or cmd == "fitur"
         or cmd == "help"
+        or cmd == "target"
+        or cmd.startswith("target ")
+        or cmd.startswith("tabung")
+        or cmd.startswith("hapustarget")
     )
 
     if not valid_command:
@@ -285,6 +289,312 @@ https://www.chatsaku.com
             "status": True,
             "ignored": True
         })
+
+    # ======================================
+    # TARGET BARU
+    # ======================================
+
+    if cmd.startswith("target "):
+
+        bagian = message.split()
+
+        if len(bagian) >= 4:
+
+            try:
+
+                deadline = datetime.strptime(
+                    bagian[-1],
+                    "%d-%m-%Y"
+                ).date()
+
+                nominal = int(
+                    bagian[-2].replace(".","")
+                )
+
+                nama = " ".join(
+                    bagian[1:-2]
+                )
+
+            except:
+
+                kirim_wa(
+                    sender,
+                    "Format:\n\ntarget laptop 12000000 31-12-2026"
+                )
+
+                return jsonify(status=True)
+
+            cek = TargetPembelian.query.filter_by(
+                nomor_wa=sender,
+                nama=nama,
+                aktif=True
+            ).first()
+
+            if cek:
+
+                kirim_wa(
+                    sender,
+                    "Target tersebut sudah ada."
+                )
+
+                return jsonify(status=True)
+
+            target = TargetPembelian(
+
+                nomor_wa=sender,
+                nama=nama,
+                target=nominal,
+                deadline=deadline
+
+            )
+
+            db.session.add(target)
+
+            db.session.commit()
+
+            kirim_wa(
+
+                sender,
+
+    f"""🎯 Target berhasil dibuat
+
+    Nama
+    {nama}
+
+    Target
+    Rp {nominal:,.0f}
+
+    Deadline
+    {deadline.strftime("%d-%m-%Y")}
+
+    Selamat menabung 💚"""
+
+            )
+
+            return jsonify(status=True)
+
+    # ======================================
+    # TABUNG
+    # ======================================
+
+    if cmd.startswith("tabung "):
+
+        bagian = message.split()
+
+        if len(bagian) < 3:
+
+            kirim_wa(
+                sender,
+                "Format:\n\ntabung laptop 500000"
+            )
+
+            return jsonify(status=True)
+
+        try:
+
+            nominal = int(
+                bagian[-1].replace(".","")
+            )
+
+        except:
+
+            return jsonify(status=True)
+
+        nama = " ".join(
+            bagian[1:-1]
+        )
+
+        target = TargetPembelian.query.filter_by(
+
+            nomor_wa=sender,
+            nama=nama,
+            aktif=True
+
+        ).first()
+
+        if not target:
+
+            kirim_wa(
+                sender,
+                "Target tidak ditemukan."
+            )
+
+            return jsonify(status=True)
+
+        target.terkumpul += nominal
+
+        db.session.commit()
+
+        persen = round(
+            target.terkumpul /
+            target.target * 100
+        )
+
+        if persen > 100:
+            persen = 100
+
+        kirim_wa(
+
+            sender,
+
+    f"""💚 Tabungan berhasil
+
+    {target.nama}
+
+    +Rp {nominal:,.0f}
+
+    Terkumpul
+    Rp {target.terkumpul:,.0f}
+
+    Progress
+    {persen}%"""
+
+        )
+
+        return jsonify(status=True)
+
+    # ======================================
+    # LIST TARGET
+    # ======================================
+
+    if cmd == "target":
+
+        data = TargetPembelian.query.filter_by(
+
+            nomor_wa=sender,
+            aktif=True
+
+        ).all()
+
+        if not data:
+
+            kirim_wa(
+                sender,
+                "Belum ada target."
+            )
+
+            return jsonify(status=True)
+
+        text = "🎯 TARGET PEMBELIAN\n\n"
+
+        for i,x in enumerate(data,1):
+
+            persen = round(
+                x.terkumpul /
+                x.target * 100
+            )
+
+            if persen>100:
+                persen=100
+
+            sisa = x.target-x.terkumpul
+
+            text += f"""{i}. {x.nama}
+
+    Progress : {persen}%
+
+    Rp {x.terkumpul:,.0f}
+    /
+    Rp {x.target:,.0f}
+
+    Sisa Rp {sisa:,.0f}
+
+    """
+
+        kirim_wa(sender,text)
+
+        return jsonify(status=True)
+
+    # ======================================
+    # DETAIL TARGET
+    # ======================================
+    if cmd.startswith("target "):
+
+    nama = message[7:]
+
+    target = TargetPembelian.query.filter_by(
+
+        nomor_wa=sender,
+        nama=nama,
+        aktif=True
+
+    ).first()
+
+    if target:
+
+        persen = round(
+            target.terkumpul /
+            target.target *100
+        )
+
+        sisa = target.target-target.terkumpul
+
+        kirim_wa(
+
+            sender,
+
+f"""🎯 {target.nama}
+
+Target
+Rp {target.target:,.0f}
+
+Terkumpul
+Rp {target.terkumpul:,.0f}
+
+Sisa
+Rp {sisa:,.0f}
+
+Progress
+{persen}%"""
+
+        )
+
+        return jsonify(status=True)
+
+    # ======================================
+    # HAPUS TARGET
+    # ======================================
+
+    if cmd.startswith("hapustarget"):
+
+        nama = message.replace(
+            "hapustarget",
+            ""
+        ).strip()
+
+        target = TargetPembelian.query.filter_by(
+
+            nomor_wa=sender,
+            nama=nama,
+            aktif=True
+
+        ).first()
+
+        if target:
+
+            db.session.delete(target)
+
+            db.session.commit()
+
+            kirim_wa(
+
+                sender,
+
+                "🗑 Target berhasil dihapus."
+
+            )
+
+        else:
+
+            kirim_wa(
+
+                sender,
+
+                "Target tidak ditemukan."
+
+            )
+
+        return jsonify(status=True)
 
     # =========================
     # SALDO
