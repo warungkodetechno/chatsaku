@@ -2169,6 +2169,7 @@
     </div>
 
     <script>
+        const TOKEN = "{{ token }}";
         async function loadDashboard() {
 
             const res = await fetch(`/dashboard-data/${TOKEN}`);
@@ -2192,6 +2193,58 @@
         loadDashboard();
 
         setInterval(loadDashboard, 3000);
+    </script>
+    <script>
+        const list = document.getElementById("ledger-list");
+
+        list.innerHTML = "";
+
+        data.rows.forEach(row => {
+
+            list.innerHTML += `
+    <div class="ledger-item">
+
+        <div class="ledger-left">
+
+            <div class="ledger-date">
+                ${row.tanggal}
+            </div>
+
+            <div class="ledger-meta">
+
+                <span class="pill ${row.tipe == "MASUK"
+                    ? "pill-success"
+                    : "pill-danger"
+                }">
+
+                    ${row.tipe}
+
+                </span>
+
+                <span class="ledger-desc">
+
+                    ${row.keterangan}
+
+                </span>
+
+            </div>
+
+        </div>
+
+        <div class="ledger-right">
+
+            <div class="ledger-amount">
+
+                Rp ${Number(row.nominal).toLocaleString("id-ID")}
+
+            </div>
+
+        </div>
+
+    </div>
+    `;
+
+        });
     </script>
 
     <script>
