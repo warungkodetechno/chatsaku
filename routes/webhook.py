@@ -659,15 +659,19 @@ Selamat menabung 💚"""
         kirim_wa(
             sender,
             f"""💳 *Saldo Keuangan*
-
-💰 Saldo : *Rp {saldo:,.0f}*
-📥 Masuk : Rp {masuk:,.0f}
-📤 Keluar : Rp {keluar:,.0f}
+┌────────────────┐
+📥 Masuk   : Rp {masuk:,.0f}
+📤 Keluar  : Rp {keluar:,.0f}
+ ─────────────────
+💰 Saldo   : *Rp {saldo:,.0f}*
+└────────────────┘
 
 📊 Dashboard
 {link}
 
-⏳ Berlaku 24 jam • 🤖 ChatSaku
+🕒 Berlaku 24 jam
+
+🤖 ChatSaku Finance Assistant
 """
         )
         return jsonify({"status": True})
