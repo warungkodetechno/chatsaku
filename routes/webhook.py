@@ -669,7 +669,7 @@ Selamat menabung 💚"""
 📊 Dashboard
 {link}
 
-🕒 Berlaku 24 jam
+🕒 Link Berlaku *30 Menit*
 
 🤖 ChatSaku Finance Assistant
 """
@@ -738,7 +738,7 @@ Rp {saldo:,.0f}
 📊 Dashboard
 {link}
 
-⏳ Link aktif 24 jam
+⏳ Link Berlaku *30 Menit*
 
 ━━━━━━━━━━━━━━━━━━
 🤖 ChatSaku Finance Assistant
@@ -973,7 +973,7 @@ budget transport 1000000
 📈 Dashboard
 {link}
 
-⏳ Link aktif 24 jam
+⏳ Link Berlaku *30 Menit*
 
 ──────────────────
 🤖 ChatSaku Finance Assistant
@@ -1039,7 +1039,7 @@ Rp {total:,.0f}
 📊 *Dashboard*
 {link}
 
-🔒 Link berlaku selama *24 jam*.
+🔒 Link berlaku selama *30 Menit*.
 
 ━━━━━━━━━━━━━━
 🤖 *Finance Assistant*

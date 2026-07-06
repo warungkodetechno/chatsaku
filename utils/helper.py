@@ -311,7 +311,7 @@ def verify_token(token):
 
         nomor = serializer.loads(
             token,
-            max_age=60 * 60 * 24  # 1 hari
+            max_age=60 * 30  # 30 menit
         )
 
         return nomor
