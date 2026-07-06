@@ -367,17 +367,11 @@ https://www.chatsaku.com
 
     f"""🎯 Target berhasil dibuat
 
-    Nama
-    {nama}
+Nama        : {nama}
+Target      : Rp. {nominal:,.0f}
+Deadline    :{deadline.strftime("%d-%m-%Y")}
 
-    Target
-    Rp {nominal:,.0f}
-
-    Deadline
-    {deadline.strftime("%d-%m-%Y")}
-
-    Selamat menabung 💚"""
-
+Selamat menabung 💚"""
             )
 
             return jsonify(status=True)
@@ -678,10 +672,8 @@ https://www.chatsaku.com
 🕒 Berlaku 24 jam
 
 🤖 ChatSaku Finance Assistant
-💚 Kelola keuangan langsung dari WhatsApp
 """
         )
-
         return jsonify({"status": True})
 
     # =========================
@@ -734,11 +726,8 @@ https://www.chatsaku.com
 ┌────────────────────
 💰 *KREDIT MASUK*
 
-💵 Nominal
-Rp {nominal:,.0f}
-
-📝 Keterangan
-{keterangan}
+💵 Nominal      : Rp. {nominal:,.0f}
+📝 Keterangan   : {keterangan}
 
 🕒 {sekarang().strftime("%d %b %Y • %H:%M")}
 └────────────────────
@@ -1039,11 +1028,8 @@ keluar 25000 grab
 🧾 *Jumlah Transaksi*
 {len(data)}
 
-📥 *Pemasukan*
-Rp {masuk_hari_ini:,.0f}
-
-📤 *Pengeluaran*
-Rp {keluar_hari_ini:,.0f}
+📥 *Pemasukan*  : Rp. {masuk_hari_ini:,.0f}
+📤 *Pengeluaran*: Rp. {keluar_hari_ini:,.0f}
 
 ━━━━━━━━━━━━━━
 
