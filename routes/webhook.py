@@ -3,7 +3,7 @@ import os
 from flask import Blueprint,Flask, request, jsonify, render_template, send_file, redirect
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
-from models import db, Transaksi, Budget, Reminder, User, RequestDemo, TargetPembelian
+from models import db, Transaksi, Budget, Reminder, User, RequestDemo, TargetPembelian, HutangPiutang
 import requests
 import os
 import time
@@ -281,6 +281,11 @@ https://www.chatsaku.com
         or cmd.startswith("target ")
         or cmd.startswith("tabung")
         or cmd.startswith("hapustarget")
+        or cmd.startswith("hutang")
+        or cmd.startswith("piutang")
+        or cmd=="hutang"
+        or cmd=="piutang"
+        or cmd.startswith("bayarhutang")
     )
 
     if not valid_command:
@@ -1788,6 +1793,188 @@ untuk melihat seluruh reminder.
             )
 
         return jsonify({"status": True})
+
+    # =========================
+    # HUTANG
+    # =========================
+
+    if cmd.startswith("hutang"):
+
+        data = message.split(" ", 3)
+
+
+        if len(data) < 3:
+
+            kirim_wa(
+                sender,
+                """❌ Format Hutang salah
+
+    Gunakan:
+
+    hutang nama nominal keterangan
+
+    Contoh:
+    hutang budi 500000 pinjam uang"""
+            )
+
+            return jsonify(status=True)
+
+
+        nama = data[1]
+
+
+        try:
+
+            nominal = int(data[2])
+
+        except:
+
+            kirim_wa(
+                sender,
+                "❌ Nominal harus berupa angka.\n\nContoh:\nhutang budi 500000 pinjam uang"
+            )
+
+            return jsonify(status=True)
+
+
+
+        keterangan = ""
+
+        if len(data) == 4:
+            keterangan = data[3]
+
+
+
+        hp = HutangPiutang(
+
+            nomor_wa=sender,
+
+            tipe="HUTANG",
+
+            nama=nama,
+
+            nominal=nominal,
+
+            keterangan=keterangan
+
+        )
+
+
+        db.session.add(hp)
+
+        db.session.commit()
+
+
+
+        kirim_wa(
+            sender,
+            f"""✅ *Hutang Dicatat*
+
+    👤 {nama}
+    💰 Rp {nominal:,.0f}
+    📝 {keterangan or "-"}
+
+    Status:
+    ⏳ BELUM LUNAS
+
+    🤖 ChatSaku Finance"""
+        )
+
+
+        return jsonify(status=True)
+
+
+
+    # =========================
+    # PIUTANG
+    # =========================
+
+    if cmd.startswith("piutang"):
+
+
+        data = message.split(" ", 3)
+
+
+        if len(data) < 3:
+
+            kirim_wa(
+                sender,
+                """❌ Format Piutang salah
+
+    Gunakan:
+
+    piutang nama nominal keterangan
+
+    Contoh:
+    piutang agus 200000 makan bersama"""
+            )
+
+            return jsonify(status=True)
+
+
+
+        nama = data[1]
+
+
+        try:
+
+            nominal = int(data[2])
+
+        except:
+
+            kirim_wa(
+                sender,
+                "❌ Nominal harus berupa angka."
+            )
+
+            return jsonify(status=True)
+
+
+
+        keterangan = ""
+
+        if len(data) == 4:
+            keterangan = data[3]
+
+
+
+        hp = HutangPiutang(
+
+            nomor_wa=sender,
+
+            tipe="PIUTANG",
+
+            nama=nama,
+
+            nominal=nominal,
+
+            keterangan=keterangan
+
+        )
+
+
+        db.session.add(hp)
+
+        db.session.commit()
+
+
+
+        kirim_wa(
+            sender,
+            f"""✅ *Piutang Dicatat*
+
+    👤 {nama}
+    💰 Rp {nominal:,.0f}
+    📝 {keterangan or "-"}
+
+    Status:
+    ⏳ BELUM DIBAYAR
+
+    🤖 ChatSaku Finance"""
+        )
+
+
+        return jsonify(status=True)
 
     # ==========================
     # MENU

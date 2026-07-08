@@ -192,3 +192,60 @@ class TargetPembelian(db.Model):
         db.DateTime,
         default=now_jakarta
     )
+
+class HutangPiutang(db.Model):
+
+    __tablename__ = "hutang_piutang"
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+    )
+
+    nomor_wa = db.Column(
+        db.String(30),
+        nullable=False,
+        index=True
+    )
+
+    tipe = db.Column(
+        db.String(20),
+        nullable=False
+    )
+    # HUTANG = kita punya kewajiban
+    # PIUTANG = orang lain punya kewajiban ke kita
+
+
+    nama = db.Column(
+        db.String(100),
+        nullable=False
+    )
+
+
+    nominal = db.Column(
+        db.Integer,
+        nullable=False
+    )
+
+
+    keterangan = db.Column(
+        db.String(255)
+    )
+
+
+    status = db.Column(
+        db.String(20),
+        default="BELUM_LUNAS"
+    )
+
+
+    tanggal = db.Column(
+        db.DateTime,
+        default=datetime.utcnow
+    )
+
+
+    lunas_tanggal = db.Column(
+        db.DateTime,
+        nullable=True
+    )
