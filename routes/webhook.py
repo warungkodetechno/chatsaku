@@ -1879,10 +1879,9 @@ untuk melihat seluruh reminder.
 
     if cmd.startswith("hutang "):
 
-        data = message.split(" ",3)
+        data = message.split(" ", 3)
 
-
-        if len(data)<3:
+        if len(data) < 3:
 
             kirim_wa(
                 sender,
@@ -1896,13 +1895,12 @@ untuk melihat seluruh reminder.
             return jsonify(status=True)
 
 
-
-        nama=data[1]
+        nama = data[1]
 
 
         try:
 
-            nominal=int(data[2])
+            nominal = int(data[2])
 
         except:
 
@@ -1915,28 +1913,26 @@ untuk melihat seluruh reminder.
 
 
 
-        keterangan=""
+        keterangan = ""
 
-        if len(data)==4:
-            keterangan=data[3]
+        if len(data) == 4:
+            keterangan = data[3]
 
 
 
-        hp=HutangPiutang(
+        hp = HutangPiutang(
 
-            nomor_wa=sender,
+            nomor_wa = sender,
 
-            tipe="HUTANG",
+            tipe = "HUTANG",
 
-            nama=nama,
+            nama = nama,
 
-            nominal=nominal,
+            nominal = nominal,
 
-            sisa=nominal,
+            status = "AKTIF",
 
-            status="AKTIF",
-
-            keterangan=keterangan
+            keterangan = keterangan
 
         )
 
@@ -1944,6 +1940,7 @@ untuk melihat seluruh reminder.
         db.session.add(hp)
 
         db.session.commit()
+
 
 
         kirim_wa(
@@ -1958,7 +1955,7 @@ untuk melihat seluruh reminder.
     Status:
     ⏳ BELUM LUNAS
 
-    🤖 ChatSaku"""
+    🤖 ChatSaku Finance"""
         )
 
 
