@@ -1803,7 +1803,10 @@ untuk melihat seluruh reminder.
         daftar = HutangPiutang.query.filter(
             HutangPiutang.nomor_wa == sender,
             HutangPiutang.tipe == "HUTANG",
-            HutangPiutang.status != "LUNAS"
+            HutangPiutang.status.in_([
+                "AKTIF",
+                "BELUM_LUNAS"
+            ])
         ).all()
 
 
