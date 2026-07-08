@@ -1800,11 +1800,26 @@ untuk melihat seluruh reminder.
 
     if cmd == "hutang":
 
+        print("=== DEBUG HUTANG ===")
+        print("SENDER:", sender)
+
+
         daftar = HutangPiutang.query.filter(
             HutangPiutang.nomor_wa == sender,
-            HutangPiutang.tipe == "HUTANG",
-            HutangPiutang.status == "AKTIF"
+            HutangPiutang.tipe == "HUTANG"
         ).all()
+
+
+        print("JUMLAH:", len(daftar))
+
+        for h in daftar:
+            print(
+                h.nomor_wa,
+                h.tipe,
+                h.nama,
+                h.nominal,
+                h.status
+            )
 
 
         if not daftar:
@@ -1813,7 +1828,7 @@ untuk melihat seluruh reminder.
                 sender,
                 """💳 *Daftar Hutang*
 
-    Tidak ada hutang aktif 😊
+    Tidak ada hutang 😊
 
     🤖 ChatSaku Finance"""
             )
@@ -1821,29 +1836,30 @@ untuk melihat seluruh reminder.
             return jsonify(status=True)
 
 
-
         total = 0
 
-        pesan = """💳 *Daftar Hutang Aktif*
+        pesan = """💳 *Daftar Hutang*
 
     """
 
 
         for i, h in enumerate(daftar,1):
 
+            jumlah = h.sisa if h.sisa else h.nominal
+
             pesan += f"""
     {i}. 👤 {h.nama}
-    💰 Rp {h.sisa:,.0f}
+    💰 Rp {jumlah:,.0f}
     📝 {h.keterangan or "-"}
+    📌 {h.status}
     """
 
-            total += h.sisa
-
+            total += jumlah
 
 
         pesan += f"""
     ━━━━━━━━━━━━━━
-    Total Hutang:
+    Total:
     💰 Rp {total:,.0f}
 
     🤖 ChatSaku Finance
@@ -1856,7 +1872,6 @@ untuk melihat seluruh reminder.
         )
 
         return jsonify(status=True)
-
 
 
     # =========================
