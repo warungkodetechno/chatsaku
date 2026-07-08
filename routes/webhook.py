@@ -281,8 +281,8 @@ https://www.chatsaku.com
         or cmd.startswith("target ")
         or cmd.startswith("tabung")
         or cmd.startswith("hapustarget")
-        or cmd.startswith("hutang")
-        or cmd.startswith("piutang")
+        or cmd.startswith("hutang ")
+        or cmd.startswith("piutang ")
         or cmd=="hutang"
         or cmd=="piutang"
         or cmd.startswith("bayarhutang")
@@ -1798,54 +1798,117 @@ untuk melihat seluruh reminder.
     # HUTANG
     # =========================
 
-    if cmd.startswith("hutang"):
+    if cmd == "hutang":
 
-        data = message.split(" ", 3)
+        daftar = HutangPiutang.query.filter(
+            HutangPiutang.nomor_wa == sender,
+            HutangPiutang.tipe == "HUTANG",
+            HutangPiutang.status == "AKTIF"
+        ).all()
 
 
-        if len(data) < 3:
+        if not daftar:
 
             kirim_wa(
                 sender,
-                """❌ Format Hutang salah
+                """💳 *Daftar Hutang*
 
-    Gunakan:
+    Tidak ada hutang aktif 😊
 
-    hutang nama nominal keterangan
+    🤖 ChatSaku Finance"""
+            )
+
+            return jsonify(status=True)
+
+
+
+        total = 0
+
+        pesan = """💳 *Daftar Hutang Aktif*
+
+    """
+
+
+        for i, h in enumerate(daftar,1):
+
+            pesan += f"""
+    {i}. 👤 {h.nama}
+    💰 Rp {h.sisa:,.0f}
+    📝 {h.keterangan or "-"}
+    """
+
+            total += h.sisa
+
+
+
+        pesan += f"""
+    ━━━━━━━━━━━━━━
+    Total Hutang:
+    💰 Rp {total:,.0f}
+
+    🤖 ChatSaku Finance
+    """
+
+
+        kirim_wa(
+            sender,
+            pesan
+        )
+
+        return jsonify(status=True)
+
+
+
+    # =========================
+    # TAMBAH HUTANG
+    # =========================
+
+    if cmd.startswith("hutang "):
+
+        data = message.split(" ",3)
+
+
+        if len(data)<3:
+
+            kirim_wa(
+                sender,
+                """❌ Format salah
 
     Contoh:
+
     hutang budi 500000 pinjam uang"""
             )
 
             return jsonify(status=True)
 
 
-        nama = data[1]
+
+        nama=data[1]
 
 
         try:
 
-            nominal = int(data[2])
+            nominal=int(data[2])
 
         except:
 
             kirim_wa(
                 sender,
-                "❌ Nominal harus berupa angka.\n\nContoh:\nhutang budi 500000 pinjam uang"
+                "❌ Nominal harus angka"
             )
 
             return jsonify(status=True)
 
 
 
-        keterangan = ""
+        keterangan=""
 
-        if len(data) == 4:
-            keterangan = data[3]
+        if len(data)==4:
+            keterangan=data[3]
 
 
 
-        hp = HutangPiutang(
+        hp=HutangPiutang(
 
             nomor_wa=sender,
 
@@ -1854,6 +1917,10 @@ untuk melihat seluruh reminder.
             nama=nama,
 
             nominal=nominal,
+
+            sisa=nominal,
+
+            status="AKTIF",
 
             keterangan=keterangan
 
@@ -1865,19 +1932,19 @@ untuk melihat seluruh reminder.
         db.session.commit()
 
 
-
         kirim_wa(
             sender,
             f"""✅ *Hutang Dicatat*
 
     👤 {nama}
     💰 Rp {nominal:,.0f}
+
     📝 {keterangan or "-"}
 
     Status:
     ⏳ BELUM LUNAS
 
-    🤖 ChatSaku Finance"""
+    🤖 ChatSaku"""
         )
 
 
