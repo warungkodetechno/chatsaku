@@ -2001,13 +2001,16 @@ untuk melihat seluruh reminder.
 
         for i, p in enumerate(daftar, 1):
 
+            jumlah = p.nominal or 0
+
             pesan += f"""
     {i}. 👤 {p.nama}
-    💰 Rp {p.sisa:,.0f}
+    💰 Rp {jumlah:,.0f}
     📝 {p.keterangan or "-"}
     """
 
-            total += p.sisa
+
+            total += jumlah
 
 
 
@@ -2027,8 +2030,6 @@ untuk melihat seluruh reminder.
 
 
         return jsonify(status=True)
-
-
 
     # =========================
     # TAMBAH PIUTANG
@@ -2091,8 +2092,6 @@ untuk melihat seluruh reminder.
             nama=nama,
 
             nominal=nominal,
-
-            sisa=nominal,
 
             status="AKTIF",
 
