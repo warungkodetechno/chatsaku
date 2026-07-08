@@ -1845,14 +1845,13 @@ untuk melihat seluruh reminder.
 
         for i, h in enumerate(daftar,1):
 
-            jumlah = h.sisa if h.sisa else h.nominal
+            jumlah = h.nominal
 
             pesan += f"""
-    {i}. 👤 {h.nama}
-    💰 Rp {jumlah:,.0f}
-    📝 {h.keterangan or "-"}
-    📌 {h.status}
-    """
+        {i}. 👤 {h.nama}
+        💰 Rp {jumlah:,.0f}
+        📝 {h.keterangan or "-"}
+        """
 
             total += jumlah
 
