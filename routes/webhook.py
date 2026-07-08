@@ -281,10 +281,10 @@ https://www.chatsaku.com
         or cmd.startswith("target ")
         or cmd.startswith("tabung")
         or cmd.startswith("hapustarget")
-        or cmd.startswith("hutang ")
-        or cmd.startswith("piutang ")
         or cmd=="hutang"
+        or cmd.startswith("hutang ")
         or cmd=="piutang"
+        or cmd.startswith("piutang ")
         or cmd.startswith("bayarhutang")
     )
 
@@ -1953,11 +1953,76 @@ untuk melihat seluruh reminder.
 
 
     # =========================
-    # PIUTANG
+    # PIUTANG (LIHAT)
     # =========================
 
-    if cmd.startswith("piutang"):
+    if cmd == "piutang":
 
+        daftar = HutangPiutang.query.filter(
+            HutangPiutang.nomor_wa == sender,
+            HutangPiutang.tipe == "PIUTANG",
+            HutangPiutang.status == "AKTIF"
+        ).all()
+
+
+        if not daftar:
+
+            kirim_wa(
+                sender,
+                """📥 *Daftar Piutang*
+
+    Tidak ada piutang aktif 😊
+
+    🤖 ChatSaku Finance"""
+            )
+
+            return jsonify(status=True)
+
+
+
+        total = 0
+
+        pesan = """📥 *Daftar Piutang Aktif*
+
+    """
+
+
+        for i, p in enumerate(daftar, 1):
+
+            pesan += f"""
+    {i}. 👤 {p.nama}
+    💰 Rp {p.sisa:,.0f}
+    📝 {p.keterangan or "-"}
+    """
+
+            total += p.sisa
+
+
+
+        pesan += f"""
+    ━━━━━━━━━━━━━━
+    Total Piutang:
+    💰 Rp {total:,.0f}
+
+    🤖 ChatSaku Finance
+    """
+
+
+        kirim_wa(
+            sender,
+            pesan
+        )
+
+
+        return jsonify(status=True)
+
+
+
+    # =========================
+    # TAMBAH PIUTANG
+    # =========================
+
+    if cmd.startswith("piutang "):
 
         data = message.split(" ", 3)
 
@@ -1973,7 +2038,8 @@ untuk melihat seluruh reminder.
     piutang nama nominal keterangan
 
     Contoh:
-    piutang agus 200000 makan bersama"""
+
+    piutang agus 300000 bayar makan"""
             )
 
             return jsonify(status=True)
@@ -2015,6 +2081,10 @@ untuk melihat seluruh reminder.
 
             nominal=nominal,
 
+            sisa=nominal,
+
+            status="AKTIF",
+
             keterangan=keterangan
 
         )
@@ -2032,6 +2102,7 @@ untuk melihat seluruh reminder.
 
     👤 {nama}
     💰 Rp {nominal:,.0f}
+
     📝 {keterangan or "-"}
 
     Status:
