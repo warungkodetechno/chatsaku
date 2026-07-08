@@ -1795,7 +1795,7 @@ untuk melihat seluruh reminder.
         return jsonify({"status": True})
 
     # =========================
-    # HUTANG
+    # HUTANG LIHAT
     # =========================
 
     if cmd == "hutang":
@@ -1803,7 +1803,7 @@ untuk melihat seluruh reminder.
         daftar = HutangPiutang.query.filter(
             HutangPiutang.nomor_wa == sender,
             HutangPiutang.tipe == "HUTANG",
-            HutangPiutang.status == "AKTIF"
+            HutangPiutang.status != "LUNAS"
         ).all()
 
 
@@ -1953,7 +1953,7 @@ untuk melihat seluruh reminder.
 
 
     # =========================
-    # PIUTANG (LIHAT)
+    # LIHAT PIUTANG
     # =========================
 
     if cmd == "piutang":
@@ -1961,7 +1961,7 @@ untuk melihat seluruh reminder.
         daftar = HutangPiutang.query.filter(
             HutangPiutang.nomor_wa == sender,
             HutangPiutang.tipe == "PIUTANG",
-            HutangPiutang.status == "AKTIF"
+            HutangPiutang.status != "LUNAS"
         ).all()
 
 
@@ -1981,6 +1981,7 @@ untuk melihat seluruh reminder.
 
 
         total = 0
+
 
         pesan = """📥 *Daftar Piutang Aktif*
 
@@ -2038,8 +2039,7 @@ untuk melihat seluruh reminder.
     piutang nama nominal keterangan
 
     Contoh:
-
-    piutang agus 300000 bayar makan"""
+    piutang agus 300000 makan bersama"""
             )
 
             return jsonify(status=True)
