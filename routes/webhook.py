@@ -286,6 +286,7 @@ https://www.chatsaku.com
         or cmd=="piutang"
         or cmd.startswith("piutang ")
         or cmd.startswith("bayarhutang")
+        or cmd.startswith("bayarpiutang")
     )
 
     if not valid_command:
@@ -2117,6 +2118,165 @@ untuk melihat seluruh reminder.
 
     Status:
     ⏳ BELUM DIBAYAR
+
+    🤖 ChatSaku Finance"""
+        )
+
+
+        return jsonify(status=True)
+
+    # =========================
+    # BAYAR PIUTANG
+    # =========================
+
+    if cmd.startswith("bayarpiutang"):
+
+        data = message.split(" ",1)
+
+
+        if len(data)<2:
+
+            kirim_wa(
+                sender,
+                """❌ Format salah
+
+    Gunakan:
+
+    bayarpiutang nama
+
+    Contoh:
+    bayarpiutang agus"""
+            )
+
+            return jsonify(status=True)
+
+
+
+        nama=data[1].strip()
+
+
+
+        piutang = HutangPiutang.query.filter(
+            HutangPiutang.nomor_wa == sender,
+            HutangPiutang.tipe == "PIUTANG",
+            HutangPiutang.nama.ilike(nama),
+            HutangPiutang.status != "LUNAS"
+        ).first()
+
+
+
+        if not piutang:
+
+            kirim_wa(
+                sender,
+                f"""❌ Piutang {nama} tidak ditemukan"""
+            )
+
+            return jsonify(status=True)
+
+
+
+        piutang.status="LUNAS"
+
+        piutang.lunas_tanggal=datetime.now()
+
+
+        db.session.commit()
+
+
+
+        kirim_wa(
+            sender,
+            f"""✅ *Piutang Diterima*
+
+    👤 {piutang.nama}
+
+    💰 Rp {piutang.nominal:,.0f}
+
+    Status:
+    ✅ SUDAH DIBAYAR
+
+    🕒 {datetime.now().strftime("%d %b %Y %H:%M")}
+
+    🤖 ChatSaku Finance"""
+        )
+
+
+        return jsonify(status=True)
+
+    # =========================
+    # BAYAR HUTANG
+    # =========================
+
+    if cmd.startswith("bayarhutang"):
+
+        data = message.split(" ", 1)
+
+
+        if len(data) < 2:
+
+            kirim_wa(
+                sender,
+                """❌ Format salah
+
+    Gunakan:
+
+    bayarhutang nama
+
+    Contoh:
+    bayarhutang budi"""
+            )
+
+            return jsonify(status=True)
+
+
+
+        nama = data[1].strip()
+
+
+
+        hutang = HutangPiutang.query.filter(
+            HutangPiutang.nomor_wa == sender,
+            HutangPiutang.tipe == "HUTANG",
+            HutangPiutang.nama.ilike(nama),
+            HutangPiutang.status != "LUNAS"
+        ).first()
+
+
+
+        if not hutang:
+
+            kirim_wa(
+                sender,
+                f"""❌ Hutang {nama} tidak ditemukan
+
+    Pastikan nama sesuai."""
+            )
+
+            return jsonify(status=True)
+
+
+
+        hutang.status = "LUNAS"
+        hutang.lunas_tanggal = datetime.now()
+
+
+        db.session.commit()
+
+
+
+        kirim_wa(
+            sender,
+            f"""✅ *Hutang Lunas*
+
+    👤 {hutang.nama}
+
+    💰 Rp {hutang.nominal:,.0f}
+
+    Status:
+    ✅ SUDAH LUNAS
+
+    🕒 {datetime.now().strftime("%d %b %Y %H:%M")}
 
     🤖 ChatSaku Finance"""
         )
