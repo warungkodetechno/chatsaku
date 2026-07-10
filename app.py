@@ -428,7 +428,7 @@ def dashboard(token):
     # ==========================
 
     hutang_list = HutangPiutang.query.filter(
-        HutangPiutang.nomor_wa == nomor_wa,
+        HutangPiutang.nomor_wa == nomor,
         HutangPiutang.tipe == "HUTANG",
         HutangPiutang.status != "LUNAS"
     ).order_by(
@@ -438,7 +438,7 @@ def dashboard(token):
 
 
     piutang_list = HutangPiutang.query.filter(
-        HutangPiutang.nomor_wa == nomor_wa,
+        HutangPiutang.nomor_wa == nomor,
         HutangPiutang.tipe == "PIUTANG",
         HutangPiutang.status != "LUNAS"
     ).order_by(
