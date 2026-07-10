@@ -1483,66 +1483,498 @@
 
             }
         </style>
-        <div class="debt-card">
+        <!-- ================================= -->
+        <!-- HUTANG & PIUTANG -->
+        <!-- ================================= -->
 
-            <div class="debt-left">
+        <div class="debt-wrapper mb-4">
 
-                <div class="debt-name">
-                    {{ item.nama }}
+
+            <div class="d-flex align-items-center mb-1">
+
+                <div class="debt-icon">
+                    <i class="bi bi-credit-card-2-front-fill"></i>
                 </div>
 
-                <div class="debt-info">
+                <div class="ms-2">
 
-                    {% if item.tipe == "PIUTANG" %}
-                    <span class="badge bg-success">
-                        PIUTANG
-                    </span>
+                    <div class="debt-title">
+                        Hutang & Piutang
+                    </div>
+
+                    <div class="debt-subtitle">
+                        Kelola kewajiban dan uang yang harus diterima.
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+
+            <!-- SUMMARY -->
+
+            <div class="debt-summary mt-3">
+
+
+                <div class="debt-box green">
+
+                    <small>
+                        📥 Total Piutang
+                    </small>
+
+                    <h4>
+                        Rp {{ "{:,.0f}".format(total_piutang or 0) }}
+                    </h4>
+
+                </div>
+
+
+
+
+                <div class="debt-box red">
+
+                    <small>
+                        💳 Total Hutang
+                    </small>
+
+                    <h4>
+                        Rp {{ "{:,.0f}".format(total_hutang or 0) }}
+                    </h4>
+
+                </div>
+
+
+
+
+                <div class="debt-box blue">
+
+                    <small>
+                        ⚖️ Net Balance
+                    </small>
+
+                    <h4>
+                        Rp {{ "{:,.0f}".format(net_balance or 0) }}
+                    </h4>
+
+                </div>
+
+
+            </div>
+
+
+
+
+
+            <div class="row mt-4 g-3">
+
+
+                <!-- ===================== -->
+                <!-- PIUTANG -->
+                <!-- ===================== -->
+
+
+                <div class="col-lg-6">
+
+
+                    <h6 class="text-success fw-bold">
+
+                        📥 Piutang Aktif
+
+                    </h6>
+
+
+
+                    {% for item in piutang_list %}
+
+
+                    <div class="debt-card">
+
+
+                        <div class="flex-grow-1">
+
+
+                            <div class="fw-bold">
+
+                                {{ item.nama }}
+
+                            </div>
+
+
+
+                            <div class="small text-muted">
+
+                                {{ item.keterangan or "-" }}
+
+                            </div>
+
+
+
+                            <div class="small text-muted mt-1">
+
+                                {{ item.tanggal.strftime("%d %b %Y") }}
+
+                            </div>
+
+
+                        </div>
+
+
+
+
+                        <div class="text-end">
+
+
+                            <div class="fw-bold text-success">
+
+                                Rp {{ "{:,.0f}".format(item.nominal) }}
+
+                            </div>
+
+
+
+                            {% if item.status == "LUNAS" %}
+
+                            <span class="badge bg-success">
+
+                                LUNAS
+
+                            </span>
+
+
+                            {% else %}
+
+
+                            <span class="badge bg-warning text-dark">
+
+                                BELUM DIBAYAR
+
+                            </span>
+
+
+                            {% endif %}
+
+
+                        </div>
+
+
+                    </div>
+
+
+
                     {% else %}
-                    <span class="badge bg-danger">
-                        HUTANG
-                    </span>
-                    {% endif %}
 
-                    <span>
-                        {{ item.tanggal.strftime("%d %b %Y") }}
-                    </span>
+
+                    <div class="empty-debt">
+
+                        Tidak ada piutang aktif 😊
+
+                    </div>
+
+
+                    {% endfor %}
+
+
 
                 </div>
 
 
-                <small>
-                    {{ item.keterangan or "-" }}
-                </small>
+
+
+
+
+
+                <!-- ===================== -->
+                <!-- HUTANG -->
+                <!-- ===================== -->
+
+
+                <div class="col-lg-6">
+
+
+                    <h6 class="text-danger fw-bold">
+
+                        💳 Hutang Aktif
+
+                    </h6>
+
+
+
+
+                    {% for item in hutang_list %}
+
+
+
+                    <div class="debt-card">
+
+
+                        <div class="flex-grow-1">
+
+
+                            <div class="fw-bold">
+
+                                {{ item.nama }}
+
+                            </div>
+
+
+
+
+                            <div class="small text-muted">
+
+                                {{ item.keterangan or "-" }}
+
+                            </div>
+
+
+
+
+                            <div class="small text-muted mt-1">
+
+                                {{ item.tanggal.strftime("%d %b %Y") }}
+
+                            </div>
+
+
+
+                        </div>
+
+
+
+
+
+                        <div class="text-end">
+
+
+                            <div class="fw-bold text-danger">
+
+                                Rp {{ "{:,.0f}".format(item.nominal) }}
+
+                            </div>
+
+
+
+
+                            {% if item.status == "LUNAS" %}
+
+
+                            <span class="badge bg-success">
+
+                                LUNAS
+
+                            </span>
+
+
+
+                            {% else %}
+
+
+
+                            <span class="badge bg-danger">
+
+                                BELUM LUNAS
+
+                            </span>
+
+
+
+                            {% endif %}
+
+
+
+                        </div>
+
+
+
+                    </div>
+
+
+
+
+                    {% else %}
+
+
+                    <div class="empty-debt">
+
+                        Tidak ada hutang aktif 😊
+
+                    </div>
+
+
+
+                    {% endfor %}
+
+
+
+
+                </div>
+
 
 
             </div>
 
 
-            <div class="debt-right">
-
-                <strong>
-                    Rp {{ "{:,.0f}".format(item.nominal) }}
-                </strong>
-
-
-                {% if item.status == "LUNAS" %}
-
-                <span class="badge bg-success">
-                    LUNAS
-                </span>
-
-                {% else %}
-
-                <span class="badge bg-warning text-dark">
-                    BELUM LUNAS
-                </span>
-
-                {% endif %}
-
-
-            </div>
 
         </div>
+        <style>
+            .debt-wrapper {
+
+                background: white;
+                border: 1px solid var(--border);
+                border-radius: 22px;
+                padding: 20px;
+                box-shadow: 0 8px 24px rgba(7, 94, 84, .06);
+
+            }
+
+
+
+            .debt-icon {
+
+                width: 35px;
+                height: 35px;
+                border-radius: 12px;
+                background: #dcfce7;
+                color: #15803d;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+            }
+
+
+
+            .debt-title {
+
+                font-family: 'Baloo 2';
+                font-size: 17px;
+                font-weight: 700;
+                color: var(--primary-deep);
+
+            }
+
+
+
+            .debt-subtitle {
+
+                font-size: 12px;
+                color: var(--muted);
+
+            }
+
+
+
+            .debt-summary {
+
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 14px;
+
+            }
+
+
+
+            .debt-box {
+
+                padding: 16px;
+                border-radius: 18px;
+
+            }
+
+
+
+            .debt-box small {
+
+                font-size: 12px;
+
+            }
+
+
+
+            .debt-box h4 {
+
+                margin-top: 6px;
+                font-family: 'Baloo 2';
+
+            }
+
+
+
+            .debt-box.green {
+
+                background: #dcfce7;
+                color: #15803d;
+
+            }
+
+
+
+            .debt-box.red {
+
+                background: #fee2e2;
+                color: #dc2626;
+
+            }
+
+
+
+            .debt-box.blue {
+
+                background: #dbeafe;
+                color: #2563eb;
+
+            }
+
+
+
+
+            .debt-card {
+
+                background: #f8fffb;
+                border: 1px solid var(--border);
+                border-radius: 16px;
+                padding: 14px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 10px;
+
+            }
+
+
+
+            .empty-debt {
+
+                background: #f8fffb;
+                border-radius: 15px;
+                padding: 18px;
+                text-align: center;
+                color: #777;
+
+            }
+
+
+
+            @media(max-width:768px) {
+
+                .debt-summary {
+
+                    grid-template-columns: 1fr;
+
+                }
+
+
+                .debt-card {
+
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 10px;
+
+                }
+
+            }
+        </style>
         <div class="ai-wrapper mb-4">
 
             <div class="ai-header">
