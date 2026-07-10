@@ -29,7 +29,7 @@ def scheduler_loop():
 
         schedule.run_pending()
 
-        time.sleep(30)
+        time.sleep(1)
 
 # =========================
 # CONFIG DB
@@ -1031,11 +1031,14 @@ def kirim_laporan_harian():
             )
 
 
-schedule.every().day.at(
-    "21:33"
-).do(
-    kirim_laporan_harian
-)
+# schedule.every().day.at(
+#     "21:33"
+# ).do(
+#     kirim_laporan_harian
+# )
+schedule.every(1).minutes.do(kirim_laporan_harian)
+
+print("Jobs:", schedule.jobs)
 
 threading.Thread(
     target=scheduler_loop,
