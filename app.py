@@ -29,10 +29,7 @@ def scheduler_loop():
 
 
 
-threading.Thread(
-    target=scheduler_loop,
-    daemon=True
-).start()
+
 
 # =========================
 # CONFIG DB
@@ -1035,10 +1032,15 @@ def kirim_laporan_harian():
 
 
 schedule.every().day.at(
-    "21:15"
+    "21:28"
 ).do(
     kirim_laporan_harian
 )
+
+threading.Thread(
+    target=scheduler_loop,
+    daemon=True
+).start()
 
 # =========================
 # TEST
