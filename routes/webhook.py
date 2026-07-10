@@ -661,22 +661,17 @@ Selamat menabung 💚"""
 
         saldo = masuk - keluar
 
-        link = generate_dashboard_link(sender)
+        # link = generate_dashboard_link(sender)
 
         kirim_wa(
             sender,
             f"""💳 *Saldo Keuangan*
-┌────────────────┐
+┌─────────────────────┐
 📥 Masuk   : Rp {masuk:,.0f}
 📤 Keluar  : Rp {keluar:,.0f}
- ─────────────────
+ ──────────────────────
 💰 Saldo   : *Rp {saldo:,.0f}*
-└────────────────┘
-
-📊 Dashboard
-{link}
-
-🕒 Link Berlaku *30 Menit*
+└─────────────────────┘
 
 🤖 ChatSaku Finance Assistant
 """
@@ -700,7 +695,7 @@ Selamat menabung 💚"""
                 else "-"
             )
 
-            link = generate_dashboard_link(sender)
+            # link = generate_dashboard_link(sender)
 
             trx = Transaksi(
                 tanggal=sekarang(),
@@ -730,22 +725,17 @@ Selamat menabung 💚"""
             kirim_wa(
                 sender,
                 f"""✅ *Transaksi Berhasil*
-┌────────────────────
+┌────────────────────┐
 💰 *KREDIT MASUK*
 
 💵 Nominal      : Rp. {nominal:,.0f}
 📝 Keterangan   : {keterangan}
 
 🕒 {sekarang().strftime("%d %b %Y • %H:%M")}
-└────────────────────
+└────────────────────┘
 
 💳 *Saldo Saat Ini*
 Rp {saldo:,.0f}
-
-📊 Dashboard
-{link}
-
-⏳ Link Berlaku *30 Menit*
 
 ━━━━━━━━━━━━━━━━━━
 🤖 ChatSaku Finance Assistant
@@ -977,11 +967,6 @@ budget transport 1000000
 💳 Saldo Tersedia
 *Rp {saldo:,.0f}*
 
-📈 Dashboard
-{link}
-
-⏳ Link Berlaku *30 Menit*
-
 ──────────────────
 🤖 ChatSaku Finance Assistant
 """
@@ -1042,11 +1027,6 @@ keluar 25000 grab
 
 💰 *Total Aktivitas*
 Rp {total:,.0f}
-
-📊 *Dashboard*
-{link}
-
-🔒 Link berlaku selama *30 Menit*.
 
 ━━━━━━━━━━━━━━
 🤖 *Finance Assistant*
