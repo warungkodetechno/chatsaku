@@ -21,15 +21,15 @@ app = Flask(__name__)
 
 def scheduler_loop():
 
+    print("Scheduler Start")
+
     while True:
+
+        print(datetime.now())
 
         schedule.run_pending()
 
         time.sleep(30)
-
-
-
-
 
 # =========================
 # CONFIG DB
