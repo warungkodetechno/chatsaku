@@ -21,13 +21,13 @@ app = Flask(__name__)
 
 def scheduler_loop():
 
-    print("Scheduler Start")
-
     while True:
 
-        print(datetime.now())
+        try:
+            schedule.run_pending()
 
-        schedule.run_pending()
+        except Exception as e:
+            print("Scheduler Error:", e)
 
         time.sleep(1)
 
@@ -964,81 +964,59 @@ Smart Personal Finance Assistant
 
 def kirim_laporan_harian():
 
-    print("🚀 kirim_laporan_harian dijalankan")
+    with app.app_context():
 
+        print("🚀 kirim_laporan_harian dijalankan")
 
-    users = User.query.all()
+        users = User.query.all()
 
+        print("Jumlah user:", len(users))
 
-    print(
-        "Jumlah user:",
-        len(users)
-    )
+        for user in users:
 
+            print(
+                "Proses user:",
+                user.nomor_wa,
+                "paket:",
+                user.paket
+            )
 
-    for user in users:
+            try:
 
-        print(
-            "Proses user:",
-            user.nomor_wa,
-            "paket:",
-            user.paket
-        )
+                if not has_feature(user.nomor_wa, "laporan_harian"):
+                    print("Lewat:", user.nomor_wa)
+                    continue
 
+                laporan = generate_laporan_harian(user.nomor_wa)
 
-        try:
-
-            # cek apakah user memiliki fitur laporan harian
-            if not has_feature(user.nomor_wa, "laporan_harian"):
-
-                print(
-                    "Lewat, fitur tidak aktif:",
-                    user.nomor_wa
+                kirim_wa(
+                    user.nomor_wa,
+                    laporan
                 )
 
-                continue
+                print("✅ Berhasil:", user.nomor_wa)
+
+            except Exception as e:
+
+                print("❌ Error:", e)
 
 
-            laporan = generate_laporan_harian(
-                user.nomor_wa
-            )
+schedule.every().day.at(
+    "21:43"
+).do(
+    kirim_laporan_harian
+)
+# schedule.every(1).minutes.do(kirim_laporan_harian)
 
-
-            print(
-                "Kirim laporan ke:",
-                user.nomor_wa
-            )
-
-
-            kirim_wa(
-                user.nomor_wa,
-                laporan
-            )
-
-
-            print(
-                "✅ Sukses kirim:",
-                user.nomor_wa
-            )
-
-
-        except Exception as e:
-
-            print(
-                "❌ Laporan error:",
-                user.nomor_wa,
-                e
-            )
-
-
-# schedule.every().day.at(
-#     "21:33"
-# ).do(
-#     kirim_laporan_harian
+# print("Jobs:", schedule.jobs)
+# print(
+#     "Jumlah job:",
+#     len(schedule.jobs)
 # )
-schedule.every(1).minutes.do(kirim_laporan_harian)
 
-print("Jobs:", schedule.jobs)
+# print(
+#     schedule.jobs
+# )
 
 threading.Thread(
     target=scheduler_loop,
