@@ -967,16 +967,48 @@ Smart Personal Finance Assistant
 
 def kirim_laporan_harian():
 
+    print("🚀 kirim_laporan_harian dijalankan")
+
 
     users = User.query.all()
 
 
+    print(
+        "Jumlah user:",
+        len(users)
+    )
+
+
     for user in users:
+
+        print(
+            "Proses user:",
+            user.nomor_wa,
+            "paket:",
+            user.paket
+        )
 
 
         try:
 
+            # cek apakah user memiliki fitur laporan harian
+            if not has_feature(user.nomor_wa, "laporan_harian"):
+
+                print(
+                    "Lewat, fitur tidak aktif:",
+                    user.nomor_wa
+                )
+
+                continue
+
+
             laporan = generate_laporan_harian(
+                user.nomor_wa
+            )
+
+
+            print(
+                "Kirim laporan ke:",
                 user.nomor_wa
             )
 
@@ -987,17 +1019,23 @@ def kirim_laporan_harian():
             )
 
 
+            print(
+                "✅ Sukses kirim:",
+                user.nomor_wa
+            )
+
+
         except Exception as e:
 
             print(
-                "Laporan error:",
+                "❌ Laporan error:",
+                user.nomor_wa,
                 e
             )
 
 
-
 schedule.every().day.at(
-    "21:05"
+    "21:15"
 ).do(
     kirim_laporan_harian
 )
