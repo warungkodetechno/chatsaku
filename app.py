@@ -14,7 +14,25 @@ from itsdangerous import BadSignature
 from itsdangerous import SignatureExpired
 from utils.helper import *
 
+import schedule
+import threading
+
 app = Flask(__name__)
+
+def scheduler_loop():
+
+    while True:
+
+        schedule.run_pending()
+
+        time.sleep(30)
+
+
+
+threading.Thread(
+    target=scheduler_loop,
+    daemon=True
+).start()
 
 # =========================
 # CONFIG DB
@@ -744,6 +762,245 @@ def fitur():
         "fitur.html",
         commands=commands
     )
+
+# =====================================
+# LAPORAN HARIAN FINANCE
+# =====================================
+
+def generate_laporan_harian(nomor_wa):
+
+
+    hari_ini = date.today()
+
+
+    awal = datetime.combine(
+        hari_ini,
+        time.min
+    )
+
+
+    akhir = datetime.combine(
+        hari_ini,
+        time.max
+    )
+
+
+
+    # =========================
+    # TRANSAKSI MASUK KELUAR
+    # =========================
+
+
+    transaksi = Transaksi.query.filter(
+        Transaksi.nomor_wa == nomor_wa,
+        Transaksi.tanggal.between(
+            awal,
+            akhir
+        )
+    ).all()
+
+
+
+    total_masuk = 0
+    total_keluar = 0
+
+
+    detail_masuk = ""
+    detail_keluar = ""
+
+
+
+    for t in transaksi:
+
+
+        if t.jenis == "MASUK":
+
+            total_masuk += t.nominal
+
+
+            detail_masuk += (
+                f"\n• {t.keterangan}"
+                f"\n  Rp {t.nominal:,.0f}"
+            )
+
+
+        else:
+
+            total_keluar += t.nominal
+
+
+            detail_keluar += (
+                f"\n• {t.keterangan}"
+                f"\n  Rp {t.nominal:,.0f}"
+            )
+
+
+
+    # =========================
+    # HUTANG
+    # =========================
+
+
+    hutang = HutangPiutang.query.filter(
+        HutangPiutang.nomor_wa == nomor_wa,
+        HutangPiutang.tipe == "HUTANG",
+        HutangPiutang.tanggal.between(
+            awal,
+            akhir
+        )
+    ).all()
+
+
+
+    piutang = HutangPiutang.query.filter(
+        HutangPiutang.nomor_wa == nomor_wa,
+        HutangPiutang.tipe == "PIUTANG",
+        HutangPiutang.tanggal.between(
+            awal,
+            akhir
+        )
+    ).all()
+
+
+
+    total_hutang = sum(
+        x.nominal for x in hutang
+    )
+
+
+    total_piutang = sum(
+        x.nominal for x in piutang
+    )
+
+
+
+    detail_hutang = ""
+
+    for h in hutang:
+
+        detail_hutang += (
+            f"\n• {h.nama}"
+            f" Rp {h.nominal:,.0f}"
+        )
+
+
+
+    detail_piutang = ""
+
+    for p in piutang:
+
+        detail_piutang += (
+            f"\n• {p.nama}"
+            f" Rp {p.nominal:,.0f}"
+        )
+
+
+
+    saldo = (
+        total_masuk -
+        total_keluar
+    )
+
+
+
+    laporan = f"""
+📊 *LAPORAN HARIAN CHATSAKU*
+
+📅 {hari_ini.strftime("%d %B %Y")}
+
+
+━━━━━━━━━━━━━━
+
+💰 *PEMASUKAN*
+
+Total:
+Rp {total_masuk:,.0f}
+
+{detail_masuk or "- Tidak ada"}
+
+
+━━━━━━━━━━━━━━
+
+💸 *PENGELUARAN*
+
+Total:
+Rp {total_keluar:,.0f}
+
+{detail_keluar or "- Tidak ada"}
+
+
+━━━━━━━━━━━━━━
+
+💳 *HUTANG BARU*
+
+Total:
+Rp {total_hutang:,.0f}
+
+{detail_hutang or "- Tidak ada"}
+
+
+━━━━━━━━━━━━━━
+
+📥 *PIUTANG BARU*
+
+Total:
+Rp {total_piutang:,.0f}
+
+{detail_piutang or "- Tidak ada"}
+
+
+━━━━━━━━━━━━━━
+
+📌 *RINGKASAN*
+
+Saldo Hari Ini:
+
+Rp {saldo:,.0f}
+
+
+🤖 ChatSaku Finance
+Smart Personal Finance Assistant
+"""
+
+
+    return laporan
+
+def kirim_laporan_harian():
+
+
+    users = User.query.all()
+
+
+    for user in users:
+
+
+        try:
+
+            laporan = generate_laporan_harian(
+                user.nomor_wa
+            )
+
+
+            kirim_wa(
+                user.nomor_wa,
+                laporan
+            )
+
+
+        except Exception as e:
+
+            print(
+                "Laporan error:",
+                e
+            )
+
+
+
+schedule.every().day.at(
+    "21:00"
+).do(
+    kirim_laporan_harian
+)
 
 # =========================
 # TEST
