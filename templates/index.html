@@ -1483,6 +1483,66 @@
 
             }
         </style>
+        <div class="debt-card">
+
+            <div class="debt-left">
+
+                <div class="debt-name">
+                    {{ item.nama }}
+                </div>
+
+                <div class="debt-info">
+
+                    {% if item.tipe == "PIUTANG" %}
+                    <span class="badge bg-success">
+                        PIUTANG
+                    </span>
+                    {% else %}
+                    <span class="badge bg-danger">
+                        HUTANG
+                    </span>
+                    {% endif %}
+
+                    <span>
+                        {{ item.tanggal.strftime("%d %b %Y") }}
+                    </span>
+
+                </div>
+
+
+                <small>
+                    {{ item.keterangan or "-" }}
+                </small>
+
+
+            </div>
+
+
+            <div class="debt-right">
+
+                <strong>
+                    Rp {{ "{:,.0f}".format(item.nominal) }}
+                </strong>
+
+
+                {% if item.status == "LUNAS" %}
+
+                <span class="badge bg-success">
+                    LUNAS
+                </span>
+
+                {% else %}
+
+                <span class="badge bg-warning text-dark">
+                    BELUM LUNAS
+                </span>
+
+                {% endif %}
+
+
+            </div>
+
+        </div>
         <div class="ai-wrapper mb-4">
 
             <div class="ai-header">

@@ -423,6 +423,42 @@ def dashboard(token):
 
         )
 
+    # ==========================
+    # HUTANG PIUTANG SUMMARY
+    # ==========================
+
+    hutang_list = HutangPiutang.query.filter(
+        HutangPiutang.nomor_wa == nomor_wa,
+        HutangPiutang.tipe == "HUTANG",
+        HutangPiutang.status != "LUNAS"
+    ).order_by(
+        HutangPiutang.tanggal.desc()
+    ).all()
+
+
+
+    piutang_list = HutangPiutang.query.filter(
+        HutangPiutang.nomor_wa == nomor_wa,
+        HutangPiutang.tipe == "PIUTANG",
+        HutangPiutang.status != "LUNAS"
+    ).order_by(
+        HutangPiutang.tanggal.desc()
+    ).all()
+
+
+
+    total_hutang = sum(
+        x.nominal for x in hutang_list
+    )
+
+
+    total_piutang = sum(
+        x.nominal for x in piutang_list
+    )
+
+
+    net_balance = total_piutang - total_hutang
+
     # =========================
     # RENDER
     # =========================
@@ -440,7 +476,13 @@ def dashboard(token):
         budget_data=budget_data,
         reminders=reminders,
         now=datetime.now(),
-        insight=insight
+        insight=insight,
+        hutang_list=hutang_list,
+        piutang_list=piutang_list,
+
+        total_hutang=total_hutang,
+        total_piutang=total_piutang,
+        net_balance=net_balance
     )
 
 @app.route("/dashboard-data/<token>")
