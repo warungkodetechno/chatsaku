@@ -253,7 +253,8 @@ FEATURES = {
         "pdf",
         "target",
         "tabung",
-        "hapustarget"
+        "hapustarget",
+        "laporan_harian"
 
     }
 
@@ -266,10 +267,24 @@ def has_feature(sender, feature):
         aktif=True
     ).first()
 
+
     if not user:
         return False
 
+
+    # cek masa aktif paket
+    if user.paket != "FREE":
+
+        if user.akhir_langganan:
+
+            if user.akhir_langganan < now_jakarta().date():
+
+                return False
+
+
+
     paket = (user.paket or "FREE").upper()
+
 
     return feature in FEATURES.get(
         paket,
