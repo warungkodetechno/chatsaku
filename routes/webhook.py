@@ -268,6 +268,7 @@ https://www.chatsaku.com
         cmd == "saldo"
         or cmd == "hariini"
         or cmd == "insight"
+        or cmd == "dashboard"
         or cmd.startswith("masuk")
         or cmd.startswith("keluar")
         or cmd.startswith("budget")
@@ -2276,6 +2277,42 @@ untuk melihat seluruh reminder.
     🕒 {datetime.now().strftime("%d %b %Y %H:%M")}
 
     🤖 ChatSaku Finance"""
+        )
+
+
+        return jsonify(status=True)
+
+    # =========================
+    # DASHBOARD
+    # =========================
+
+    if cmd == "dashboard":
+
+        link = generate_dashboard_link(sender)
+
+
+        kirim_wa(
+            sender,
+            f"""📊 *Dashboard ChatSaku*
+
+    Akses ringkasan keuangan Anda:
+
+    {link}
+
+
+    Fitur tersedia:
+
+    💰 Saldo
+    📥 Pemasukan
+    📤 Pengeluaran
+    📈 Grafik transaksi
+    💳 Hutang Piutang
+    🎯 Target Pembelian
+
+
+    ⏳ Link aktif 30 menit
+
+    🤖 ChatSaku Finance Assistant"""
         )
 
 
