@@ -189,7 +189,9 @@ def dashboard(token):
     nomor = verify_token(token)
 
     if not nomor:
-        return "Link sudah tidak berlaku.", 403
+        return render_template(
+            "link_expired.html"
+        )
 
     # =========================
     # PARAMETER
@@ -483,6 +485,13 @@ def dashboard(token):
         total_hutang=total_hutang,
         total_piutang=total_piutang,
         net_balance=net_balance
+    )
+
+@app.route("/expired")
+def expired():
+
+    return render_template(
+        "link_expired.html"
     )
 
 @app.route("/dashboard-data/<token>")
