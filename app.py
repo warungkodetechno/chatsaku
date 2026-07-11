@@ -1,11 +1,10 @@
 from flask import Flask, request, jsonify, render_template, send_file, redirect
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
 from models import db, Transaksi, Budget, Reminder, User, RequestDemo, HutangPiutang
 from routes.webhook import webhook_bp
 import requests
 import os
-import time
 import pandas as pd
 import io
 from zoneinfo import ZoneInfo
@@ -21,16 +20,23 @@ app = Flask(__name__)
 
 def scheduler_loop():
 
+    print("Scheduler Started")
+
     while True:
 
         try:
+
+            print("Now :", datetime.now())
+            print("Jobs :", schedule.jobs)
+
             schedule.run_pending()
 
         except Exception as e:
-            print("Scheduler Error:", e)
+
+            import traceback
+            traceback.print_exc()
 
         time.sleep(1)
-
 # =========================
 # CONFIG DB
 # =========================
@@ -810,7 +816,7 @@ def generate_laporan_harian(nomor_wa):
     for t in transaksi:
 
 
-        if t.jenis == "MASUK":
+        if t.tipe == "MASUK":
 
             total_masuk += t.nominal
 
@@ -1002,21 +1008,13 @@ def kirim_laporan_harian():
 
 
 schedule.every().day.at(
-    "21:43"
+    "12:03"
 ).do(
     kirim_laporan_harian
 )
 # schedule.every(1).minutes.do(kirim_laporan_harian)
 
-# print("Jobs:", schedule.jobs)
-# print(
-#     "Jumlah job:",
-#     len(schedule.jobs)
-# )
-
-# print(
-#     schedule.jobs
-# )
+print(schedule.jobs)
 
 threading.Thread(
     target=scheduler_loop,
