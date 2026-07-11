@@ -877,57 +877,42 @@ def generate_laporan_harian(nomor_wa):
 
     saldo = total_masuk - total_keluar
 
-    laporan = f"""📊 *LAPORAN HARIAN CHATSAKU*
-
+    laporan = f"""📊 *Laporan Harian ChatSaku*
 📅 {hari_ini.strftime("%d %B %Y")}
 
-━━━━━━━━━━━━━━
+════════════════════
 
-💰 *PEMASUKAN*
+📈 *Ringkasan*
 
-Total:
-Rp {total_masuk:,.0f}
+• 💰 Pemasukan      : Rp {total_masuk:,.0f}
+• 💸 Pengeluaran    : Rp {total_keluar:,.0f}
+• 💳 Hutang Baru    : Rp {total_hutang:,.0f}
+• 📥 Piutang Baru   : Rp {total_piutang:,.0f}
 
-{detail_masuk or "- Tidak ada"}
+━━━━━━━━━━━━━━━━━━━━
 
-━━━━━━━━━━━━━━
+💼 *Saldo Hari Ini*
+💵 *Rp {saldo:,.0f}*
 
-💸 *PENGELUARAN*
+━━━━━━━━━━━━━━━━━━━━
 
-Total:
-Rp {total_keluar:,.0f}
+🟢 *Detail Pemasukan*
+{detail_masuk or "• Tidak ada"}
 
-{detail_keluar or "- Tidak ada"}
+🔴 *Detail Pengeluaran*
+{detail_keluar or "• Tidak ada"}
 
-━━━━━━━━━━━━━━
+🟠 *Detail Hutang*
+{detail_hutang or "• Tidak ada"}
 
-💳 *HUTANG BARU*
+🔵 *Detail Piutang*
+{detail_piutang or "• Tidak ada"}
 
-Total:
-Rp {total_hutang:,.0f}
+════════════════════
 
-{detail_hutang or "- Tidak ada"}
-
-━━━━━━━━━━━━━━
-
-📥 *PIUTANG BARU*
-
-Total:
-Rp {total_piutang:,.0f}
-
-{detail_piutang or "- Tidak ada"}
-
-━━━━━━━━━━━━━━
-
-📌 *RINGKASAN*
-
-Saldo Hari Ini:
-Rp {saldo:,.0f}
-
-🤖 ChatSaku Finance
-Smart Personal Finance Assistant
+Terima kasih telah menggunakan *ChatSaku* 😊
+Kelola keuangan lebih rapi, setiap hari.
 """
-
     return laporan
 
 def kirim_laporan_harian():
