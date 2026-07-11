@@ -965,7 +965,7 @@ scheduler.add_job(
     func=kirim_laporan_harian,
     trigger="cron",
     hour=12,
-    minute=33,
+    minute=45,
     id="laporan_harian",
     replace_existing=True
 )
