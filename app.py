@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify, render_template, send_file, redirect
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime, timedelta, time
+from datetime import datetime, timedelta, time as dt_time
+import time
 from models import db, Transaksi, Budget, Reminder, User, RequestDemo, HutangPiutang
 from routes.webhook import webhook_bp
 import requests
@@ -772,27 +773,21 @@ def fitur():
 
 def generate_laporan_harian(nomor_wa):
 
-
     hari_ini = date.today()
-
 
     awal = datetime.combine(
         hari_ini,
-        time.min
+        dt_time.min
     )
-
 
     akhir = datetime.combine(
         hari_ini,
-        time.max
+        dt_time.max
     )
 
-
-
     # =========================
-    # TRANSAKSI MASUK KELUAR
+    # TRANSAKSI HARI INI
     # =========================
-
 
     transaksi = Transaksi.query.filter(
         Transaksi.nomor_wa == nomor_wa,
@@ -802,47 +797,35 @@ def generate_laporan_harian(nomor_wa):
         )
     ).all()
 
-
-
     total_masuk = 0
     total_keluar = 0
-
 
     detail_masuk = ""
     detail_keluar = ""
 
-
-
     for t in transaksi:
-
 
         if t.tipe == "MASUK":
 
             total_masuk += t.nominal
-
 
             detail_masuk += (
                 f"\n• {t.keterangan}"
                 f"\n  Rp {t.nominal:,.0f}"
             )
 
-
         else:
 
             total_keluar += t.nominal
-
 
             detail_keluar += (
                 f"\n• {t.keterangan}"
                 f"\n  Rp {t.nominal:,.0f}"
             )
 
-
-
     # =========================
-    # HUTANG
+    # HUTANG HARI INI
     # =========================
-
 
     hutang = HutangPiutang.query.filter(
         HutangPiutang.nomor_wa == nomor_wa,
@@ -853,7 +836,22 @@ def generate_laporan_harian(nomor_wa):
         )
     ).all()
 
+    total_hutang = sum(
+        h.nominal for h in hutang
+    )
 
+    detail_hutang = ""
+
+    for h in hutang:
+
+        detail_hutang += (
+            f"\n• {h.nama}"
+            f"\n  Rp {h.nominal:,.0f}"
+        )
+
+    # =========================
+    # PIUTANG HARI INI
+    # =========================
 
     piutang = HutangPiutang.query.filter(
         HutangPiutang.nomor_wa == nomor_wa,
@@ -864,29 +862,9 @@ def generate_laporan_harian(nomor_wa):
         )
     ).all()
 
-
-
-    total_hutang = sum(
-        x.nominal for x in hutang
-    )
-
-
     total_piutang = sum(
-        x.nominal for x in piutang
+        p.nominal for p in piutang
     )
-
-
-
-    detail_hutang = ""
-
-    for h in hutang:
-
-        detail_hutang += (
-            f"\n• {h.nama}"
-            f" Rp {h.nominal:,.0f}"
-        )
-
-
 
     detail_piutang = ""
 
@@ -894,23 +872,14 @@ def generate_laporan_harian(nomor_wa):
 
         detail_piutang += (
             f"\n• {p.nama}"
-            f" Rp {p.nominal:,.0f}"
+            f"\n  Rp {p.nominal:,.0f}"
         )
 
+    saldo = total_masuk - total_keluar
 
-
-    saldo = (
-        total_masuk -
-        total_keluar
-    )
-
-
-
-    laporan = f"""
-📊 *LAPORAN HARIAN CHATSAKU*
+    laporan = f"""📊 *LAPORAN HARIAN CHATSAKU*
 
 📅 {hari_ini.strftime("%d %B %Y")}
-
 
 ━━━━━━━━━━━━━━
 
@@ -921,7 +890,6 @@ Rp {total_masuk:,.0f}
 
 {detail_masuk or "- Tidak ada"}
 
-
 ━━━━━━━━━━━━━━
 
 💸 *PENGELUARAN*
@@ -930,7 +898,6 @@ Total:
 Rp {total_keluar:,.0f}
 
 {detail_keluar or "- Tidak ada"}
-
 
 ━━━━━━━━━━━━━━
 
@@ -941,7 +908,6 @@ Rp {total_hutang:,.0f}
 
 {detail_hutang or "- Tidak ada"}
 
-
 ━━━━━━━━━━━━━━
 
 📥 *PIUTANG BARU*
@@ -951,20 +917,16 @@ Rp {total_piutang:,.0f}
 
 {detail_piutang or "- Tidak ada"}
 
-
 ━━━━━━━━━━━━━━
 
 📌 *RINGKASAN*
 
 Saldo Hari Ini:
-
 Rp {saldo:,.0f}
-
 
 🤖 ChatSaku Finance
 Smart Personal Finance Assistant
 """
-
 
     return laporan
 
@@ -1008,7 +970,7 @@ def kirim_laporan_harian():
 
 
 schedule.every().day.at(
-    "12:03"
+    "12:11"
 ).do(
     kirim_laporan_harian
 )
