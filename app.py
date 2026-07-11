@@ -22,6 +22,8 @@ app = Flask(__name__)
 def scheduler_loop():
 
     print("Scheduler Started")
+    print("Server :", datetime.now())
+    print("Jakarta:", now_jakarta())
 
     while True:
 
