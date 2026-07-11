@@ -22,20 +22,17 @@ app = Flask(__name__)
 def scheduler_loop():
 
     print("Scheduler Started")
-    print("Server :", datetime.now())
-    print("Jakarta:", now_jakarta())
 
     while True:
 
         try:
 
-            print("Now :", datetime.now())
-            print("Jobs :", schedule.jobs)
+            print("Server  :", datetime.now())
+            print("Jakarta :", now_jakarta())
 
             schedule.run_pending()
 
-        except Exception as e:
-
+        except Exception:
             import traceback
             traceback.print_exc()
 
