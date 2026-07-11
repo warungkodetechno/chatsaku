@@ -969,7 +969,7 @@ def kirim_laporan_harian():
 
 
 schedule.every().day.at(
-    "12:11"
+    "12:20"
 ).do(
     kirim_laporan_harian
 )
