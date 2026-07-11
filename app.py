@@ -14,29 +14,30 @@ from itsdangerous import BadSignature
 from itsdangerous import SignatureExpired
 from utils.helper import *
 
-import schedule
-import threading
+from apscheduler.schedulers.background import BackgroundScheduler
+from zoneinfo import ZoneInfo
+import atexit
 
 app = Flask(__name__)
 
-def scheduler_loop():
+# def scheduler_loop():
 
-    print("Scheduler Started")
+#     print("Scheduler Started")
 
-    while True:
+#     while True:
 
-        try:
+#         try:
 
-            print("Server  :", datetime.now())
-            print("Jakarta :", now_jakarta())
+#             print("Server  :", datetime.now())
+#             print("Jakarta :", now_jakarta())
 
-            schedule.run_pending()
+#             schedule.run_pending()
 
-        except Exception:
-            import traceback
-            traceback.print_exc()
+#         except Exception:
+#             import traceback
+#             traceback.print_exc()
 
-        time.sleep(1)
+#         time.sleep(1)
 # =========================
 # CONFIG DB
 # =========================
@@ -931,6 +932,10 @@ Smart Personal Finance Assistant
 
 def kirim_laporan_harian():
 
+    print("=" * 60)
+    print("Scheduler dijalankan :", now_jakarta())
+    print("=" * 60)
+
     with app.app_context():
 
         print("🚀 kirim_laporan_harian dijalankan")
@@ -967,20 +972,35 @@ def kirim_laporan_harian():
 
                 print("❌ Error:", e)
 
-
-schedule.every().day.at(
-    "12:20"
-).do(
-    kirim_laporan_harian
+scheduler = BackgroundScheduler(
+    timezone=ZoneInfo("Asia/Jakarta")
 )
-# schedule.every(1).minutes.do(kirim_laporan_harian)
 
-print(schedule.jobs)
+scheduler.add_job(
+    func=kirim_laporan_harian,
+    trigger="cron",
+    hour=12,
+    minute=33,
+    id="laporan_harian",
+    replace_existing=True
+)
 
-threading.Thread(
-    target=scheduler_loop,
-    daemon=True
-).start()
+scheduler.start()
+
+atexit.register(lambda: scheduler.shutdown())
+# schedule.every().day.at(
+#     "12:20"
+# ).do(
+#     kirim_laporan_harian
+# )
+# # schedule.every(1).minutes.do(kirim_laporan_harian)
+
+# print(schedule.jobs)
+
+# threading.Thread(
+#     target=scheduler_loop,
+#     daemon=True
+# ).start()
 
 # =========================
 # TEST
