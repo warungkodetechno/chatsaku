@@ -877,6 +877,34 @@ def generate_laporan_harian(nomor_wa):
 
     saldo = total_masuk - total_keluar
 
+    # =========================
+    # SALDO KESELURUHAN
+    # =========================
+
+    total_semua_masuk = db.session.query(
+        db.func.coalesce(
+            db.func.sum(Transaksi.nominal),
+            0
+        )
+    ).filter(
+        Transaksi.nomor_wa == nomor_wa,
+        Transaksi.tipe == "MASUK"
+    ).scalar()
+
+    total_semua_keluar = db.session.query(
+        db.func.coalesce(
+            db.func.sum(Transaksi.nominal),
+            0
+        )
+    ).filter(
+        Transaksi.nomor_wa == nomor_wa,
+        Transaksi.tipe == "KELUAR"
+    ).scalar()
+
+    saldo_total = total_semua_masuk - total_semua_keluar
+
+    Link = generate_dashboard_link(nomor_wa)
+
     laporan = f"""📊 *Laporan Harian ChatSaku*
 📅 {hari_ini.strftime("%d %B %Y")}
 
@@ -894,6 +922,9 @@ def generate_laporan_harian(nomor_wa):
 💼 *Saldo Hari Ini*
 💵 *Rp {saldo:,.0f}*
 
+💼 *Saldo Keseluruhan*
+💵 *Rp {saldo_total:,.0f}*
+
 ━━━━━━━━━━━━━━━━━━━━
 
 🟢 *Detail Pemasukan*
@@ -909,6 +940,10 @@ def generate_laporan_harian(nomor_wa):
 {detail_piutang or "• Tidak ada"}
 
 ════════════════════
+
+Link Dashboard
+{link}
+*Link aktif selama 30 menit
 
 Terima kasih telah menggunakan *ChatSaku* 😊
 Kelola keuangan lebih rapi, setiap hari.
