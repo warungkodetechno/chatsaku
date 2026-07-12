@@ -942,7 +942,7 @@ def generate_laporan_harian(nomor_wa):
 ════════════════════
 
 Link Dashboard
-{link}
+{Link}
 *Link aktif selama 30 menit
 
 Terima kasih telah menggunakan *ChatSaku* 😊
@@ -1000,7 +1000,7 @@ scheduler.add_job(
     func=kirim_laporan_harian,
     trigger="cron",
     hour=17,
-    minute=22,
+    minute=25,
     id="laporan_harian",
     replace_existing=True
 )
