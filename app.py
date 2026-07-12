@@ -334,6 +334,62 @@ def dashboard(token):
         })
 
     # ==========================================
+    # TARGET PEMBELIAN / TABUNGAN
+    # ==========================================
+
+    target_pembelian = TargetPembelian.query.filter(
+        TargetPembelian.nomor_wa == nomor,
+        TargetPembelian.aktif == True
+    ).order_by(
+        TargetPembelian.deadline.asc()
+    ).first()
+
+    target_data = None
+
+    if target_pembelian:
+
+        progress = 0
+
+        if target_pembelian.target > 0:
+            progress = round(
+                (target_pembelian.terkumpul / target_pembelian.target) * 100,
+                1
+            )
+
+        progress = min(progress, 100)
+
+        sisa = max(
+            target_pembelian.target - target_pembelian.terkumpul,
+            0
+        )
+
+        sisa_hari = (
+            target_pembelian.deadline - datetime.now().date()
+        ).days
+
+        target_data = {
+
+            "id": target_pembelian.id,
+
+            "nama": target_pembelian.nama,
+
+            "target": target_pembelian.target,
+
+            "terkumpul": target_pembelian.terkumpul,
+
+            "sisa": sisa,
+
+            "progress": progress,
+
+            "deadline": target_pembelian.deadline,
+
+            "sisa_hari": sisa_hari,
+
+            "selesai": progress >= 100
+
+        }
+
+    # ==========================================
     # REMINDER TAGIHAN
     # ==========================================
 
@@ -483,6 +539,42 @@ def dashboard(token):
 
     net_balance = total_piutang - total_hutang
 
+    # ==========================================
+    # TARGET PEMBELIAN INSIGHT
+    # ==========================================
+
+    if target_data:
+
+        if target_data["selesai"]:
+
+            insight.append(
+                f"🎉 Target '{target_data['nama']}' telah berhasil tercapai."
+            )
+
+        elif target_data["sisa_hari"] < 0:
+
+            insight.append(
+                f"⏰ Target '{target_data['nama']}' telah melewati deadline."
+            )
+
+        elif target_data["sisa_hari"] <= 7:
+
+            insight.append(
+                f"📅 Deadline target '{target_data['nama']}' tinggal {target_data['sisa_hari']} hari lagi."
+            )
+
+        elif target_data["progress"] >= 80:
+
+            insight.append(
+                f"🎯 Target '{target_data['nama']}' sudah mencapai {target_data['progress']}%."
+            )
+
+        else:
+
+            insight.append(
+                f"💰 Target '{target_data['nama']}' masih kurang Rp {target_data['sisa']:,.0f}."
+            )
+
     # =========================
     # RENDER
     # =========================
@@ -506,7 +598,9 @@ def dashboard(token):
 
         total_hutang=total_hutang,
         total_piutang=total_piutang,
-        net_balance=net_balance
+        net_balance=net_balance,
+
+        target_data=target_data
     )
 
 @app.route("/expired")
