@@ -483,3 +483,79 @@ def ai_insight(sender):
         )
 
     return "\n".join(insight)
+
+def get_harga_paket(nama_paket):
+    """
+    Mengembalikan informasi harga paket beserta promo yang sedang aktif.
+    """
+
+    from models import PromoPaket
+
+    hari_ini = datetime.now().date()
+
+    # =========================
+    # HARGA NORMAL
+    # =========================
+
+    harga_normal = {
+        "FREE": 0,
+        "BASIC": 10000,
+        "PRO": 39000
+    }
+
+    paket = nama_paket.upper()
+
+    harga = harga_normal.get(paket, 0)
+
+    # =========================
+    # CEK PROMO
+    # =========================
+
+    promo = PromoPaket.query.filter(
+        PromoPaket.aktif == True,
+        PromoPaket.paket == paket,
+        PromoPaket.tanggal_mulai <= hari_ini,
+        PromoPaket.tanggal_selesai >= hari_ini
+    ).first()
+
+    if promo:
+
+        return {
+
+            "promo": True,
+
+            "nama_promo": promo.nama,
+
+            "paket": paket,
+
+            "harga_normal": harga,
+
+            "harga": promo.harga_promo,
+
+            "hemat": harga - promo.harga_promo,
+
+            "tanggal_mulai": promo.tanggal_mulai,
+
+            "tanggal_selesai": promo.tanggal_selesai
+
+        }
+
+    return {
+
+        "promo": False,
+
+        "nama_promo": None,
+
+        "paket": paket,
+
+        "harga_normal": harga,
+
+        "harga": harga,
+
+        "hemat": 0,
+
+        "tanggal_mulai": None,
+
+        "tanggal_selesai": None
+
+    }

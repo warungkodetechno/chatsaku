@@ -1116,6 +1116,40 @@ atexit.register(lambda: scheduler.shutdown())
 #     daemon=True
 # ).start()
 
+@app.route("/promo")
+def promo():
+
+    hari_ini = datetime.now().date()
+
+    promo = PromoPaket.query.filter(
+
+        PromoPaket.aktif == True,
+
+        PromoPaket.tanggal_mulai <= hari_ini,
+
+        PromoPaket.tanggal_selesai >= hari_ini
+
+    ).all()
+
+    data = []
+
+    for p in promo:
+
+        data.append({
+
+            "nama": p.nama,
+
+            "paket": p.paket,
+
+            "harga": p.harga_promo,
+
+            "mulai": p.tanggal_mulai.strftime("%d %b %Y"),
+
+            "selesai": p.tanggal_selesai.strftime("%d %b %Y")
+
+        })
+
+    return jsonify(data)
 # =========================
 # TEST
 # =========================

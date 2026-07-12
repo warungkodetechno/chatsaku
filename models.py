@@ -249,3 +249,47 @@ class HutangPiutang(db.Model):
         db.DateTime,
         nullable=True
     )
+
+class PromoPaket(db.Model):
+
+    __tablename__ = "promo_paket"
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+    )
+
+    nama = db.Column(
+        db.String(100),
+        nullable=False
+    )
+
+    paket = db.Column(
+        db.String(20),
+        nullable=False
+    )  # FREE / BASIC / PRO
+
+    harga_promo = db.Column(
+        db.Integer,
+        nullable=False
+    )
+
+    tanggal_mulai = db.Column(
+        db.Date,
+        nullable=False
+    )
+
+    tanggal_selesai = db.Column(
+        db.Date,
+        nullable=False
+    )
+
+    aktif = db.Column(
+        db.Boolean,
+        default=True
+    )
+
+    created_at = db.Column(
+        db.DateTime,
+        default=now_jakarta
+    )
