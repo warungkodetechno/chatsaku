@@ -211,18 +211,20 @@
 
                                     <td>
 
+                                        <button class="btn btn-success btn-sm"
+                                            onclick="bayarPaket('PRO', '{{ u.nomor_wa }}')">
+                                            <i class="bi bi-credit-card"></i>
+                                            Upgrade PRO
+                                        </button>
+
                                         <a class="btn btn-warning btn-sm" href="/admin/users/toggle/{{u.id}}">
-
                                             <i class="bi bi-arrow-repeat"></i>
-
                                         </a>
 
                                         <button class="btn btn-outline-danger btn-sm rounded-circle"
                                             style="width:38px;height:38px" data-bs-toggle="modal"
                                             data-bs-target="#deleteModal" data-id="{{u.id}}" data-nama="{{u.nama}}">
-
                                             <i class="bi bi-trash"></i>
-
                                         </button>
 
                                     </td>
@@ -418,9 +420,6 @@
         </div>
 
     </div>
-    <button class="btn btn-success" onclick="bayarPaket('PRO', '{{ users.nomor_wa }}')">
-        Upgrade PRO
-    </button>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <div class="modal fade" id="deleteModal" tabindex="-1">
