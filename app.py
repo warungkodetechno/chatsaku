@@ -1148,30 +1148,57 @@ snap = midtransclient.Snap(
     server_key=os.getenv("MIDTRANS_SERVER_KEY")
 )
 
+import os
+import uuid
+import midtransclient
 from datetime import datetime
-from flask import jsonify, request
+from flask import request, jsonify
+
+snap = midtransclient.Snap(
+    is_production=False,
+    server_key=os.getenv("MIDTRANS_SERVER_KEY")
+)
 
 @app.route("/api/payment/create", methods=["POST"])
 def create_payment():
+
     try:
-        print("=== CREATE PAYMENT ===")
 
         data = request.get_json()
-        print("DATA:", data)
 
         paket = data.get("paket", "").upper()
-        print("PAKET:", paket)
+        nomor_wa = data.get("nomor_wa")
+
+        if not nomor_wa:
+            return jsonify({
+                "success": False,
+                "message": "Nomor WhatsApp wajib diisi."
+            }), 400
+
+        user = User.query.filter_by(
+            nomor_wa=nomor_wa
+        ).first()
+
+        if not user:
+            return jsonify({
+                "success": False,
+                "message": "User tidak ditemukan."
+            }), 404
 
         HARGA_PAKET = {
             "BASIC": 20000,
             "PRO": 50000
         }
 
+        if paket not in HARGA_PAKET:
+            return jsonify({
+                "success": False,
+                "message": "Paket tidak ditemukan."
+            }), 400
+
         harga = HARGA_PAKET[paket]
 
         hari_ini = datetime.now().date()
-
-        print("CEK PROMO")
 
         promo = PromoPaket.query.filter(
             PromoPaket.paket == paket,
@@ -1180,50 +1207,72 @@ def create_payment():
             PromoPaket.tanggal_selesai >= hari_ini
         ).first()
 
-        print("PROMO:", promo)
-
         if promo:
             harga = promo.harga_promo
 
         order_id = f"CHATSAKU-{uuid.uuid4().hex[:12]}"
 
-        print("ORDER:", order_id)
-        print(current_user)
-        print(type(current_user))
-        print(current_user.is_authenticated)
         parameter = {
+
             "transaction_details": {
                 "order_id": order_id,
                 "gross_amount": int(harga)
             },
+
             "credit_card": {
                 "secure": True
             },
-            "customer_details": {
-                "first_name": current_user.nama,
-                "email": current_user.email,
-                "phone": current_user.nomor_wa
-            }
-        }
 
-        print("CREATE SNAP")
+            "customer_details": {
+
+                "first_name": user.nama,
+
+                "email": user.email if user.email else "user@chatsaku.id",
+
+                "phone": user.nomor_wa
+
+            },
+
+            "item_details": [
+
+                {
+                    "id": paket,
+                    "price": int(harga),
+                    "quantity": 1,
+                    "name": f"ChatSaku {paket}"
+                }
+
+            ]
+
+        }
 
         transaction = snap.create_transaction(parameter)
 
-        print(transaction)
-
         return jsonify({
+
             "success": True,
-            "token": transaction["token"]
+
+            "token": transaction["token"],
+
+            "redirect_url": transaction["redirect_url"],
+
+            "order_id": order_id,
+
+            "harga": harga
+
         })
 
     except Exception as e:
+
         import traceback
         traceback.print_exc()
 
         return jsonify({
+
             "success": False,
+
             "error": str(e)
+
         }), 500
 
 @app.route("/midtrans/notification", methods=["POST"])

@@ -513,46 +513,42 @@
     <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ MIDTRANS_CLIENT_KEY }}">
     </script>
     <script>
-        async function bayarPaket(paket) {
-            try {
+        function bayarPaket(paket) {
 
-                const response = await fetch("/api/payment/create", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        paket: paket
-                    })
-                });
+            fetch("/api/payment/create", {
 
-                const text = await response.text();
+                method: "POST",
 
-                console.log("Response:");
-                console.log(text);
+                headers: {
+                    "Content-Type": "application/json"
+                },
 
-                try {
-                    const data = JSON.parse(text);
+                body: JSON.stringify({
 
-                    console.log(data);
+                    paket: paket,
 
-                    if (!response.ok) {
-                        alert(data.error || data.message);
+                    nomor_wa: document.getElementById("nomor_wa").value
+
+                })
+
+            })
+
+                .then(res => res.json())
+
+                .then(res => {
+
+                    if (!res.success) {
+
+                        alert(res.message || res.error);
+
                         return;
+
                     }
 
-                    snap.pay(data.token);
+                    snap.pay(res.token);
 
-                } catch (e) {
+                });
 
-                    console.log("Response bukan JSON");
-                    console.log(text);
-
-                }
-
-            } catch (err) {
-                console.error(err);
-            }
         }
     </script>
 
