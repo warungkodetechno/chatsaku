@@ -1121,35 +1121,28 @@ def promo():
 
     hari_ini = datetime.now().date()
 
-    promo = PromoPaket.query.filter(
-
+    promos = PromoPaket.query.filter(
         PromoPaket.aktif == True,
-
         PromoPaket.tanggal_mulai <= hari_ini,
-
         PromoPaket.tanggal_selesai >= hari_ini
+    ).order_by(PromoPaket.nama).all()
 
-    ).all()
+    hasil = {}
 
-    data = []
+    for p in promos:
 
-    for p in promo:
+        if p.nama not in hasil:
+            hasil[p.nama] = {
+                "nama": p.nama,
+                "mulai": p.tanggal_mulai.strftime("%d %b %Y"),
+                "selesai": p.tanggal_selesai.strftime("%d %b %Y"),
+                "paket": {}
+            }
 
-        data.append({
+        hasil[p.nama]["paket"][p.paket] = p.harga_promo
 
-            "nama": p.nama,
+     return jsonify(list(hasil.values()))
 
-            "paket": p.paket,
-
-            "harga": p.harga_promo,
-
-            "mulai": p.tanggal_mulai.strftime("%d %b %Y"),
-
-            "selesai": p.tanggal_selesai.strftime("%d %b %Y")
-
-        })
-
-    return jsonify(data)
 # =========================
 # TEST
 # =========================
