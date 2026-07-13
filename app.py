@@ -1152,7 +1152,6 @@ from datetime import datetime
 from flask import jsonify, request
 
 @app.route("/api/payment/create", methods=["POST"])
-@login_required
 def create_payment():
 
     data = request.get_json()
