@@ -38,7 +38,7 @@ class User(db.Model):
 
     akhir_langganan = db.Column(db.Date)
 
-    paket = db.Column(db.String(30), default="FREE")
+    paket = db.Column(db.String(30), default="STARTER")
 
 class Transaksi(db.Model):
 

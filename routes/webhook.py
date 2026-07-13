@@ -219,7 +219,7 @@ https://www.chatsaku.com
 
     from datetime import date
 
-    if user.paket != "FREE" and user.akhir_langganan:
+    if user.paket != "STARTER" and user.akhir_langganan:
 
         if date.today() > user.akhir_langganan:
 

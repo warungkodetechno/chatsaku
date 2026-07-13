@@ -222,7 +222,7 @@ KATEGORI = {
 
 FEATURES = {
 
-    "FREE": {
+    "STARTER": {
 
         "transaksi",
         "dashboard"
@@ -273,7 +273,7 @@ def has_feature(sender, feature):
 
 
     # cek masa aktif paket
-    if user.paket != "FREE":
+    if user.paket != "STARTER":
 
         if user.akhir_langganan:
 
@@ -283,7 +283,7 @@ def has_feature(sender, feature):
 
 
 
-    paket = (user.paket or "FREE").upper()
+    paket = (user.paket or "STARTER").upper()
 
 
     return feature in FEATURES.get(
@@ -498,9 +498,9 @@ def get_harga_paket(nama_paket):
     # =========================
 
     harga_normal = {
-        "FREE": 0,
-        "BASIC": 10000,
-        "PRO": 39000
+        "STARTER": 10000,
+        "PRO": 25000,
+        "PREMIUM": 55000
     }
 
     paket = nama_paket.upper()
