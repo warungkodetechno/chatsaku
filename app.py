@@ -1141,7 +1141,7 @@ def promo():
 
         hasil[p.nama]["paket"][p.paket] = p.harga_promo
 
-     return jsonify(list(hasil.values()))
+    return jsonify(list(hasil.values()))
 
 # =========================
 # TEST
