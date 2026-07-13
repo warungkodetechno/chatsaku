@@ -513,56 +513,46 @@
     <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ MIDTRANS_CLIENT_KEY }}">
     </script>
     <script>
-        function bayarPaket(paket) {
+        async function bayarPaket(paket) {
+            try {
 
-            fetch("/api/payment/create", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    paket: paket
-                })
-            })
-                .then(res => res.json())
-                .then(res => {
+                const response = await fetch("/api/payment/create", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        paket: paket
+                    })
+                });
 
-                    if (!res.success) {
-                        alert(res.message);
+                const text = await response.text();
+
+                console.log("Response:");
+                console.log(text);
+
+                try {
+                    const data = JSON.parse(text);
+
+                    console.log(data);
+
+                    if (!response.ok) {
+                        alert(data.error || data.message);
                         return;
                     }
 
-                    snap.pay(res.token, {
-                        onSuccess: function (result) {
+                    snap.pay(data.token);
 
-                            console.log(result);
+                } catch (e) {
 
-                            alert("Pembayaran berhasil.");
+                    console.log("Response bukan JSON");
+                    console.log(text);
 
-                        },
+                }
 
-                        onPending: function (result) {
-
-                            alert("Menunggu pembayaran.");
-
-                        },
-
-                        onError: function (result) {
-
-                            alert("Pembayaran gagal.");
-
-                        },
-
-                        onClose: function () {
-
-                            console.log("Popup ditutup");
-
-                        }
-
-                    });
-
-                });
-
+            } catch (err) {
+                console.error(err);
+            }
         }
     </script>
 

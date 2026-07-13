@@ -1188,7 +1188,9 @@ def create_payment():
         order_id = f"CHATSAKU-{uuid.uuid4().hex[:12]}"
 
         print("ORDER:", order_id)
-
+        print(current_user)
+        print(type(current_user))
+        print(current_user.is_authenticated)
         parameter = {
             "transaction_details": {
                 "order_id": order_id,
