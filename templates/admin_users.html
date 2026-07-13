@@ -418,8 +418,8 @@
         </div>
 
     </div>
-    <button class="btn btn-success btn-lg" onclick="bayarPaket('PRO')">
-        Upgrade ke PRO
+    <button class="btn btn-success" onclick="bayarPaket('PRO', '{{ user.nomor_wa }}')">
+        Upgrade PRO
     </button>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -513,7 +513,7 @@
     <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ MIDTRANS_CLIENT_KEY }}">
     </script>
     <script>
-        function bayarPaket(paket) {
+        function bayarPaket(paket, nomor_wa) {
 
             fetch("/api/payment/create", {
 
@@ -526,23 +526,17 @@
                 body: JSON.stringify({
 
                     paket: paket,
-
-                    nomor_wa: document.getElementById("nomor_wa").value
+                    nomor_wa: nomor_wa
 
                 })
 
             })
-
                 .then(res => res.json())
-
                 .then(res => {
 
                     if (!res.success) {
-
                         alert(res.message || res.error);
-
                         return;
-
                     }
 
                     snap.pay(res.token);
