@@ -8,3 +8,4 @@ pandas
 openpyxl>=3.1.0
 schedule
 APScheduler==3.11.0
+midtransclient

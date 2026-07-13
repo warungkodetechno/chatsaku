@@ -418,6 +418,9 @@
         </div>
 
     </div>
+    <button class="btn btn-success btn-lg" onclick="bayarPaket('PRO')">
+        Upgrade ke PRO
+    </button>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <div class="modal fade" id="deleteModal" tabindex="-1">
@@ -504,7 +507,65 @@
 
         });
 
+
+
     </script>
+    <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ MIDTRANS_CLIENT_KEY }}">
+    </script>
+    <script>
+        function bayarPaket(paket) {
+
+            fetch("/api/payment/create", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    paket: paket
+                })
+            })
+                .then(res => res.json())
+                .then(res => {
+
+                    if (!res.success) {
+                        alert(res.message);
+                        return;
+                    }
+
+                    snap.pay(res.token, {
+                        onSuccess: function (result) {
+
+                            console.log(result);
+
+                            alert("Pembayaran berhasil.");
+
+                        },
+
+                        onPending: function (result) {
+
+                            alert("Menunggu pembayaran.");
+
+                        },
+
+                        onError: function (result) {
+
+                            alert("Pembayaran gagal.");
+
+                        },
+
+                        onClose: function () {
+
+                            console.log("Popup ditutup");
+
+                        }
+
+                    });
+
+                });
+
+        }
+    </script>
+
 </body>
 
 </html>

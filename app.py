@@ -1139,6 +1139,119 @@ def promo():
 
     return jsonify(list(hasil.values()))
 
+import os
+import uuid
+import midtransclient
+
+snap = midtransclient.Snap(
+    is_production=False,  # Sandbox
+    server_key=os.getenv("MIDTRANS_SERVER_KEY")
+)
+
+from datetime import datetime
+from flask import jsonify, request
+
+@app.route("/api/payment/create", methods=["POST"])
+@login_required
+def create_payment():
+
+    data = request.get_json()
+
+    paket = data.get("paket", "").upper()
+
+    HARGA_PAKET = {
+        "BASIC": 20000,
+        "PRO": 50000
+    }
+
+    if paket not in HARGA_PAKET:
+        return jsonify({
+            "success": False,
+            "message": "Paket tidak ditemukan."
+        }), 400
+
+    harga = HARGA_PAKET[paket]
+
+    hari_ini = datetime.now().date()
+
+    promo = PromoPaket.query.filter(
+        PromoPaket.paket == paket,
+        PromoPaket.aktif == True,
+        PromoPaket.tanggal_mulai <= hari_ini,
+        PromoPaket.tanggal_selesai >= hari_ini
+    ).first()
+
+    if promo:
+        harga = promo.harga_promo
+
+    order_id = f"CHATSAKU-{uuid.uuid4().hex[:12]}"
+
+    parameter = {
+        "transaction_details": {
+            "order_id": order_id,
+            "gross_amount": int(harga)
+        },
+
+        "credit_card": {
+            "secure": True
+        },
+
+        "customer_details": {
+            "first_name": current_user.nama,
+            "email": current_user.email,
+            "phone": current_user.nomor_wa
+        },
+
+        "item_details": [
+            {
+                "id": paket,
+                "price": int(harga),
+                "quantity": 1,
+                "name": f"Langganan ChatSaku {paket}"
+            }
+        ]
+    }
+
+    transaction = snap.create_transaction(parameter)
+
+    return jsonify({
+        "success": True,
+        "token": transaction["token"],
+        "redirect_url": transaction["redirect_url"],
+        "order_id": order_id,
+        "harga": harga
+    })
+
+@app.route("/midtrans/notification", methods=["POST"])
+def notification():
+
+    notif = request.get_json()
+
+    order_id = notif["order_id"]
+
+    status = notif["transaction_status"]
+
+    payment = Payment.query.filter_by(
+        order_id=order_id
+    ).first()
+
+    if payment is None:
+        return "Not Found",404
+
+    if status == "settlement":
+
+        payment.status = "PAID"
+
+        user = User.query.filter_by(
+            nomor_wa=payment.nomor_wa
+        ).first()
+
+        user.paket = payment.paket
+
+        db.session.commit()
+
+    return "OK"
+
 # =========================
 # TEST
 # =========================
