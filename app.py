@@ -1186,8 +1186,9 @@ def create_payment():
             }), 404
 
         HARGA_PAKET = {
-            "BASIC": 20000,
-            "PRO": 50000
+            "STARTER": 10000,
+            "PRO": 25000,
+            "PREMIUM": 55000
         }
 
         if paket not in HARGA_PAKET:
@@ -1224,13 +1225,8 @@ def create_payment():
             },
 
             "customer_details": {
-
                 "first_name": user.nama,
-
-                "email": user.email if user.email else "user@chatsaku.id",
-
                 "phone": user.nomor_wa
-
             },
 
             "item_details": [
