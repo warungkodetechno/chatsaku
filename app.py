@@ -515,8 +515,6 @@ def dashboard(token):
         HutangPiutang.tanggal.desc()
     ).all()
 
-
-
     piutang_list = HutangPiutang.query.filter(
         HutangPiutang.nomor_wa == nomor,
         HutangPiutang.tipe == "PIUTANG",
@@ -524,8 +522,6 @@ def dashboard(token):
     ).order_by(
         HutangPiutang.tanggal.desc()
     ).all()
-
-
 
     total_hutang = sum(
         x.nominal for x in hutang_list
