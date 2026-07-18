@@ -2500,11 +2500,10 @@ PART 8 - FINANCIAL PLANNER
 
                 <span class="goal-money">
 
-                    Rp {{ "{:,.0f}".format(target_data.terkumpul).replace(",",".") }}
-
+                    {{ "{:,.0f}".format((target_data.terkumpul if target_data else 0)|int).replace(",",".") }}
                     /
 
-                    Rp {{ "{:,.0f}".format(target_data.target).replace(",",".") }}
+                    {{ "{:,.0f}".format((target_data.target if target_data else 0)|int).replace(",",".") }}
 
                 </span>
 
