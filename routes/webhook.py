@@ -799,7 +799,7 @@ Selamat menabung 💚"""
             db.func.sum(Transaksi.nominal)
         ).scalar() or 0
 
-        saldo = get_current_balance(nomor_wa)
+        saldo = get_current_balance(sender)
 
         # link = generate_dashboard_link(sender)
 
