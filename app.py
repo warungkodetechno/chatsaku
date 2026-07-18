@@ -31,7 +31,7 @@ app = Flask(__name__)
 
 #         try:
 
-#             print("Server  :", datetime.now())
+#             print("Server  :", sekarang())
 #             print("Jakarta :", now_jakarta())
 
 #             schedule.run_pending()
@@ -371,7 +371,7 @@ def dashboard(token):
         )
 
         sisa_hari = (
-            target_pembelian.deadline - datetime.now().date()
+            target_pembelian.deadline - sekarang().date()
         ).days
 
         target_data = {
@@ -469,7 +469,7 @@ def dashboard(token):
 
     # Reminder
 
-    hari_ini = datetime.now().day
+    hari_ini = sekarang().day
 
     for r in reminders:
 
@@ -594,7 +594,7 @@ def dashboard(token):
         token=token,
         budget_data=budget_data,
         reminders=reminders,
-        now=datetime.now(),
+        now=sekarang(),
         insight=insight,
         hutang_list=hutang_list,
         piutang_list=piutang_list,
@@ -777,7 +777,7 @@ def export_excel():
 
     filename = (
         f"Kas_WhatsApp_"
-        f"{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
+        f"{sekarang().strftime('%Y%m%d_%H%M%S')}.xlsx"
     )
 
     return send_file(
@@ -1759,7 +1759,7 @@ atexit.register(lambda: scheduler.shutdown())
 @app.route("/promo")
 def promo():
 
-    hari_ini = datetime.now().date()
+    hari_ini = sekarang().date()
 
     promos = PromoPaket.query.filter(
         PromoPaket.aktif == True,
@@ -1843,7 +1843,7 @@ def create_payment():
 
         harga = HARGA_PAKET[paket]
 
-        hari_ini = datetime.now().date()
+        hari_ini = sekarang().date()
 
         promo = PromoPaket.query.filter(
             PromoPaket.paket == paket,

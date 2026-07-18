@@ -491,7 +491,7 @@ def get_harga_paket(nama_paket):
 
     from models import PromoPaket
 
-    hari_ini = datetime.now().date()
+    hari_ini = sekarang().date()
 
     # =========================
     # HARGA NORMAL

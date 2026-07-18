@@ -1237,7 +1237,7 @@ Rp {total:,.0f}
 
                     total_budget += b.nominal
 
-                    now = datetime.now()
+                    now = sekarang()
 
                     awal_bulan = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
 
@@ -2296,7 +2296,7 @@ untuk melihat seluruh reminder.
 
         piutang.status="LUNAS"
 
-        piutang.lunas_tanggal=datetime.now()
+        piutang.lunas_tanggal=sekarang()
 
 
         db.session.commit()
@@ -2314,7 +2314,7 @@ untuk melihat seluruh reminder.
     Status:
     ✅ SUDAH DIBAYAR
 
-    🕒 {datetime.now().strftime("%d %b %Y %H:%M")}
+    🕒 {sekarang().strftime("%d %b %Y %H:%M")}
 
     🤖 ChatSaku Finance"""
         )
@@ -2376,7 +2376,7 @@ untuk melihat seluruh reminder.
 
 
         hutang.status = "LUNAS"
-        hutang.lunas_tanggal = datetime.now()
+        hutang.lunas_tanggal = sekarang()
 
 
         db.session.commit()
@@ -2394,7 +2394,7 @@ untuk melihat seluruh reminder.
     Status:
     ✅ SUDAH LUNAS
 
-    🕒 {datetime.now().strftime("%d %b %Y %H:%M")}
+    🕒 {sekarang().strftime("%d %b %Y %H:%M")}
 
     🤖 ChatSaku Finance"""
         )
