@@ -443,14 +443,22 @@ https://www.chatsaku.com
 
     if cmd.startswith("target "):
 
-        if not has_feature(sender,"target"):
+        if not has_feature(sender, "target"):
 
-            kirim_wa(
-                sender,
-                "🔒 Target Tabungan Pembelian tersedia pada paket PREMIUM."
-            )
+            kirim_wa(sender,
+    """
+    🔒 Fitur target tabungan hanya tersedia pada paket PREMIUM.
 
-            return jsonify(status=True)
+    Upgrade sekarang agar dapat:
+
+    ✅ Budget Bulanan
+    ✅ Reminder
+    ✅ Target Tabungan
+    ✅ Hutang Piutang
+    ✅ AI Insight
+    ✅ Dashboard Lengkap
+
+            """)
 
         bagian = message.split()
 
@@ -529,14 +537,22 @@ Selamat menabung 💚"""
 
     if cmd.startswith("tabung "):
 
-        if not has_feature(sender,"tabung"):
+        if not has_feature(sender, "tabung"):
 
-            kirim_wa(
-                sender,
-                "🔒 Target Tabungan Pembelian tersedia pada paket PREMIUM."
-            )
+            kirim_wa(sender,
+    """
+    🔒 Fitur tabungan hanya tersedia pada paket PREMIUM.
 
-            return jsonify(status=True)
+    Upgrade sekarang agar dapat:
+
+    ✅ Budget Bulanan
+    ✅ Reminder
+    ✅ Target Tabungan
+    ✅ Hutang Piutang
+    ✅ AI Insight
+    ✅ Dashboard Lengkap
+
+            """)
 
         bagian = message.split()
 
@@ -618,14 +634,22 @@ Selamat menabung 💚"""
 
     if cmd == "target":
 
-        if not has_feature(sender,"target"):
+        if not has_feature(sender, "target"):
 
-            kirim_wa(
-                sender,
-                "🔒 Target Tabungan Pembelian tersedia pada paket PREMIUM."
-            )
+            kirim_wa(sender,
+    """
+    🔒 Fitur target tabungan hanya tersedia pada paket PREMIUM.
 
-            return jsonify(status=True)
+    Upgrade sekarang agar dapat:
+
+    ✅ Budget Bulanan
+    ✅ Reminder
+    ✅ Target Tabungan
+    ✅ Hutang Piutang
+    ✅ AI Insight
+    ✅ Dashboard Lengkap
+
+            """)
 
         data = TargetPembelian.query.filter_by(
 
@@ -678,14 +702,22 @@ Selamat menabung 💚"""
     # ======================================
     if cmd.startswith("target "):
 
-        if not has_feature(sender,"target"):
+        if not has_feature(sender, "target"):
 
-            kirim_wa(
-                sender,
-                "🔒 Target Tabungan Pembelian tersedia pada paket PREMIUM."
-            )
+            kirim_wa(sender,
+    """
+    🔒 Fitur target tabungan hanya tersedia pada paket PREMIUM.
 
-            return jsonify(status=True)
+    Upgrade sekarang agar dapat:
+
+    ✅ Budget Bulanan
+    ✅ Reminder
+    ✅ Target Tabungan
+    ✅ Hutang Piutang
+    ✅ AI Insight
+    ✅ Dashboard Lengkap
+
+            """)
 
         nama = message[7:]
 
@@ -734,14 +766,22 @@ Selamat menabung 💚"""
 
     if cmd.startswith("hapustarget"):
 
-        if not has_feature(sender,"hapustarget"):
+        if not has_feature(sender, "target"):
 
-            kirim_wa(
-                sender,
-                "🔒 Target Tabungan Pembelian tersedia pada paket PREMIUM."
-            )
+            kirim_wa(sender,
+    """
+    🔒 Fitur target tabungan hanya tersedia pada paket PREMIUM.
 
-            return jsonify(status=True)
+    Upgrade sekarang agar dapat:
+
+    ✅ Budget Bulanan
+    ✅ Reminder
+    ✅ Target Tabungan
+    ✅ Hutang Piutang
+    ✅ AI Insight
+    ✅ Dashboard Lengkap
+
+            """)
 
         nama = message.replace(
             "hapustarget",
@@ -1183,7 +1223,7 @@ Rp {total:,.0f}
 
             kirim_wa(sender,
     """
-    🔒 Fitur Budget hanya tersedia pada paket PRO.
+    🔒 Fitur Budget hanya tersedia pada paket PRO dan PREMIUM.
 
     Upgrade sekarang agar dapat:
 
@@ -1192,9 +1232,7 @@ Rp {total:,.0f}
     ✅ AI Insight
     ✅ Dashboard Lengkap
 
-    Ketik:
-    upgrade
-    """)
+            """)
 
             return jsonify(status=True)
 
@@ -1496,10 +1534,20 @@ untuk melihat semua budget.
         from utils.ai_insight import generate_ai_insight
         if not has_feature(sender, "ai"):
 
-            kirim_wa(
-                sender,
-                "🔒 AI Insight tersedia pada paket PREMIUM."
-            )
+            kirim_wa(sender,
+    """
+    🔒 Fitur AI Insight hanya tersedia pada paket PREMIUM.
+
+    Upgrade sekarang agar dapat:
+
+    ✅ Budget Bulanan
+    ✅ Reminder
+    ✅ Target Tabungan
+    ✅ Hutang Piutang
+    ✅ AI Insight
+    ✅ Dashboard Lengkap
+
+            """)
 
             return jsonify(status=True)
 
@@ -1702,6 +1750,23 @@ untuk melihat seluruh reminder.
     # =========================
     if cmd.startswith("hapusreminder"):
 
+        if not has_feature(sender, "hapusreminder"):
+
+            kirim_wa(sender,
+    """
+    🔒 Fitur Reminder hanya tersedia pada paket PRO dan PREMIUM.
+
+    Upgrade sekarang agar dapat:
+
+    ✅ Budget Bulanan
+    ✅ Reminder
+    ✅ Target Tabungan
+    ✅ Hutang Piutang
+    ✅ AI Insight
+    ✅ Dashboard Lengkap
+
+            """)
+
         try:
 
             parts = message.lower().split()
@@ -1760,6 +1825,23 @@ untuk melihat seluruh reminder.
     # =========================
 
     if cmd == "hutang":
+
+        if not has_feature(sender, "hutang"):
+
+            kirim_wa(sender,
+    """
+    🔒 Fitur hutang hanya tersedia pada paket PREMIUM.
+
+    Upgrade sekarang agar dapat:
+
+    ✅ Budget Bulanan
+    ✅ Reminder
+    ✅ Target Tabungan
+    ✅ Hutang Piutang
+    ✅ AI Insight
+    ✅ Dashboard Lengkap
+
+            """)
 
         daftar = HutangPiutang.query.filter(
             HutangPiutang.nomor_wa == sender,
@@ -1836,6 +1918,23 @@ untuk melihat seluruh reminder.
     # =========================
 
     if cmd.startswith("hutang "):
+
+        if not has_feature(sender, "hutang"):
+
+            kirim_wa(sender,
+    """
+    🔒 Fitur hutang hanya tersedia pada paket PREMIUM.
+
+    Upgrade sekarang agar dapat:
+
+    ✅ Budget Bulanan
+    ✅ Reminder
+    ✅ Target Tabungan
+    ✅ Hutang Piutang
+    ✅ AI Insight
+    ✅ Dashboard Lengkap
+
+            """)
 
         data = message.split(" ", 3)
 
@@ -1927,6 +2026,23 @@ untuk melihat seluruh reminder.
 
     if cmd == "piutang":
 
+        if not has_feature(sender, "piutang"):
+
+            kirim_wa(sender,
+    """
+    🔒 Fitur Piutang hanya tersedia pada paket PREMIUM.
+
+    Upgrade sekarang agar dapat:
+
+    ✅ Budget Bulanan
+    ✅ Reminder
+    ✅ Target Tabungan
+    ✅ Hutang Piutang
+    ✅ AI Insight
+    ✅ Dashboard Lengkap
+
+            """)
+
         daftar = HutangPiutang.query.filter(
             HutangPiutang.nomor_wa == sender,
             HutangPiutang.tipe == "PIUTANG",
@@ -1994,6 +2110,23 @@ untuk melihat seluruh reminder.
     # =========================
 
     if cmd.startswith("piutang "):
+
+        if not has_feature(sender, "piutang"):
+
+            kirim_wa(sender,
+    """
+    🔒 Fitur Piutang hanya tersedia pada paket PREMIUM.
+
+    Upgrade sekarang agar dapat:
+
+    ✅ Budget Bulanan
+    ✅ Reminder
+    ✅ Target Tabungan
+    ✅ Hutang Piutang
+    ✅ AI Insight
+    ✅ Dashboard Lengkap
+
+            """)
 
         data = message.split(" ", 3)
 
@@ -2088,6 +2221,23 @@ untuk melihat seluruh reminder.
 
     if cmd.startswith("bayarpiutang"):
 
+        if not has_feature(sender, "piutang"):
+
+            kirim_wa(sender,
+    """
+    🔒 Fitur Piutang hanya tersedia pada paket PREMIUM.
+
+    Upgrade sekarang agar dapat:
+
+    ✅ Budget Bulanan
+    ✅ Reminder
+    ✅ Target Tabungan
+    ✅ Hutang Piutang
+    ✅ AI Insight
+    ✅ Dashboard Lengkap
+
+            """)
+
         data = message.split(" ",1)
 
 
@@ -2166,6 +2316,23 @@ untuk melihat seluruh reminder.
     # =========================
 
     if cmd.startswith("bayarhutang"):
+
+        if not has_feature(sender, "hutang"):
+
+            kirim_wa(sender,
+    """
+    🔒 Fitur hutang hanya tersedia pada paket PREMIUM.
+
+    Upgrade sekarang agar dapat:
+
+    ✅ Budget Bulanan
+    ✅ Reminder
+    ✅ Target Tabungan
+    ✅ Hutang Piutang
+    ✅ AI Insight
+    ✅ Dashboard Lengkap
+
+            """)
 
         data = message.split(" ", 1)
 

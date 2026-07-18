@@ -224,37 +224,90 @@ FEATURES = {
 
     "STARTER": {
 
+        # Pencatatan dasar
         "transaksi",
-        "dashboard"
+
+        # Dashboard Ringkas
+        "dashboard",
+
+        # Cek saldo
+        "saldo",
+
+        # Saldo hari ini
+        "saldo_hari_ini",
+
+        # Riwayat transaksi
+        "riwayat",
+
+        # Bantuan
+        "help"
 
     },
 
     "PRO": {
 
+        # Semua fitur Starter
         "transaksi",
         "dashboard",
+        "saldo",
+        "saldo_hari_ini",
+        "riwayat",
+        "help",
+
+        # Budgeting
         "budget",
+
+        # Reminder
         "reminder",
         "hapusreminder",
-        "excel"
+
+        # Export
+        "excel",
+
+        # Statistik dasar
+        "statistik",
+
+        # Target tabungan
+        # "target",
+        # "tabung",
+        # "hapustarget"
 
     },
 
     "PREMIUM": {
 
+        # Semua fitur Pro
         "transaksi",
         "dashboard",
+        "saldo",
+        "saldo_hari_ini",
+        "riwayat",
+        "help",
         "budget",
         "reminder",
         "hapusreminder",
-        "ai",
-        "statistik",
         "excel",
-        "pdf",
+        "statistik",
         "target",
         "tabung",
         "hapustarget",
-        "laporan_harian"
+
+        # AI
+        "ai",
+
+        # Hutang Piutang
+        "hutang",
+        "piutang",
+
+        # Export PDF
+        "pdf",
+
+        # Laporan otomatis
+        "laporan_harian",
+
+        # Insight lanjutan (opsional jika nanti dibuat)
+        "forecast",
+        "cashflow"
 
     }
 
