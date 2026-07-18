@@ -2161,342 +2161,65 @@ TARGET TABUNGAN
             </div>
 
         </div>
-        <!-- ==========================================
-AI FINANCIAL INSIGHT
-========================================== -->
+        <div class="ai-wrapper mb-4">
 
-        <section class="ai-insight-section">
+            <div class="ai-header">
 
-            <div class="section-header">
+                <div class="ai-title">
+
+                    🤖 AI Finance Insight
+
+                </div>
+
+                <div class="ai-subtitle">
+
+                    Analisis otomatis kondisi keuangan Anda.
+
+                </div>
+
+            </div>
+
+            {% for text in insight %}
+
+            <div class="ai-item">
+
+                <div class="ai-icon">
+
+                    <i class="bi bi-stars"></i>
+
+                </div>
 
                 <div>
 
-                    <h3>
-                        <i class="bi bi-stars"></i>
-                        AI Financial Insight
-                    </h3>
-
-                    <p>
-                        Ringkasan otomatis berdasarkan aktivitas keuangan Anda.
-                    </p>
+                    {{ text }}
 
                 </div>
 
             </div>
 
-            <div class="ai-insight-grid">
+            {% endfor %}
 
-                <!-- AI SUMMARY -->
-
-                <div class="ai-main-card">
-
-                    <div class="ai-icon">
-
-                        <i class="bi bi-robot"></i>
-
-                    </div>
-
-                    <div class="ai-content">
-
-                        <span class="ai-label">
-
-                            AI Analysis
-
-                        </span>
-
-                        <h4>
-
-                            Halo 👋
-
-                        </h4>
-
-                        <p>
-
-                            {{ ai_summary|default("Belum cukup data untuk dianalisis.") }}
-
-                        </p>
-
-                    </div>
-
-                </div>
-
-                <!-- STATS -->
-
-                <div class="ai-side-card">
-
-                    <div class="mini-stat">
-
-                        <div class="mini-icon bg-success">
-
-                            <i class="bi bi-piggy-bank"></i>
-
-                        </div>
-
-                        <div>
-
-                            <small>Saving Rate</small>
-
-                            <h5>
-
-                                {{ saving_persen|default(0) }}%
-
-                            </h5>
-
-                        </div>
-
-                    </div>
-
-                    <div class="mini-stat">
-
-                        <div class="mini-icon bg-warning">
-
-                            <i class="bi bi-tags"></i>
-
-                        </div>
-
-                        <div>
-
-                            <small>Kategori Terbesar</small>
-
-                            <h5>
-
-                                {{ top_category|default("-") }}
-
-                            </h5>
-
-                        </div>
-
-                    </div>
-
-                    <div class="mini-stat">
-
-                        <div class="mini-icon bg-primary">
-
-                            <i class="bi bi-wallet2"></i>
-
-                        </div>
-
-                        <div>
-
-                            <small>Saldo Saat Ini</small>
-
-                            <h5>
-
-                                Rp {{ "{:,.0f}".format(saldo|default(0)|int).replace(",",".") }}
-
-                            </h5>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
+        </div>
         <style>
-            /*==========================================
-AI INSIGHT
-==========================================*/
+            .ai-wrapper {
 
-            .ai-insight-section {
+                background: linear-gradient(135deg, #0f766e, #14b8a6);
 
-                margin: 45px 0;
+                color: white;
 
-            }
+                border-radius: 22px;
 
-            .ai-insight-grid {
+                padding: 22px;
 
-                display: grid;
+                margin-bottom: 20px;
 
-                grid-template-columns: 2fr 1fr;
-
-                gap: 24px;
+                box-shadow: 0 15px 30px rgba(20, 184, 166, .25);
 
             }
 
-            .ai-main-card {
+            .ai-title {
 
-                background: linear-gradient(135deg, #2563eb, #1d4ed8);
-
-                border-radius: 24px;
-
-                padding: 35px;
-
-                color: #fff;
-
-                display: flex;
-
-                gap: 25px;
-
-                align-items: flex-start;
-
-                overflow: hidden;
-
-                position: relative;
-
-            }
-
-            .ai-main-card::before {
-
-                content: "";
-
-                position: absolute;
-
-                width: 220px;
-
-                height: 220px;
-
-                background: rgba(255, 255, 255, .08);
-
-                border-radius: 50%;
-
-                right: -70px;
-
-                top: -70px;
-
-            }
-
-            .ai-icon {
-
-                width: 70px;
-
-                height: 70px;
-
-                border-radius: 18px;
-
-                background: rgba(255, 255, 255, .15);
-
-                display: flex;
-
-                justify-content: center;
-
-                align-items: center;
-
-                font-size: 30px;
-
-                flex-shrink: 0;
-
-            }
-
-            .ai-label {
-
-                display: inline-block;
-
-                background: rgba(255, 255, 255, .15);
-
-                padding: 6px 14px;
-
-                border-radius: 50px;
-
-                margin-bottom: 12px;
-
-                font-size: 13px;
-
-                font-weight: 600;
-
-            }
-
-            .ai-content h4 {
-
-                margin-bottom: 10px;
-
-                font-size: 26px;
-
-                font-weight: 700;
-
-            }
-
-            .ai-content p {
-
-                margin: 0;
-
-                line-height: 1.8;
-
-                opacity: .95;
-
-            }
-
-            .ai-side-card {
-
-                display: flex;
-
-                flex-direction: column;
-
-                gap: 18px;
-
-            }
-
-            .mini-stat {
-
-                background: #fff;
-
-                border-radius: 20px;
-
-                padding: 18px;
-
-                display: flex;
-
-                gap: 16px;
-
-                align-items: center;
-
-                border: 1px solid #edf2f7;
-
-                box-shadow: 0 10px 30px rgba(0, 0, 0, .05);
-
-            }
-
-            .mini-icon {
-
-                width: 52px;
-
-                height: 52px;
-
-                border-radius: 16px;
-
-                display: flex;
-
-                justify-content: center;
-
-                align-items: center;
-
-                color: #fff;
-
-                font-size: 20px;
-
-            }
-
-            .bg-success {
-
-                background: #22c55e;
-
-            }
-
-            .bg-warning {
-
-                background: #f59e0b;
-
-            }
-
-            .bg-primary {
-
-                background: #2563eb;
-
-            }
-
-            .mini-stat small {
-
-                color: #64748b;
-
-            }
-
-            .mini-stat h5 {
-
-                margin-top: 4px;
-
-                margin-bottom: 0;
+                font-family: 'Baloo 2';
 
                 font-size: 18px;
 
@@ -2504,25 +2227,55 @@ AI INSIGHT
 
             }
 
-            @media(max-width:992px) {
+            .ai-subtitle {
 
-                .ai-insight-grid {
+                opacity: .85;
 
-                    grid-template-columns: 1fr;
+                margin-bottom: 18px;
 
-                }
+                font-size: 13px;
 
             }
 
-            @media(max-width:768px) {
+            .ai-item {
 
-                .ai-main-card {
+                display: flex;
 
-                    flex-direction: column;
+                gap: 14px;
 
-                    padding: 24px;
+                padding: 14px;
 
-                }
+                background: rgba(255, 255, 255, .08);
+
+                border-radius: 14px;
+
+                margin-bottom: 10px;
+
+                align-items: flex-start;
+
+            }
+
+            .ai-icon {
+
+                width: 38px;
+
+                height: 38px;
+
+                border-radius: 50%;
+
+                background: white;
+
+                color: #0f766e;
+
+                display: flex;
+
+                justify-content: center;
+
+                align-items: center;
+
+                font-size: 18px;
+
+                flex-shrink: 0;
 
             }
         </style>
