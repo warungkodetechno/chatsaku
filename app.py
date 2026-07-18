@@ -418,105 +418,9 @@ def dashboard(token):
     # AI FINANCE INSIGHT
     # ==========================================
 
-    insight = []
+    from utils.ai_insight import generate_ai_insight
 
-    # Kondisi saldo
-
-    if saldo > 0:
-
-        insight.append(
-            f"👍 Saldo Anda masih positif sebesar Rp {saldo:,.0f}."
-        )
-
-    else:
-
-        insight.append(
-            "⚠ Pengeluaran lebih besar daripada pemasukan."
-        )
-
-    # Persentase pengeluaran
-
-    if total_masuk > 0:
-
-        rasio = (total_keluar / total_masuk) * 100
-
-        if rasio >= 90:
-
-            insight.append(
-                "Pengeluaran sudah mencapai lebih dari 90% dari pemasukan."
-            )
-
-        elif rasio >= 70:
-
-            insight.append(
-                "Pengeluaran sudah melewati 70% dari pemasukan."
-            )
-
-        else:
-
-            insight.append(
-                "Arus kas masih cukup sehat."
-            )
-
-    # Budget
-
-    for item in budget_data:
-
-        if item["persen"] >= 100:
-
-            insight.append(
-                f"Budget kategori {item['kategori']} telah terlampaui."
-            )
-
-        elif item["persen"] >= 90:
-
-            insight.append(
-                f"Budget kategori {item['kategori']} hampir habis."
-            )
-
-    # Reminder
-
-    hari_ini = sekarang().day
-
-    for r in reminders:
-
-        selisih = r.tanggal - hari_ini
-
-        if selisih == 0:
-
-            insight.append(
-                f"Hari ini jatuh tempo pembayaran {r.nama}."
-            )
-
-        elif selisih <= 3 and selisih > 0:
-
-            insight.append(
-                f"{r.nama} jatuh tempo dalam {selisih} hari."
-            )
-
-    # Pengeluaran terbesar
-
-    kategori = {}
-
-    for trx in all_data:
-
-        if trx.tipe == "KELUAR":
-
-            kategori.setdefault(trx.kategori, 0)
-
-            kategori[trx.kategori] += trx.nominal
-
-    if kategori:
-
-        terbesar = max(kategori, key=kategori.get)
-
-        insight.append(
-
-            f"Kategori pengeluaran terbesar bulan ini adalah "
-            f"{terbesar} sebesar Rp {kategori[terbesar]:,.0f}."
-
-        )
-
+    insight = generate_ai_insight(nomor)
     # ==========================
     # HUTANG PIUTANG SUMMARY
     # ==========================
@@ -549,41 +453,6 @@ def dashboard(token):
 
     net_balance = total_piutang - total_hutang
 
-    # ==========================================
-    # TARGET PEMBELIAN INSIGHT
-    # ==========================================
-
-    if target_data:
-
-        if target_data["selesai"]:
-
-            insight.append(
-                f"🎉 Target '{target_data['nama']}' telah berhasil tercapai."
-            )
-
-        elif target_data["sisa_hari"] < 0:
-
-            insight.append(
-                f"⏰ Target '{target_data['nama']}' telah melewati deadline."
-            )
-
-        elif target_data["sisa_hari"] <= 7:
-
-            insight.append(
-                f"📅 Deadline target '{target_data['nama']}' tinggal {target_data['sisa_hari']} hari lagi."
-            )
-
-        elif target_data["progress"] >= 80:
-
-            insight.append(
-                f"🎯 Target '{target_data['nama']}' sudah mencapai {target_data['progress']}%."
-            )
-
-        else:
-
-            insight.append(
-                f"💰 Target '{target_data['nama']}' masih kurang Rp {target_data['sisa']:,.0f}."
-            )
 
     # =====================================================
     # USER
