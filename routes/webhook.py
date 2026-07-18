@@ -1493,7 +1493,7 @@ untuk melihat semua budget.
     # AI INSIGHT
     # =========================
     if cmd == "insight":
-
+        from utils.ai_insight import generate_ai_insight
         if not has_feature(sender, "ai"):
 
             kirim_wa(
