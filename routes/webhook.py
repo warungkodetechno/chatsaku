@@ -409,6 +409,7 @@ https://www.chatsaku.com
         or cmd == "hariini"
         or cmd == "insight"
         or cmd == "dashboard"
+        or cmd == "share"
         or cmd.startswith("masuk")
         or cmd.startswith("keluar")
         or cmd.startswith("budget")
@@ -2647,74 +2648,74 @@ Kelola keuangan lebih mudah, cepat, dan praktis.
 
     if cmd == "share":
 
-    if not has_feature(sender, "share"):
+        if not has_feature(sender, "share"):
 
-        kirim_wa(
-            sender,
-            "🔒 Fitur Multi User tersedia pada paket PREMIUM."
-        )
+            kirim_wa(
+                sender,
+                "🔒 Fitur Multi User tersedia pada paket PREMIUM."
+            )
 
-        return jsonify(status=True)
+            return jsonify(status=True)
 
-    if len(args) < 1:
+        if len(args) < 1:
 
-        kirim_wa(
-            sender,
-            "Format:\n\nshare 081234567890"
-        )
+            kirim_wa(
+                sender,
+                "Format:\n\nshare 081234567890"
+            )
 
-        return jsonify(status=True)
+            return jsonify(status=True)
 
-    nomor = normalize_nomor(args[0])
+        nomor = normalize_nomor(args[0])
 
-    if nomor == sender:
+        if nomor == sender:
 
-        kirim_wa(
-            sender,
-            "❌ Tidak bisa membagikan akun ke nomor sendiri."
-        )
+            kirim_wa(
+                sender,
+                "❌ Tidak bisa membagikan akun ke nomor sendiri."
+            )
 
-        return jsonify(status=True)
+            return jsonify(status=True)
 
-    cek = SharedAccess.query.filter_by(
-        owner=sender,
-        member=nomor,
-        aktif=True
-    ).first()
-
-    if cek:
-
-        kirim_wa(
-            sender,
-            "Nomor tersebut sudah menjadi viewer."
-        )
-
-        return jsonify(status=True)
-
-    db.session.add(
-
-        SharedAccess(
-
+        cek = SharedAccess.query.filter_by(
             owner=sender,
+            member=nomor,
+            aktif=True
+        ).first()
 
-            member=nomor
+        if cek:
+
+            kirim_wa(
+                sender,
+                "Nomor tersebut sudah menjadi viewer."
+            )
+
+            return jsonify(status=True)
+
+        db.session.add(
+
+            SharedAccess(
+
+                owner=sender,
+
+                member=nomor
+
+            )
 
         )
 
-    )
+        db.session.commit()
 
-    db.session.commit()
+        kirim_wa(
+            sender,
+            f"""✅ Viewer berhasil ditambahkan
 
-    kirim_wa(
-        sender,
-        f"""✅ Viewer berhasil ditambahkan
+    👤 {nomor}
 
-👤 {nomor}
+    Nomor tersebut sekarang dapat melihat dashboard dan laporan Anda."""
+        )
 
-Nomor tersebut sekarang dapat melihat dashboard dan laporan Anda."""
-    )
-
-    return jsonify(status=True)
+        return jsonify(status=True)
 
     # =========================
     # DEFAULT
