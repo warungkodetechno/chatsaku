@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify, render_template, send_file, redirect
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta, time as dt_time
 import time
-from models import db, Transaksi, Budget, Reminder, User, RequestDemo, HutangPiutang, TargetPembelian, PromoPaket, MonthlySummary, get_last_summary, get_saldo_awal_bulan, get_saldo_akhir
+from models import db, Transaksi, Budget, Reminder, User, RequestDemo, HutangPiutang, TargetPembelian, PromoPaket, MonthlySummary, get_last_summary, get_saldo_akhir
 from routes.webhook import webhook_bp
 import requests
 import os
