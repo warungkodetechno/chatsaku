@@ -1,6 +1,7 @@
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from zoneinfo import ZoneInfo
+from sqlalchemy import func
 
 db = SQLAlchemy()
 
