@@ -409,7 +409,7 @@ PART 2 - HERO BALANCE
 
                 <h4>
 
-                    {{ persen_budget }}%
+                    {{ persen_budget|default(0) }}%
 
                 </h4>
 
@@ -1682,7 +1682,7 @@ PART 6 - SMART BUDGET CENTER
 
                     <strong>
 
-                        Rp {{ "{:,.0f}".format(budget|default(0)|int).replace(",",".") }}
+                        {{ "{:,.0f}".format(budget|default(0)|int).replace(",",".") }}
 
                     </strong>
 
@@ -1690,7 +1690,7 @@ PART 6 - SMART BUDGET CENTER
 
                 <div class="progress-modern">
 
-                    <div class="progress-fill" style="width: {{ persen_budget }}%">
+                    <div class="progress-fill" style="width: {{ persen_budget|default(0) }}%">
 
                     </div>
 
@@ -1716,7 +1716,7 @@ PART 6 - SMART BUDGET CENTER
 
                         <h4>
 
-                            Rp {{ "{:,.0f}".format(sisa_budget).replace(",",".") }}
+                            Rp {{ "{:,.0f}".format(sisa_budget|default(0)|int).replace(",",".") }}
 
                         </h4>
 
@@ -1730,7 +1730,9 @@ PART 6 - SMART BUDGET CENTER
 
             <div class="budget-status">
 
-                {% if persen_budget < 60 %} <div class="status success">
+                {% set persen = persen_budget|default(0)|int %}
+
+                {% if persen < 60 %} <div class="status success">
 
                     <i class="bi bi-emoji-smile-fill"></i>
 
@@ -1782,7 +1784,7 @@ PART 6 - SMART BUDGET CENTER
 
             <h1>
 
-                {{ persen_budget }}%
+                {{ persen_budget|default(0) }}%
 
             </h1>
 
@@ -2086,7 +2088,7 @@ PART 7 - FINANCIAL INTELLIGENCE
 
                     <p>
 
-                        {{ ai_insight }}
+                        {{ ai_summary|default("Belum ada insight.") }}
 
                     </p>
 
@@ -2112,7 +2114,7 @@ PART 7 - FINANCIAL INTELLIGENCE
 
                         <span>
 
-                            {{ saving_rate }}%
+                            {{ saving_persen|default(0) }}%
 
                         </span>
 
@@ -2134,7 +2136,7 @@ PART 7 - FINANCIAL INTELLIGENCE
 
                         <span>
 
-                            {{ kategori_terbesar }}
+                            {{ top_category|default("-") }}
 
                         </span>
 
@@ -2492,23 +2494,23 @@ PART 8 - FINANCIAL PLANNER
 
                 <h2>
 
-                    {{ target.nama }}
+                    {{ target_data.nama }}
 
                 </h2>
 
                 <span class="goal-money">
 
-                    Rp {{ "{:,.0f}".format(target.terkumpul).replace(",",".") }}
+                    Rp {{ "{:,.0f}".format(target_data.terkumpul).replace(",",".") }}
 
                     /
 
-                    Rp {{ "{:,.0f}".format(target.target).replace(",",".") }}
+                    Rp {{ "{:,.0f}".format(target_data.target).replace(",",".") }}
 
                 </span>
 
                 <div class="goal-progress">
 
-                    <div class="goal-fill" style="width: {{ target.progress }}%">
+                    <div class="goal-fill" style="width: {{ target_data.progress }}%">
 
                     </div>
 
@@ -2518,7 +2520,7 @@ PART 8 - FINANCIAL PLANNER
 
                     <strong>
 
-                        {{ target.progress }}%
+                        {{ target_data.progress }}%
 
                     </strong>
 
@@ -2526,7 +2528,7 @@ PART 8 - FINANCIAL PLANNER
 
                         Deadline
 
-                        {{ target.deadline }}
+                        {{ target_data.deadline }}
 
                     </small>
 
@@ -2862,7 +2864,9 @@ PART 9 - RECENT ACTIVITY
 
                         •
 
-                        {{ trx.created_at.strftime("%d %b %Y %H:%M") }}
+                        {{ trx.tanggal }}
+
+                        {{ trx.jam }}
 
                     </span>
 
@@ -2884,7 +2888,7 @@ PART 9 - RECENT ACTIVITY
 
                     <small>
 
-                        {{ trx.metode }}
+                        {{ trx.metode|default("-") }}
 
                     </small>
 
@@ -3152,7 +3156,7 @@ PART 10 - ACCOUNT & SYSTEM CENTER
 
                         <small>Bergabung</small>
 
-                        <strong>{{ user.created_at.strftime("%d %b %Y") }}</strong>
+                        <strong>{{ tanggal_daftar }}</strong>
 
                     </div>
 
