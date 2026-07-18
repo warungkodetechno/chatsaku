@@ -940,7 +940,7 @@ def dashboard(token):
 
         target_data=target_data,
 
-        data=data_paginated,
+        data_paginated=data_paginated,
 
         trend_label=trend_label,
         trend_value=trend_value
