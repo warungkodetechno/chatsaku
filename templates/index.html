@@ -1682,7 +1682,7 @@ PART 6 - SMART BUDGET CENTER
 
                     <strong>
 
-                        Rp {{ "{:,.0f}".format(budget).replace(",",".") }}
+                        Rp {{ "{:,.0f}".format(budget|default(0)|int).replace(",",".") }}
 
                     </strong>
 
