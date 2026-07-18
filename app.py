@@ -578,52 +578,182 @@ def dashboard(token):
                 f"💰 Target '{target_data['nama']}' masih kurang Rp {target_data['sisa']:,.0f}."
             )
 
-    trend_label = [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "Mei",
-        "Jun",
-        "Jul"
+    # =====================================================
+    # USER
+    # =====================================================
+
+    user = User.query.filter_by(nomor_wa=nomor).first()
+
+    # =====================================================
+    # PROFILE
+    # =====================================================
+
+    tanggal_daftar = (
+        user.dibuat.strftime("%d %b %Y")
+        if getattr(user, "dibuat", None)
+        else "-"
+    )
+
+    # =====================================================
+    # SUMMARY
+    # =====================================================
+
+    financial_score = 84
+    financial_status = "Excellent"
+
+    closing_status = "Open"
+
+    target_saving = 1000000
+    saving_target_percent = 65
+
+    streak = 27
+
+    # =====================================================
+    # AI
+    # =====================================================
+
+    ai_summary = (
+        "Pengeluaran masih terkendali. "
+        "Saving berada di atas target. "
+        "Belum ada indikasi over budget."
+    )
+
+    ai_recommendation = [
+
+        "Pertahankan saving minimal 20%.",
+
+        "Kurangi pengeluaran hiburan.",
+
+        "Lakukan closing pada akhir bulan."
+
     ]
 
-    trend_value = [
-        1200000,
-        1500000,
-        1700000,
-        2100000,
-        1950000,
-        2400000,
-        2700000
+    # =====================================================
+    # ANALYTICS
+    # =====================================================
+
+    top_category = "Makanan"
+    top_nominal = 1750000
+
+    low_category = "Investasi"
+    low_nominal = 250000
+
+    prediksi_saldo = saldo
+
+    budget_risk = "Rendah"
+
+    budget_risk_desc = "Budget masih aman"
+
+    # =====================================================
+    # REMINDER
+    # =====================================================
+
+    reminder_count = 0
+    reminder_today = 0
+    reminder_week = 0
+    reminder_month = 0
+    reminder_overdue = 0
+
+    reminder_list = []
+
+    # =====================================================
+    # BUDGET
+    # =====================================================
+
+    budget_list = []
+
+    saldo_awal = saldo
+
+    # =====================================================
+    # WEEKLY PRODUCTIVITY
+    # =====================================================
+
+    weekly_activity = [
+
+        {"nama":"Sen","persen":80,"total":8},
+
+        {"nama":"Sel","persen":60,"total":6},
+
+        {"nama":"Rab","persen":100,"total":10},
+
+        {"nama":"Kam","persen":70,"total":7},
+
+        {"nama":"Jum","persen":55,"total":5},
+
+        {"nama":"Sab","persen":35,"total":3},
+
+        {"nama":"Min","persen":20,"total":2}
+
     ]
+
+    # =====================================================
+    # TRANSAKSI TERBARU
+    # =====================================================
+
+    transaksi_terbaru = []
+
+    transaksi_hari_ini = 0
+    masuk_hari_ini = 0
+    keluar_hari_ini = 0
+    saving_hari_ini = 0
 
     # =========================
     # RENDER
     # =========================
 
     return render_template(
+
         "index.html",
-        data=all_data,
-        data_paginated=data_paginated,
-        total_masuk=total_masuk,
-        total_keluar=total_keluar,
+
+        user=user,
+
         saldo=saldo,
-        start_date=start_date,
-        end_date=end_date,
-        token=token,
-        budget_data=budget_data,
-        reminders=reminders,
-        now=sekarang(),
-        insight=insight,
-        hutang_list=hutang_list,
-        piutang_list=piutang_list,
+        periode=periode,
 
-        total_hutang=total_hutang,
-        total_piutang=total_piutang,
-        net_balance=net_balance,
+        tanggal_daftar=tanggal_daftar,
 
-        target_data=target_data
+        financial_score=financial_score,
+        financial_status=financial_status,
+
+        ai_summary=ai_summary,
+        ai_recommendation=ai_recommendation,
+
+        top_category=top_category,
+        top_nominal=top_nominal,
+        low_category=low_category,
+        low_nominal=low_nominal,
+
+        prediksi_saldo=prediksi_saldo,
+
+        budget_risk=budget_risk,
+        budget_risk_desc=budget_risk_desc,
+
+        reminder_count=reminder_count,
+        reminder_today=reminder_today,
+        reminder_week=reminder_week,
+        reminder_month=reminder_month,
+        reminder_overdue=reminder_overdue,
+        reminder_list=reminder_list,
+
+        budget_list=budget_list,
+
+        saldo_awal=saldo_awal,
+
+        closing_status=closing_status,
+
+        target_saving=target_saving,
+        saving_target_percent=saving_target_percent,
+
+        streak=streak,
+
+        transaksi_terbaru=transaksi_terbaru,
+        transaksi_hari_ini=transaksi_hari_ini,
+        masuk_hari_ini=masuk_hari_ini,
+        keluar_hari_ini=keluar_hari_ini,
+        saving_hari_ini=saving_hari_ini,
+
+        weekly_activity=weekly_activity
+
     )
 
 @app.route("/expired")

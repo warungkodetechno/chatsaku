@@ -31,7 +31,7 @@ HEADER DASHBOARD V2
 
                 <div class="welcome-title">
                     Selamat Datang,
-                    <strong>{{ User.nama if User else "User" }}</strong>
+                    <strong>{{ user.nama if user else "User" }}</strong>
                 </div>
 
                 <div class="welcome-subtitle">
@@ -62,7 +62,7 @@ HEADER DASHBOARD V2
 
             <div class="profile-avatar">
 
-                {{ User.nama[:1]|upper if User else "U" }}
+                {{ user.nama[:1]|upper if user else "U" }}
 
             </div>
 
@@ -70,13 +70,13 @@ HEADER DASHBOARD V2
 
                 <div class="profile-name">
 
-                    {{ User.nama if User else "-" }}
+                    {{ user.nama if user else "-" }}
 
                 </div>
 
                 <div class="profile-phone">
 
-                    {{ User.nomor_wa }}
+                    {{ user.nomor_wa }}
 
                 </div>
 
@@ -3869,7 +3869,7 @@ PART 10 - ACCOUNT & SYSTEM CENTER
 
                 <div class="profile-avatar-large">
 
-                    {{ User.nama[:1]|upper }}
+                    {{ user.nama[:1]|upper }}
 
                 </div>
 
@@ -3877,13 +3877,13 @@ PART 10 - ACCOUNT & SYSTEM CENTER
 
                     <h4>
 
-                        {{ User.nama }}
+                        {{ user.nama }}
 
                     </h4>
 
                     <small>
 
-                        {{ User.nomor_wa }}
+                        {{ user.nomor_wa }}
 
                     </small>
 
