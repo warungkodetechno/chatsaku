@@ -399,6 +399,33 @@ class SystemLock(db.Model):
         default=now_jakarta
     )
 
+class SharedAccess(db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    owner = db.Column(db.String(20), nullable=False)
+
+    member = db.Column(db.String(20), nullable=False)
+
+    aktif = db.Column(db.Boolean, default=True)
+
+    created_at = db.Column(
+        db.DateTime,
+        default=datetime.utcnow
+    )
+
+def get_owner_number(nomor):
+
+    share = SharedAccess.query.filter_by(
+        member=nomor,
+        aktif=True
+    ).first()
+
+    if share:
+        return share.owner
+
+    return nomor
+
 def acquire_lock():
 
     lock = SystemLock.query.get(

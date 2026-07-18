@@ -636,9 +636,10 @@ Selamat menabung 💚"""
 
         if not has_feature(sender, "target"):
 
-            kirim_wa(sender,
-    """
-    🔒 Fitur target tabungan hanya tersedia pada paket PREMIUM.
+            kirim_wa(
+                sender,
+                """
+    🔒 Fitur Target Tabungan hanya tersedia pada paket PREMIUM.
 
     Upgrade sekarang agar dapat:
 
@@ -648,52 +649,52 @@ Selamat menabung 💚"""
     ✅ Hutang Piutang
     ✅ AI Insight
     ✅ Dashboard Lengkap
+    """
+            )
 
-            """)
+            return jsonify(status=True)
+
+        nomor = get_owner_number(sender)
 
         data = TargetPembelian.query.filter_by(
-
-            nomor_wa=sender,
+            nomor_wa=nomor,
             aktif=True
-
         ).all()
 
         if not data:
 
             kirim_wa(
                 sender,
-                "Belum ada target."
+                "Belum ada target tabungan."
             )
 
             return jsonify(status=True)
 
-        text = "🎯 TARGET PEMBELIAN\n\n"
+        text = "🎯 *TARGET TABUNGAN*\n\n"
 
-        for i,x in enumerate(data,1):
+        if nomor != sender:
+            text += "👁 Mode Viewer (Data Owner)\n\n"
+
+        for i, x in enumerate(data, 1):
 
             persen = round(
-                x.terkumpul /
-                x.target * 100
-            )
+                (x.terkumpul / x.target) * 100
+            ) if x.target else 0
 
-            if persen>100:
-                persen=100
+            persen = min(persen, 100)
 
-            sisa = x.target-x.terkumpul
+            sisa = max(x.target - x.terkumpul, 0)
 
-            text += f"""{i}. {x.nama}
+            text += f"""*{i}. {x.nama}*
 
-    Progress : {persen}%
-
-    Rp {x.terkumpul:,.0f}
-    /
-    Rp {x.target:,.0f}
-
-    Sisa Rp {sisa:,.0f}
+    📊 Progress : {persen}%
+    💰 Terkumpul : Rp {x.terkumpul:,.0f}
+    🎯 Target    : Rp {x.target:,.0f}
+    💵 Sisa      : Rp {sisa:,.0f}
 
     """
 
-        kirim_wa(sender,text)
+        kirim_wa(sender, text)
 
         return jsonify(status=True)
 
@@ -704,8 +705,9 @@ Selamat menabung 💚"""
 
         if not has_feature(sender, "target"):
 
-            kirim_wa(sender,
-    """
+            kirim_wa(
+                sender,
+                """
     🔒 Fitur target tabungan hanya tersedia pada paket PREMIUM.
 
     Upgrade sekarang agar dapat:
@@ -716,49 +718,63 @@ Selamat menabung 💚"""
     ✅ Hutang Piutang
     ✅ AI Insight
     ✅ Dashboard Lengkap
-
-            """)
-
-        nama = message[7:]
-
-        target = TargetPembelian.query.filter_by(
-
-            nomor_wa=sender,
-            nama=nama,
-            aktif=True
-
-        ).first()
-
-        if target:
-
-            persen = round(
-                target.terkumpul /
-                target.target *100
-            )
-
-            sisa = target.target-target.terkumpul
-
-            kirim_wa(
-
-                sender,
-
-    f"""🎯 {target.nama}
-
-    Target
-    Rp {target.target:,.0f}
-
-    Terkumpul
-    Rp {target.terkumpul:,.0f}
-
-    Sisa
-    Rp {sisa:,.0f}
-
-    Progress
-    {persen}%"""
-
+    """
             )
 
             return jsonify(status=True)
+
+        nomor = get_owner_number(sender)
+
+        nama = message[7:].strip()
+
+        target = TargetPembelian.query.filter_by(
+            nomor_wa=nomor,
+            nama=nama,
+            aktif=True
+        ).first()
+
+        if not target:
+
+            kirim_wa(
+                sender,
+                "❌ Target tidak ditemukan."
+            )
+
+            return jsonify(status=True)
+
+        persen = round(
+            (target.terkumpul / target.target) * 100
+        ) if target.target else 0
+
+        persen = min(persen, 100)
+
+        sisa = max(target.target - target.terkumpul, 0)
+
+        viewer_info = ""
+
+        if nomor != sender:
+            viewer_info = "\n👁 Mode Viewer (Data Owner)\n"
+
+        kirim_wa(
+            sender,
+            f"""🎯 *{target.nama}*
+
+    🎯 Target
+    Rp {target.target:,.0f}
+
+    💰 Terkumpul
+    Rp {target.terkumpul:,.0f}
+
+    💵 Sisa
+    Rp {sisa:,.0f}
+
+    📊 Progress
+    {persen}%
+    {viewer_info}
+    🤖 ChatSaku Finance Assistant"""
+        )
+
+        return jsonify(status=True)
 
     # ======================================
     # HAPUS TARGET
@@ -827,19 +843,21 @@ Selamat menabung 💚"""
     # =========================
     if cmd == "saldo":
 
-        masuk = transaksi_user(sender).filter(
+        nomor = get_owner_number(sender)
+
+        masuk = transaksi_user(nomor).filter(
             Transaksi.tipe == "MASUK"
         ).with_entities(
             db.func.sum(Transaksi.nominal)
         ).scalar() or 0
 
-        keluar = transaksi_user(sender).filter(
+        keluar = transaksi_user(nomor).filter(
             Transaksi.tipe == "KELUAR"
         ).with_entities(
             db.func.sum(Transaksi.nominal)
         ).scalar() or 0
 
-        saldo = get_current_balance(sender)
+        saldo = get_current_balance(nomor)
 
         # link = generate_dashboard_link(sender)
 
@@ -1174,43 +1192,56 @@ keluar 25000 grab
     # =========================
     if cmd == "hariini":
 
+        nomor = get_owner_number(sender)
+
         today = sekarang().date()
 
-        data = transaksi_user(sender).filter(
+        data = transaksi_user(nomor).filter(
             db.func.date(Transaksi.tanggal) == today
         ).all()
 
         total = sum(x.nominal for x in data)
-        link = generate_dashboard_link(sender)
+
         masuk_hari_ini = sum(
-            x.nominal for x in data
+            x.nominal
+            for x in data
             if x.tipe == "MASUK"
         )
 
         keluar_hari_ini = sum(
-            x.nominal for x in data
+            x.nominal
+            for x in data
             if x.tipe == "KELUAR"
         )
+
+        viewer_info = ""
+
+        if nomor != sender:
+            viewer_info = "\n👁 *Mode Viewer (Data Owner)*\n"
 
         kirim_wa(
             sender,
             f"""📊 *Ringkasan Hari Ini*
-━━━━━━━━━━━━━━
+    ━━━━━━━━━━━━━━
 
-🧾 *Jumlah Transaksi*
-{len(data)}
+    🧾 *Jumlah Transaksi*
+    {len(data)}
 
-📥 *Pemasukan*  : Rp. {masuk_hari_ini:,.0f}
-📤 *Pengeluaran*: Rp. {keluar_hari_ini:,.0f}
+    📥 *Pemasukan*
+    Rp {masuk_hari_ini:,.0f}
 
-━━━━━━━━━━━━━━
+    📤 *Pengeluaran*
+    Rp {keluar_hari_ini:,.0f}
 
-💰 *Total Aktivitas*
-Rp {total:,.0f}
+    ━━━━━━━━━━━━━━
 
-━━━━━━━━━━━━━━
-🤖 *Finance Assistant*
-"""
+    💰 *Total Aktivitas*
+    Rp {total:,.0f}
+    {viewer_info}
+    ━━━━━━━━━━━━━━
+
+    🤖 ChatSaku Finance Assistant
+    """
         )
 
         return jsonify({"status": True})
@@ -1219,6 +1250,9 @@ Rp {total:,.0f}
     # BUDGET
     # =========================
     if cmd.startswith("budget"):
+
+        nomor = get_owner_number(sender)
+
         if not has_feature(sender, "budget"):
 
             kirim_wa(sender,
@@ -1248,7 +1282,7 @@ Rp {total:,.0f}
                 periode = periode_sekarang()
 
                 budgets = Budget.query.filter_by(
-                    nomor_wa=sender,
+                    nomor_wa=nomor,
                     periode=periode
                 ).order_by(
                     Budget.kategori.asc()
@@ -1289,7 +1323,7 @@ Rp {total:,.0f}
                     # =============================
                     # TOTAL PENGELUARAN KATEGORI BULAN INI
                     # =============================
-                    terpakai = transaksi_user(sender).filter(
+                    terpakai = transaksi_user(nomor).filter(
                         Transaksi.tipe == "KELUAR",
                         Transaksi.kategori == b.kategori,
                         Transaksi.tanggal >= awal_bulan,
@@ -1362,6 +1396,19 @@ Rp {total:,.0f}
                 kirim_wa(sender, pesan)
 
                 return jsonify({"status": True})
+
+            if is_viewer(sender):
+
+                kirim_wa(
+                    sender,
+                    """🔒 Mode Viewer
+
+            Anda hanya dapat melihat Budget.
+
+            Perubahan Budget hanya dapat dilakukan oleh Owner."""
+                )
+
+                return jsonify(status=True)
 
             # =========================
             # FORMAT
@@ -1531,39 +1578,50 @@ untuk melihat semua budget.
     # AI INSIGHT
     # =========================
     if cmd == "insight":
+
         from utils.ai_insight import generate_ai_insight
+
         if not has_feature(sender, "ai"):
 
-            kirim_wa(sender,
-    """
-    🔒 Fitur AI Insight hanya tersedia pada paket PREMIUM.
+            kirim_wa(
+                sender,
+                """🔒 *Fitur AI Insight* hanya tersedia pada paket PREMIUM.
 
-    Upgrade sekarang agar dapat:
+    Upgrade sekarang untuk menikmati:
 
     ✅ Budget Bulanan
     ✅ Reminder
     ✅ Target Tabungan
     ✅ Hutang Piutang
-    ✅ AI Insight
+    ✅ AI Finance Insight
     ✅ Dashboard Lengkap
-
-            """)
+    """
+            )
 
             return jsonify(status=True)
 
         try:
 
-            insight = generate_ai_insight(sender)
+            nomor = get_owner_number(sender)
 
-            pesan = """🏦 *AI Finance Insight*
+            insight = generate_ai_insight(nomor)
+
+            viewer_info = ""
+
+            if nomor != sender:
+                viewer_info = (
+                    "👁 *Mode Viewer*\n"
+                    "Analisis ini menggunakan data Owner.\n\n"
+                )
+
+            pesan = f"""🏦 *AI Finance Insight*
     ──────────────────
 
-    🧠 *Analisis AI*
+    {viewer_info}🧠 *Analisis AI*
 
     """
 
             for item in insight:
-
                 pesan += f"• {item}\n"
 
             pesan += """
@@ -1600,6 +1658,7 @@ untuk melihat semua budget.
             return jsonify(status=True)
 
         try:
+            nomor = get_owner_number(sender)
 
             parts = message.lower().split()
 
@@ -1609,7 +1668,7 @@ untuk melihat semua budget.
             if len(parts) == 1:
 
                 reminders = Reminder.query.filter_by(
-                    nomor_wa=sender,
+                    nomor_wa=nomor,
                     aktif=True
                 ).order_by(
                     Reminder.tanggal.asc()
@@ -1647,6 +1706,19 @@ untuk melihat semua budget.
                 kirim_wa(sender, pesan)
 
                 return jsonify({"status": True})
+
+            if is_viewer(sender):
+
+                kirim_wa(
+                    sender,
+                    """🔒 Mode Viewer
+
+            Anda hanya dapat melihat Reminder.
+
+            Perubahan Reminder hanya dapat dilakukan oleh Owner."""
+                )
+
+                return jsonify(status=True)
 
             # =========================
             # FORMAT
@@ -2414,33 +2486,41 @@ untuk melihat seluruh reminder.
 
     if cmd == "dashboard":
 
-        link = generate_dashboard_link(sender)
+        nomor = get_owner_number(sender)
 
+        link = generate_dashboard_link(nomor)
+
+        mode = ""
+
+        if nomor != sender:
+            mode = (
+                "\n👁 *Mode Viewer*\n"
+                "Anda sedang melihat dashboard milik Owner.\n"
+            )
 
         kirim_wa(
             sender,
             f"""📊 *Dashboard ChatSaku*
 
-    Akses ringkasan keuangan Anda:
+    Akses Dashboard:
 
     {link}
 
-
-    Fitur tersedia:
+    {mode}
+    Fitur:
 
     💰 Saldo
     📥 Pemasukan
     📤 Pengeluaran
-    📈 Grafik transaksi
+    📈 Grafik
     💳 Hutang Piutang
-    🎯 Target Pembelian
+    🎯 Target Tabungan
+    🤖 AI Insight
 
+    ⏳ Link berlaku 30 menit.
 
-    ⏳ Link aktif 30 menit
-
-    🤖 ChatSaku Finance Assistant"""
+    💚 ChatSaku Finance Assistant"""
         )
-
 
         return jsonify(status=True)
 
@@ -2453,120 +2533,188 @@ untuk melihat seluruh reminder.
             sender,
     f"""🤖 *ChatSaku Finance Assistant*
 
-Berikut menu yang tersedia:
+Kelola seluruh keuangan langsung dari WhatsApp.
 
-━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━
+💰 *TRANSAKSI*
 
-💰 *Pemasukan*
+➕ masuk 500000 gaji
+➖ keluar 25000 makan
 
-masuk 500000 gaji
+━━━━━━━━━━━━━━━━━━
+💳 *KEUANGAN*
 
-Contoh:
-masuk 2500000 gaji
+• saldo
+   Melihat saldo saat ini.
 
-━━━━━━━━━━━━━━
+• hariini
+   Ringkasan transaksi hari ini.
 
-💸 *Pengeluaran*
+• dashboard
+   Membuka dashboard keuangan.
 
-keluar 25000 makan
+━━━━━━━━━━━━━━━━━━
+🎯 *BUDGET*
 
-Contoh:
-keluar 150000 bensin
+• budget
+   Melihat seluruh budget.
 
-━━━━━━━━━━━━━━
+• budget makanan 1500000
+   Membuat / mengubah budget.
 
-💳 *Saldo*
+━━━━━━━━━━━━━━━━━━
+🎁 *TARGET TABUNGAN*
 
-saldo
+• target
+   Melihat semua target.
 
-Melihat total saldo saat ini.
+• target laptop 12000000 31-12-2026
+   Membuat target baru.
 
-━━━━━━━━━━━━━━
+• target laptop
+   Detail target.
 
-📊 *Ringkasan Hari Ini*
+• tabung laptop 500000
+   Menambah tabungan.
 
-hariini
+• hapustarget laptop
+   Menghapus target.
 
-Menampilkan transaksi hari ini.
+━━━━━━━━━━━━━━━━━━
+🔔 *REMINDER*
 
-━━━━━━━━━━━━━━
+• reminder
+   Daftar reminder.
 
-🎯 *Budget Bulanan*
+• reminder listrik 20 500000
+   Membuat reminder.
 
-Lihat Budget:
+• hapusreminder listrik
+   Menghapus reminder.
 
-budget
+━━━━━━━━━━━━━━━━━━
+📊 *LAPORAN & ANALISIS*
 
-Tambah Budget:
+• insight
+   AI Finance Insight.
 
-budget makanan 1500000
+• statistik
+   Statistik keuangan.
 
-━━━━━━━━━━━━━━
+• excel
+   Export ke Excel.
 
-🎁 *Target Pembelian*
+• pdf
+   Export ke PDF.
 
-Lihat Semua Target:
+━━━━━━━━━━━━━━━━━━
+👥 *MULTI USER*
 
-target
+• share 08123456789
+   Tambah Viewer.
 
-Buat Target:
+• viewer
+   Daftar Viewer.
 
-target laptop 12000000 31-12-2026
+• unshare 08123456789
+   Hapus Viewer.
 
-Lihat Detail Target:
+━━━━━━━━━━━━━━━━━━
+⚡ *FITUR PREMIUM*
 
-target laptop
+✨ AI Finance Insight
+✨ Budget Bulanan
+✨ Target Tabungan
+✨ Reminder Tagihan
+✨ Export Excel & PDF
+✨ Laporan Harian Otomatis
+✨ Multi User (Viewer)
 
-Tambah Tabungan:
-
-tabung laptop 500000
-
-Hapus Target:
-
-hapustarget laptop
-
-━━━━━━━━━━━━━━
-
-🤖 *AI Finance Insight*
-
-insight
-
-Analisis otomatis kondisi keuangan.
-
-━━━━━━━━━━━━━━
-
-🔔 *Reminder Tagihan*
-
-Lihat Reminder:
-
-reminder
-
-Tambah Reminder:
-
-reminder listrik 20 500000
-
-Hapus Reminder:
-
-hapusreminder listrik
-
-━━━━━━━━━━━━━━
-
+━━━━━━━━━━━━━━━━━━
 🌐 Website
-
 https://chatsaku.com
 
-📊 Dashboard
-
-Dashboard tersedia otomatis setelah Anda melakukan transaksi.
+📈 Dashboard Web
+Tersedia otomatis setelah Anda melakukan transaksi.
 
 💚 *ChatSaku Finance Assistant*
-
 100% WhatsApp • AI Powered
-Kelola keuangan cukup melalui chat WhatsApp.
+Kelola keuangan lebih mudah, cepat, dan praktis.
 """
         )
 
         return jsonify(status=True)
+
+    if cmd == "share":
+
+    if not has_feature(sender, "share"):
+
+        kirim_wa(
+            sender,
+            "🔒 Fitur Multi User tersedia pada paket PREMIUM."
+        )
+
+        return jsonify(status=True)
+
+    if len(args) < 1:
+
+        kirim_wa(
+            sender,
+            "Format:\n\nshare 081234567890"
+        )
+
+        return jsonify(status=True)
+
+    nomor = normalize_nomor(args[0])
+
+    if nomor == sender:
+
+        kirim_wa(
+            sender,
+            "❌ Tidak bisa membagikan akun ke nomor sendiri."
+        )
+
+        return jsonify(status=True)
+
+    cek = SharedAccess.query.filter_by(
+        owner=sender,
+        member=nomor,
+        aktif=True
+    ).first()
+
+    if cek:
+
+        kirim_wa(
+            sender,
+            "Nomor tersebut sudah menjadi viewer."
+        )
+
+        return jsonify(status=True)
+
+    db.session.add(
+
+        SharedAccess(
+
+            owner=sender,
+
+            member=nomor
+
+        )
+
+    )
+
+    db.session.commit()
+
+    kirim_wa(
+        sender,
+        f"""✅ Viewer berhasil ditambahkan
+
+👤 {nomor}
+
+Nomor tersebut sekarang dapat melihat dashboard dan laporan Anda."""
+    )
+
+    return jsonify(status=True)
 
     # =========================
     # DEFAULT
