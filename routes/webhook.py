@@ -3,7 +3,7 @@ import os
 from flask import Blueprint,Flask, request, jsonify, render_template, send_file, redirect
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta, time
-from models import db, Transaksi, Budget, Reminder, User, RequestDemo, TargetPembelian, HutangPiutang
+from models import db, Transaksi, Budget, Reminder, User, RequestDemo, TargetPembelian, HutangPiutang,MonthlySummary,Transaksi
 import requests
 import os
 import pandas as pd
@@ -17,6 +17,147 @@ from utils.duplicate import is_duplicate
 from utils.helper import *
 
 webhook_bp = Blueprint("webhook", __name__)
+
+def get_current_balance(nomor_wa):
+    verify_monthly_summary(
+        nomor_wa
+    )
+    """
+    Menghitung saldo saat ini menggunakan snapshot MonthlySummary.
+
+    Alur:
+    1. Cari snapshot (closing) terakhir.
+    2. Jika ada:
+       saldo = saldo_akhir_snapshot
+             + pemasukan setelah snapshot
+             - pengeluaran setelah snapshot
+
+    3. Jika belum ada snapshot:
+       saldo = seluruh pemasukan
+             - seluruh pengeluaran
+    """
+
+    last_summary = (
+        MonthlySummary.query
+        .filter_by(nomor_wa=nomor_wa)
+        .order_by(MonthlySummary.periode.desc())
+        .first()
+    )
+
+    # =====================================
+    # BELUM ADA CLOSING
+    # =====================================
+    if last_summary is None:
+
+        total_masuk = (
+            db.session.query(
+                func.coalesce(func.sum(Transaksi.nominal), 0)
+            )
+            .filter(
+                Transaksi.nomor_wa == nomor_wa,
+                Transaksi.tipe == "MASUK"
+            )
+            .scalar()
+        )
+
+        total_keluar = (
+            db.session.query(
+                func.coalesce(func.sum(Transaksi.nominal), 0)
+            )
+            .filter(
+                Transaksi.nomor_wa == nomor_wa,
+                Transaksi.tipe == "KELUAR"
+            )
+            .scalar()
+        )
+
+        return total_masuk - total_keluar
+
+    # =====================================
+    # ADA SNAPSHOT
+    # =====================================
+
+    tahun, bulan = map(int, last_summary.periode.split("-"))
+
+    if bulan == 12:
+
+        mulai = datetime(
+            tahun + 1,
+            1,
+            1,
+            0,
+            0,
+            0
+        )
+
+    else:
+
+        mulai = datetime(
+            tahun,
+            bulan + 1,
+            1,
+            0,
+            0,
+            0
+        )
+
+    total_masuk = (
+        db.session.query(
+            func.coalesce(func.sum(Transaksi.nominal), 0)
+        )
+        .filter(
+            Transaksi.nomor_wa == nomor_wa,
+            Transaksi.tipe == "MASUK",
+            Transaksi.tanggal >= mulai
+        )
+        .scalar()
+    )
+
+    total_keluar = (
+        db.session.query(
+            func.coalesce(func.sum(Transaksi.nominal), 0)
+        )
+        .filter(
+            Transaksi.nomor_wa == nomor_wa,
+            Transaksi.tipe == "KELUAR",
+            Transaksi.tanggal >= mulai
+        )
+        .scalar()
+    )
+
+    saldo = (
+        last_summary.saldo_akhir
+        + total_masuk
+        - total_keluar
+    )
+
+    return saldo
+
+def refresh_summary_after_transaction(tanggal_transaksi):
+    """
+    Refresh MonthlySummary setelah transaksi ditambah,
+    diubah atau dihapus.
+
+    Hanya akan melakukan cascade jika bulan tersebut
+    sudah pernah dilakukan closing.
+    """
+
+    periode = tanggal_transaksi.strftime("%Y-%m")
+
+    summary = MonthlySummary.query.filter_by(
+        periode=periode
+    ).first()
+
+    # Belum pernah closing
+    if summary is None:
+        return
+
+    print("=" * 60)
+    print("AUTO RECALCULATE")
+    print("Periode :", periode)
+    print("=" * 60)
+
+    cascade_reclosing(periode)
 
 # =========================
 # WEBHOOK
@@ -658,7 +799,7 @@ Selamat menabung 💚"""
             db.func.sum(Transaksi.nominal)
         ).scalar() or 0
 
-        saldo = masuk - keluar
+        saldo = get_current_balance(nomor_wa)
 
         # link = generate_dashboard_link(sender)
 

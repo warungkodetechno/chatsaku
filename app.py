@@ -2,7 +2,11 @@ from flask import Flask, request, jsonify, render_template, send_file, redirect
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta, time as dt_time
 import time
-from models import db, Transaksi, Budget, Reminder, User, RequestDemo, HutangPiutang, TargetPembelian, PromoPaket
+from models import db, Transaksi, Budget, Reminder, User, RequestDemo, HutangPiutang, TargetPembelian, PromoPaket, MonthlySummary,
+    get_last_summary,
+    get_summary,
+    get_saldo_awal_bulan,
+    get_saldo_akhir
 from routes.webhook import webhook_bp
 import requests
 import os
@@ -13,6 +17,9 @@ from itsdangerous import URLSafeTimedSerializer
 from itsdangerous import BadSignature
 from itsdangerous import SignatureExpired
 from utils.helper import *
+
+from sqlalchemy import func
+from calendar import monthrange
 
 from apscheduler.schedulers.background import BackgroundScheduler
 from zoneinfo import ZoneInfo
@@ -207,6 +214,10 @@ def delete_user(id):
 
 @app.route("/dashboard/<token>")
 def dashboard(token):
+
+    verify_monthly_summary(
+        nomor
+    )
 
     nomor = verify_token(token)
 
@@ -1040,6 +1051,120 @@ Kelola keuangan lebih rapi, setiap hari.
 """
     return laporan
 
+def generate_laporan_bulanan(nomor_wa, periode):
+
+    summary = MonthlySummary.query.filter_by(
+        nomor_wa=nomor_wa,
+        periode=periode
+    ).first()
+
+    if not summary:
+        return None
+
+    transaksi = Transaksi.query.filter(
+        Transaksi.nomor_wa == nomor_wa,
+        func.to_char(
+            Transaksi.tanggal,
+            "YYYY-MM"
+        ) == periode,
+        Transaksi.tipe == "KELUAR"
+    ).all()
+
+    kategori = {}
+
+    for trx in transaksi:
+        key = trx.kategori or "-"
+        kategori[key] = kategori.get(key, 0) + trx.nominal
+
+    kategori_terbesar = "-"
+
+    nominal_terbesar = 0
+
+    if kategori:
+        kategori_terbesar = max(
+            kategori,
+            key=kategori.get
+        )
+        nominal_terbesar = kategori[kategori_terbesar]
+
+    return f"""
+📊 *Laporan Bulanan ChatSaku*
+
+📅 Periode : {periode}
+
+═══════════════════
+
+💵 Saldo Awal
+Rp {summary.saldo_awal:,.0f}
+
+📈 Total Masuk
+Rp {summary.total_masuk:,.0f}
+
+📉 Total Keluar
+Rp {summary.total_keluar:,.0f}
+
+💰 Saving
+Rp {summary.saving:,.0f}
+
+🏦 Saldo Akhir
+Rp {summary.saldo_akhir:,.0f}
+
+━━━━━━━━━━━━━━━━━━━
+
+🏆 Pengeluaran Terbesar
+
+{kategori_terbesar}
+Rp {nominal_terbesar:,.0f}
+
+━━━━━━━━━━━━━━━━━━━
+
+Jumlah Transaksi
+{summary.total_transaksi}
+
+Terima kasih telah menggunakan ChatSaku 😊
+"""
+
+def kirim_laporan_bulanan(periode):
+
+    users = User.query.filter_by(
+        aktif=True
+    ).all()
+
+    for user in users:
+
+        try:
+
+            laporan = generate_laporan_bulanan(
+                user.nomor_wa,
+                periode
+            )
+
+            if laporan:
+
+                kirim_wa(
+                    user.nomor_wa,
+                    laporan
+                )
+
+        except Exception as e:
+
+            print(e)
+
+def scheduler_closing():
+
+    with app.app_context():
+
+        periode = previous_period()
+
+        if not validate_period(periode):
+
+            print("Periode tidak valid")
+
+            return
+
+        hasil = closing_month(periode)
+
+        print(hasil)
 def kirim_laporan_harian():
 
     print("=" * 60)
@@ -1082,6 +1207,508 @@ def kirim_laporan_harian():
 
                 print("❌ Error:", e)
 
+def previous_period():
+
+    now = now_jakarta()
+
+    if now.month == 1:
+        return f"{now.year-1}-12"
+
+    return f"{now.year}-{now.month-1:02d}"
+
+def copy_budget_next_month(nomor_wa, periode):
+
+    tujuan = next_period(periode)
+
+    budget_list = Budget.query.filter_by(
+        nomor_wa=nomor_wa,
+        periode=periode,
+        auto_repeat=True
+    ).all()
+
+    for item in budget_list:
+
+        sudah = Budget.query.filter_by(
+            nomor_wa=nomor_wa,
+            periode=tujuan,
+            kategori=item.kategori
+        ).first()
+
+        if sudah:
+            continue
+
+        db.session.add(
+
+            Budget(
+                nomor_wa=item.nomor_wa,
+                kategori=item.kategori,
+                nominal=item.nominal,
+                periode=tujuan,
+                auto_repeat=True
+            )
+
+        )
+
+def closing_user(user, periode):
+
+    tahun, bulan = map(int, periode.split("-"))
+
+    awal = datetime(
+        tahun,
+        bulan,
+        1,
+        0,
+        0,
+        0
+    )
+
+    akhir = datetime(
+        tahun,
+        bulan,
+        monthrange(tahun, bulan)[1],
+        23,
+        59,
+        59
+    )
+
+    saldo_awal = calculate_opening_balance(
+        user.nomor_wa,
+        periode
+    )
+
+    # ==============================
+    # TOTAL PEMASUKAN
+    # ==============================
+
+    masuk = (
+        db.session.query(
+            func.coalesce(
+                func.sum(Transaksi.nominal),
+                0
+            )
+        )
+        .filter(
+            Transaksi.nomor_wa == user.nomor_wa,
+            Transaksi.tipe == "MASUK",
+            Transaksi.tanggal >= awal,
+            Transaksi.tanggal <= akhir
+        )
+        .scalar()
+    )
+
+    # ==============================
+    # TOTAL PENGELUARAN
+    # ==============================
+
+    keluar = (
+        db.session.query(
+            func.coalesce(
+                func.sum(Transaksi.nominal),
+                0
+            )
+        )
+        .filter(
+            Transaksi.nomor_wa == user.nomor_wa,
+            Transaksi.tipe == "KELUAR",
+            Transaksi.tanggal >= awal,
+            Transaksi.tanggal <= akhir
+        )
+        .scalar()
+    )
+
+    # ==============================
+    # JUMLAH TRANSAKSI
+    # ==============================
+
+    jumlah = (
+        db.session.query(
+            func.count(Transaksi.id)
+        )
+        .filter(
+            Transaksi.nomor_wa == user.nomor_wa,
+            Transaksi.tanggal >= awal,
+            Transaksi.tanggal <= akhir
+        )
+        .scalar()
+    )
+
+    saving = masuk - keluar
+
+    saldo_akhir = saldo_awal + saving
+
+    # ==============================
+    # INSERT / UPDATE SUMMARY
+    # ==============================
+
+    summary = MonthlySummary.query.filter_by(
+        nomor_wa=user.nomor_wa,
+        periode=periode
+    ).first()
+
+    if summary is None:
+
+        summary = MonthlySummary(
+            nomor_wa=user.nomor_wa,
+            periode=periode
+        )
+
+        db.session.add(summary)
+
+    summary.saldo_awal = saldo_awal
+    summary.total_masuk = masuk
+    summary.total_keluar = keluar
+    summary.saving = saving
+    summary.saldo_akhir = saldo_akhir
+    summary.total_transaksi = jumlah
+    summary.status = "CLOSED"
+    summary.closed_at = now_jakarta()
+
+    copy_budget_next_month(
+        user.nomor_wa,
+        periode
+    )
+
+    return True
+
+def closing_month(periode=None):
+
+    if periode is None:
+        periode = previous_period()
+
+    # ==========================
+    # VALIDASI PERIODE
+    # ==========================
+
+    if not validate_period(periode):
+
+        return {
+            "status": False,
+            "message": "Periode tidak valid"
+        }
+
+    # ==========================
+    # LOCK
+    # ==========================
+
+    if not acquire_lock():
+
+        return {
+            "status": False,
+            "message": "Closing sedang berjalan."
+        }
+
+    berhasil = 0
+    gagal = 0
+
+    try:
+
+        users = User.query.filter_by(
+            aktif=True
+        ).all()
+
+        print("=" * 60)
+        print("MONTHLY CLOSING")
+        print("Periode :", periode)
+        print("Jumlah User :", len(users))
+        print("=" * 60)
+
+        for user in users:
+
+            try:
+
+                closing_user(
+                    user,
+                    periode
+                )
+
+                berhasil += 1
+
+                print(
+                    "SUCCESS :",
+                    user.nomor_wa
+                )
+
+            except Exception as e:
+
+                gagal += 1
+
+                db.session.rollback()
+
+                import traceback
+
+                traceback.print_exc()
+
+                print(
+                    "FAILED :",
+                    user.nomor_wa,
+                    str(e)
+                )
+
+        db.session.commit()
+
+        print("=" * 60)
+        print("Closing selesai")
+        print("Success :", berhasil)
+        print("Failed  :", gagal)
+        print("=" * 60)
+
+        return {
+
+            "status": True,
+
+            "periode": periode,
+
+            "success": berhasil,
+
+            "failed": gagal
+
+        }
+
+    except Exception as e:
+
+        db.session.rollback()
+
+        import traceback
+
+        traceback.print_exc()
+
+        print("FATAL ERROR :", str(e))
+
+        return {
+
+            "status": False,
+
+            "message": str(e)
+
+        }
+
+    finally:
+
+        release_lock()
+
+def recalculate_summary(
+
+    nomor_wa,
+
+    periode
+
+):
+
+    closing_user(
+
+        User.query.filter_by(
+
+            nomor_wa=nomor_wa
+
+        ).first(),
+
+        periode
+
+    )
+
+def validate_period(periode):
+    """
+    Validasi format periode YYYY-MM
+    Contoh valid:
+        2026-01
+        2026-12
+
+    Contoh tidak valid:
+        2026
+        26-01
+        2026-13
+        2026-00
+        abc
+    """
+
+    if not periode:
+        return False
+
+    periode = periode.strip()
+
+    # Format harus YYYY-MM
+    if not re.match(r"^\d{4}-\d{2}$", periode):
+        return False
+
+    try:
+
+        tahun, bulan = map(int, periode.split("-"))
+
+        if tahun < 2020:
+            return False
+
+        if bulan < 1 or bulan > 12:
+            return False
+
+        datetime(tahun, bulan, 1)
+
+        return True
+
+    except Exception:
+
+        return False
+
+@app.route("/admin/closing-month")
+def admin_closing():
+
+    periode = request.args.get("periode")
+
+    if not periode:
+
+        periode = previous_period()
+
+    if not validate_period(periode):
+
+        return jsonify({
+
+            "status": False,
+
+            "message": "Format periode harus YYYY-MM"
+
+        }), 400
+
+    hasil = closing_month(periode)
+
+    return jsonify(hasil)
+
+@app.route("/admin/monthly-summary")
+def monthly_summary():
+
+    data = MonthlySummary.query.order_by(
+
+        MonthlySummary.periode.desc(),
+
+        MonthlySummary.nomor_wa
+
+    ).all()
+
+    rows = []
+
+    for item in data:
+
+        rows.append({
+
+            "periode": item.periode,
+
+            "nomor": item.nomor_wa,
+
+            "saldo_awal": item.saldo_awal,
+
+            "masuk": item.total_masuk,
+
+            "keluar": item.total_keluar,
+
+            "saving": item.saving,
+
+            "saldo_akhir": item.saldo_akhir,
+
+            "status": item.status
+
+        })
+
+    return jsonify(rows)
+
+@app.route("/admin/reclosing/<periode>")
+def admin_reclosing(periode):
+
+    if not validate_period(periode):
+
+        return jsonify({
+
+            "status":False,
+
+            "message":"Periode salah"
+
+        }),400
+
+    cascade_reclosing(
+        periode
+    )
+
+    return jsonify({
+
+        "status":True,
+
+        "message":"Cascade selesai"
+
+    })
+
+def next_period(periode):
+
+    tahun, bulan = map(int, periode.split("-"))
+
+    if bulan == 12:
+        return f"{tahun+1}-01"
+
+    return f"{tahun}-{bulan+1:02d}"
+
+@app.route("/admin/test-closing")
+def test_closing():
+
+    with app.app_context():
+
+        hasil = closing_month()
+
+        kirim_laporan_bulanan(
+            hasil["periode"]
+        )
+
+    return jsonify(hasil)
+
+@app.route("/admin/test-laporan-bulanan")
+def test_laporan():
+
+    nomor = request.args.get("nomor")
+
+    periode = request.args.get("periode")
+
+    laporan = generate_laporan_bulanan(
+        nomor,
+        periode
+    )
+
+    kirim_wa(
+        nomor,
+        laporan
+    )
+
+    return jsonify({
+        "status":True
+    })
+
+@app.route("/admin/verify-summary")
+def admin_verify():
+
+    users = User.query.filter_by(
+        aktif=True
+    ).all()
+
+    for user in users:
+
+        verify_monthly_summary(
+            user.nomor_wa
+        )
+
+    return jsonify({
+
+        "status":True,
+
+        "message":"Verification selesai"
+
+    })
+
+def scheduler_verify():
+
+    users = User.query.filter_by(
+        aktif=True
+    ).all()
+
+    for user in users:
+
+        verify_monthly_summary(
+            user.nomor_wa
+        )
+
 scheduler = BackgroundScheduler(
     timezone=ZoneInfo("Asia/Jakarta")
 )
@@ -1093,6 +1720,27 @@ scheduler.add_job(
     minute=25,
     id="laporan_harian",
     replace_existing=True
+)
+
+scheduler.add_job(
+    func=scheduler_closing,
+    trigger="cron",
+    day=1,
+    hour=0,
+    minute=10,
+    id="closing_month",
+    replace_existing=True
+)
+
+scheduler.add_job(
+
+    func=scheduler_verify,
+    trigger="cron",
+    hour=1,
+    minute=0,
+    id="verify_summary",
+    replace_existing=True
+
 )
 
 scheduler.start()
@@ -1300,6 +1948,66 @@ def notification():
         db.session.commit()
 
     return "OK"
+
+def list_period_between(start_period, end_period):
+
+    hasil = []
+
+    tahun, bulan = map(int, start_period.split("-"))
+    end_tahun, end_bulan = map(int, end_period.split("-"))
+
+    while True:
+
+        hasil.append(f"{tahun}-{bulan:02d}")
+
+        if tahun == end_tahun and bulan == end_bulan:
+            break
+
+        bulan += 1
+
+        if bulan == 13:
+            bulan = 1
+            tahun += 1
+
+    return hasil
+
+def last_summary_period():
+
+    last = db.session.query(
+
+        func.max(
+            MonthlySummary.periode
+        )
+
+    ).scalar()
+
+    return last
+
+def cascade_reclosing(start_period):
+
+    akhir = last_summary_period()
+
+    if akhir is None:
+
+        return
+
+    daftar = list_period_between(
+        start_period,
+        akhir
+    )
+
+    print("="*60)
+    print("CASCADE RECLOSING")
+    print(daftar)
+    print("="*60)
+
+    for periode in daftar:
+
+        print("RECALCULATE :", periode)
+
+        closing_month(
+            periode
+        )
 
 # =========================
 # TEST

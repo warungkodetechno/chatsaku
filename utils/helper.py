@@ -559,3 +559,103 @@ def get_harga_paket(nama_paket):
         "tanggal_selesai": None
 
     }
+
+
+def get_missing_periods(nomor_wa):
+
+    last = (
+        MonthlySummary.query
+        .filter_by(nomor_wa=nomor_wa)
+        .order_by(MonthlySummary.periode.desc())
+        .first()
+    )
+
+    if last is None:
+        return []
+
+    tahun, bulan = map(int, last.periode.split("-"))
+
+    sekarang = now_jakarta()
+
+    hasil = []
+
+    while True:
+
+        bulan += 1
+
+        if bulan == 13:
+            bulan = 1
+            tahun += 1
+
+        if (
+            tahun == sekarang.year
+            and bulan == sekarang.month
+        ):
+            break
+
+        hasil.append(
+            f"{tahun}-{bulan:02d}"
+        )
+
+    return hasil
+
+def verify_monthly_summary(nomor_wa):
+    """
+    Memastikan seluruh Monthly Summary selalu lengkap.
+
+    Jika ada bulan yang belum pernah di-closing,
+    maka otomatis dibuat snapshot hingga bulan terakhir
+    sebelum bulan berjalan.
+
+    Seluruh proses dijalankan dalam satu transaksi database.
+    """
+
+    missing = get_missing_periods(nomor_wa)
+
+    if not missing:
+        return
+
+    user = User.query.filter_by(
+        nomor_wa=nomor_wa
+    ).first()
+
+    if user is None:
+        return
+
+    print("=" * 60)
+    print("AUTO VERIFY MONTHLY SUMMARY")
+    print("Nomor WA :", nomor_wa)
+    print("Missing  :", missing)
+    print("=" * 60)
+
+    try:
+
+        for periode in missing:
+
+            print(f"Closing {periode}")
+
+            closing_user(
+                user,
+                periode
+            )
+
+        # copy budget, summary, dll baru disimpan sekali
+        db.session.commit()
+
+        print("=" * 60)
+        print("VERIFY SUCCESS")
+        print("=" * 60)
+
+    except Exception as e:
+
+        db.session.rollback()
+
+        import traceback
+        traceback.print_exc()
+
+        print("=" * 60)
+        print("VERIFY FAILED")
+        print(str(e))
+        print("=" * 60)
+
+        raise

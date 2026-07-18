@@ -82,6 +82,11 @@ class Budget(db.Model):
         default=now_jakarta
     )
 
+    auto_repeat = db.Column(
+        db.Boolean,
+        default=True
+    )
+
     __table_args__ = (
         db.UniqueConstraint(
             "nomor_wa",
@@ -293,3 +298,260 @@ class PromoPaket(db.Model):
         db.DateTime,
         default=now_jakarta
     )
+
+class MonthlySummary(db.Model):
+    __tablename__ = "monthly_summary"
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+    )
+
+    nomor_wa = db.Column(
+        db.String(30),
+        nullable=False,
+        index=True
+    )
+
+    # contoh : 2026-07
+    periode = db.Column(
+        db.String(7),
+        nullable=False,
+        index=True
+    )
+
+    # saldo akhir bulan sebelumnya
+    saldo_awal = db.Column(
+        db.BigInteger,
+        default=0
+    )
+
+    # total pemasukan bulan ini
+    total_masuk = db.Column(
+        db.BigInteger,
+        default=0
+    )
+
+    # total pengeluaran bulan ini
+    total_keluar = db.Column(
+        db.BigInteger,
+        default=0
+    )
+
+    # pemasukan - pengeluaran
+    saving = db.Column(
+        db.BigInteger,
+        default=0
+    )
+
+    # saldo akhir bulan
+    saldo_akhir = db.Column(
+        db.BigInteger,
+        default=0
+    )
+
+    total_transaksi = db.Column(
+        db.Integer,
+        default=0
+    )
+
+    status = db.Column(
+        db.String(20),
+        default="CLOSED"
+    )
+
+    closed_at = db.Column(
+        db.DateTime(timezone=True),
+        default=now_jakarta
+    )
+
+    checksum = db.Column(
+        db.String(64)
+    )
+
+    __table_args__ = (
+
+        db.UniqueConstraint(
+            "nomor_wa",
+            "periode",
+            name="uq_monthly_summary"
+        ),
+
+    )
+
+class SystemLock(db.Model):
+
+    __tablename__ = "system_lock"
+
+    nama = db.Column(
+        db.String(50),
+        primary_key=True
+    )
+
+    locked = db.Column(
+        db.Boolean,
+        default=False
+    )
+
+    updated_at = db.Column(
+        db.DateTime,
+        default=now_jakarta
+    )
+
+def acquire_lock():
+
+    lock = SystemLock.query.get(
+        "MONTHLY_CLOSING"
+    )
+
+    if lock is None:
+
+        lock = SystemLock(
+
+            nama="MONTHLY_CLOSING",
+
+            locked=False
+
+        )
+
+        db.session.add(lock)
+
+        db.session.commit()
+
+    if lock.locked:
+
+        return False
+
+    lock.locked = True
+
+    lock.updated_at = now_jakarta()
+
+    db.session.commit()
+
+    return True
+
+def release_lock():
+
+    lock = SystemLock.query.get(
+        "MONTHLY_CLOSING"
+    )
+
+    if lock:
+
+        lock.locked = False
+
+        lock.updated_at = now_jakarta()
+
+        db.session.commit()
+
+def get_last_summary(nomor_wa):
+
+    return MonthlySummary.query.filter_by(
+        nomor_wa=nomor_wa
+    ).order_by(
+        MonthlySummary.periode.desc()
+    ).first()
+
+# def get_saldo_awal_bulan(nomor_wa, periode):
+
+#     summary = get_summary(
+#         nomor_wa,
+#         periode
+#     )
+
+#     if summary:
+#         return summary.saldo_awal
+
+#     last = get_last_summary(
+#         nomor_wa
+#     )
+
+#     if last:
+#         return last.saldo_akhir
+
+#     return 0
+
+def calculate_opening_balance(
+    nomor_wa,
+    periode
+):
+
+    tahun, bulan = map(
+        int,
+        periode.split("-")
+    )
+
+    if bulan == 1:
+
+        prev = f"{tahun-1}-12"
+
+    else:
+
+        prev = f"{tahun}-{bulan-1:02d}"
+
+    summary = MonthlySummary.query.filter_by(
+        nomor_wa=nomor_wa,
+        periode=prev
+    ).first()
+
+    if summary:
+        return summary.saldo_akhir
+
+    awal_bulan = datetime(
+        tahun,
+        bulan,
+        1
+    )
+
+    total_masuk = db.session.query(
+
+        func.coalesce(
+            func.sum(
+                Transaksi.nominal
+            ),
+            0
+
+        )
+
+    ).filter(
+
+        Transaksi.nomor_wa == nomor_wa,
+
+        Transaksi.tipe == "MASUK",
+
+        Transaksi.tanggal < awal_bulan
+
+    ).scalar()
+
+    total_keluar = db.session.query(
+
+        func.coalesce(
+            func.sum(
+                Transaksi.nominal
+            ),
+            0
+
+        )
+
+    ).filter(
+
+        Transaksi.nomor_wa == nomor_wa,
+
+        Transaksi.tipe == "KELUAR",
+
+        Transaksi.tanggal < awal_bulan
+
+    ).scalar()
+
+    return total_masuk-total_keluar
+
+def get_saldo_akhir(nomor_wa):
+
+    last = get_last_summary(
+        nomor_wa
+    )
+
+    if last:
+        return last.saldo_akhir
+
+    return 0
