@@ -2210,7 +2210,7 @@ PART 6 - BUDGET CENTER
 
                 <small>
 
-                    Rp {{ "{:,.0f}".format(item.nominal).replace(",",".") }}
+                    Rp {{ "{:,.0f}".format(item.budget|default(item.budget, true)|default(0, true)).replace(",",".") }}
 
                 </small>
 
@@ -2549,7 +2549,7 @@ PART 7 - SMART REMINDER
 
                 <div class="amount">
 
-                    Rp {{ "{:,.0f}".format(item.nominal).replace(",",".") }}
+                    Rp {{ "{:,.0f}".format(item.nominal|default(item.budget, true)|default(0, true)).replace(",",".") }}
 
                 </div>
 

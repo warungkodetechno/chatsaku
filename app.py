@@ -340,9 +340,9 @@ def dashboard(token):
         budget_data.append({
 
             "kategori": b.kategori,
-            "budget": b.nominal,
-            "terpakai": terpakai,
-            "sisa": sisa,
+            "budget": b.nominal or 0,
+            "terpakai": terpakai or 0,
+            "sisa": sisa or 0,
             "persen": persen
 
         })
