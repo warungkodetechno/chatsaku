@@ -211,9 +211,9 @@ def delete_user(id):
 @app.route("/dashboard/<token>")
 def dashboard(token):
 
-    verify_monthly_summary(
-        nomor
-    )
+    nomorver = user.nomor_wa
+
+    verify_monthly_summary(nomorver)
 
     nomor = verify_token(token)
 
