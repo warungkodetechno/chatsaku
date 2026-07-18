@@ -4485,13 +4485,13 @@ PART 10 - ACCOUNT & SYSTEM CENTER
 
                 data: {
 
-                    labels: {{ trend_label| tojson }},
+                    labels: {{ trend_label|default([]) | tojson }},
 
             datasets: [{
 
                 label: "Saving",
 
-                data: {{ trend_value| tojson }},
+                data: {{ trend_value|default ([]) | tojson }},
 
             borderColor: "#2563eb",
 

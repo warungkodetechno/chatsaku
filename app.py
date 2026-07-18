@@ -846,6 +846,25 @@ def dashboard(token):
 
     saving_hari_ini = masuk_hari_ini - keluar_hari_ini
 
+    # =====================================================
+    # TREND CHART
+    # =====================================================
+
+    trend_label = []
+    trend_value = []
+
+    for trx in all_data:
+
+        tanggal = trx.tanggal.strftime("%d %b")
+
+        if tanggal not in trend_label:
+            trend_label.append(tanggal)
+            trend_value.append(trx.nominal)
+
+        else:
+            index = trend_label.index(tanggal)
+            trend_value[index] += trx.nominal
+
     # =========================
     # RENDER
     # =========================
@@ -922,6 +941,9 @@ def dashboard(token):
         target_data=target_data,
 
         data=data_paginated,
+
+        trend_label=trend_label,
+        trend_value=trend_value
 
     )
 
