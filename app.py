@@ -211,17 +211,13 @@ def delete_user(id):
 @app.route("/dashboard/<token>")
 def dashboard(token):
 
-    nomorver = User.nomor_wa
-
-    verify_monthly_summary(nomorver)
-
     nomor = verify_token(token)
 
     if not nomor:
         return render_template(
             "link_expired.html"
         )
-
+    verify_monthly_summary(nomor)
     # =========================
     # PARAMETER
     # =========================
@@ -295,6 +291,17 @@ def dashboard(token):
     )
 
     saldo = total_masuk - total_keluar
+
+    # ==========================================
+    # SAVING
+    # ==========================================
+
+    saving = saldo
+
+    saving_persen = 0
+
+    if total_masuk > 0:
+        saving_persen = round((saving / total_masuk) * 100, 1)
 
     # ==========================================
     # BUDGET BULAN INI
@@ -598,8 +605,37 @@ def dashboard(token):
     # SUMMARY
     # =====================================================
 
-    financial_score = 84
-    financial_status = "Excellent"
+    financial_score = 100
+
+    if total_masuk > 0:
+
+        rasio = total_keluar / total_masuk
+
+        if rasio > .90:
+            financial_score -= 35
+
+        elif rasio > .75:
+            financial_score -= 20
+
+    for b in budget_data:
+
+        if b["persen"] > 100:
+            financial_score -= 10
+
+    financial_score = max(financial_score, 0)
+
+    if financial_score >= 80:
+        financial_status = "Excellent"
+
+    elif financial_score >= 60:
+        financial_status = "Good"
+
+    elif financial_score >= 40:
+        financial_status = "Warning"
+
+    else:
+        financial_status = "Critical"
+
 
     closing_status = "Open"
 
@@ -654,13 +690,72 @@ def dashboard(token):
     reminder_month = 0
     reminder_overdue = 0
 
+    reminder_count = len(reminders)
+
+    reminder_today = 0
+    reminder_week = 0
+    reminder_month = 0
+    reminder_overdue = 0
+
     reminder_list = []
+
+    today = sekarang().date()
+
+    for r in reminders:
+
+        tanggal = date(
+            today.year,
+            today.month,
+            r.tanggal
+        )
+
+        selisih = (tanggal - today).days
+
+        if selisih < 0:
+            reminder_overdue += 1
+
+        elif selisih == 0:
+            reminder_today += 1
+
+        elif selisih <= 7:
+            reminder_week += 1
+
+        reminder_month += 1
+
+        if selisih < 0:
+            warna = "danger"
+
+        elif selisih <= 2:
+            warna = "warning"
+
+        else:
+            warna = "success"
+
+        reminder_list.append({
+
+            "hari": tanggal.strftime("%d"),
+
+            "bulan": tanggal.strftime("%b").upper(),
+
+            "judul": r.nama,
+
+            "kategori": getattr(r, "kategori", "-"),
+
+            "catatan": getattr(r, "catatan", ""),
+
+            "nominal": r.nominal,
+
+            "status": f"{selisih} Hari",
+
+            "status_color": warna
+
+        })
 
     # =====================================================
     # BUDGET
     # =====================================================
 
-    budget_list = []
+    budget_list = budget_data
 
     saldo_awal = saldo
 
@@ -692,10 +787,64 @@ def dashboard(token):
 
     transaksi_terbaru = []
 
+    for trx in all_data[:10]:
+
+        transaksi_terbaru.append({
+
+            "jenis": trx.tipe.lower(),
+
+            "keterangan": trx.keterangan,
+
+            "kategori": trx.kategori,
+
+            "tanggal": trx.tanggal.strftime("%d %b"),
+
+            "jam": trx.tanggal.strftime("%H:%M"),
+
+            "nominal": trx.nominal,
+
+            "saldo": saldo
+
+        })
+
     transaksi_hari_ini = 0
     masuk_hari_ini = 0
     keluar_hari_ini = 0
     saving_hari_ini = 0
+
+    today = sekarang().date()
+
+    trx_today = [
+
+        x for x in all_data
+
+        if x.tanggal.date() == today
+
+    ]
+
+    transaksi_hari_ini = len(trx_today)
+
+    masuk_hari_ini = sum(
+
+        x.nominal
+
+        for x in trx_today
+
+        if x.tipe == "MASUK"
+
+    )
+
+    keluar_hari_ini = sum(
+
+        x.nominal
+
+        for x in trx_today
+
+        if x.tipe == "KELUAR"
+
+    )
+
+    saving_hari_ini = masuk_hari_ini - keluar_hari_ini
 
     # =========================
     # RENDER
@@ -752,7 +901,27 @@ def dashboard(token):
         keluar_hari_ini=keluar_hari_ini,
         saving_hari_ini=saving_hari_ini,
 
-        weekly_activity=weekly_activity
+        weekly_activity=weekly_activity,
+        saving=saving,
+        saving_persen=saving_persen,
+
+        total_masuk=total_masuk,
+        total_keluar=total_keluar,
+
+        insight=insight,
+
+        budget_data=budget_data,
+
+        hutang_list=hutang_list,
+        piutang_list=piutang_list,
+
+        total_hutang=total_hutang,
+        total_piutang=total_piutang,
+        net_balance=net_balance,
+
+        target_data=target_data,
+
+        data=data_paginated,
 
     )
 
