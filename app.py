@@ -578,6 +578,26 @@ def dashboard(token):
                 f"💰 Target '{target_data['nama']}' masih kurang Rp {target_data['sisa']:,.0f}."
             )
 
+    trend_label = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "Mei",
+        "Jun",
+        "Jul"
+    ]
+
+    trend_value = [
+        1200000,
+        1500000,
+        1700000,
+        2100000,
+        1950000,
+        2400000,
+        2700000
+    ]
+
     # =========================
     # RENDER
     # =========================
