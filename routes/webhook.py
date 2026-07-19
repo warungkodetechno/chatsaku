@@ -15,6 +15,7 @@ from itsdangerous import SignatureExpired
 
 from utils.duplicate import is_duplicate
 from utils.helper import *
+from utils.ai_insight import *
 
 webhook_bp = Blueprint("webhook", __name__)
 
