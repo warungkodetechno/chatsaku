@@ -295,6 +295,9 @@ FEATURES = {
         # AI
         "ai",
 
+        # Multi User
+        "share"
+
         # Hutang Piutang
         "hutang",
         "piutang",
