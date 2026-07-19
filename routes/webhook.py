@@ -409,7 +409,7 @@ https://www.chatsaku.com
         or cmd == "hariini"
         or cmd == "insight"
         or cmd == "dashboard"
-        or cmd == "share"
+        or cmd.startswith("share ")
         or cmd.startswith("masuk")
         or cmd.startswith("keluar")
         or cmd.startswith("budget")
@@ -2646,7 +2646,7 @@ Kelola keuangan lebih mudah, cepat, dan praktis.
 
         return jsonify(status=True)
 
-    if cmd == "share":
+    if cmd.startswith("share "):
 
         if not has_feature(sender, "share"):
 
