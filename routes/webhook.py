@@ -3,7 +3,7 @@ import os
 from flask import Blueprint,Flask, request, jsonify, render_template, send_file, redirect
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta, time
-from models import db, Transaksi, Budget, Reminder, User, RequestDemo, TargetPembelian, HutangPiutang, MonthlySummary, Transaksi
+from models import db, Transaksi, Budget, Reminder, User, RequestDemo, TargetPembelian, HutangPiutang, MonthlySummary, Transaksi, get_owner_number
 import requests
 import os
 import pandas as pd
