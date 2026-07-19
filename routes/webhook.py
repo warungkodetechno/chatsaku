@@ -2668,7 +2668,7 @@ Kelola keuangan lebih mudah, cepat, dan praktis.
 
             return jsonify(status=True)
 
-        nomor = normalize_nomor(args[0])
+        nomor = normalize_wa(args[0])
 
         if nomor == sender:
 
