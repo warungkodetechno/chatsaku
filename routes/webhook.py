@@ -2657,6 +2657,8 @@ Kelola keuangan lebih mudah, cepat, dan praktis.
 
             return jsonify(status=True)
 
+        args = message.split()[1:]
+
         if len(args) < 1:
 
             kirim_wa(
