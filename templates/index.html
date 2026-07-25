@@ -252,76 +252,61 @@
 
                 <div>
 
-                    <div class="hero-title">
-                        ChatSaku Finance Assistant
-                    </div>
+                    <h2 class="hero-title">
+                        ChatSaku Finance
+                    </h2>
 
-                    <div class="hero-subtitle">
-                        Kelola pemasukan, pengeluaran, saldo, dan laporan keuangan secara otomatis melalui WhatsApp.
+                    <p class="hero-subtitle">
+                        Kelola pemasukan, pengeluaran, budget, target tabungan dan laporan keuangan langsung dari
+                        WhatsApp.
+                    </p>
+
+                    <div class="hero-status">
+
+                        <span class="status-pill">
+                            <i class="bi bi-whatsapp"></i>
+                            WhatsApp Connected
+                        </span>
+
+                        <span class="status-pill secondary">
+                            🤖 AI Finance
+                        </span>
+
                     </div>
 
                 </div>
 
             </div>
 
-            <div class="hero-right">
-
-                <span class="hero-badge">
-                    <i class="bi bi-whatsapp"></i>
-                    WhatsApp Connected
-                </span>
-
-            </div>
-
         </div>
         <style>
             /* ===========================
-            HERO HEADER
-            =========================== */
+   HERO
+=========================== */
 
             .hero-header {
 
-                background: linear-gradient(135deg, #128C7E, #25D366 65%, #34e07a);
-
-                border-radius: 26px;
-
-                padding: 28px 32px;
-
-                color: #fff;
+                position: relative;
 
                 display: flex;
 
-                justify-content: space-between;
-
                 align-items: center;
 
-                margin-bottom: 28px;
+                gap: 18px;
 
-                box-shadow: 0 15px 35px rgba(18, 140, 126, .25);
+                padding: 24px 28px;
 
-                position: relative;
+                margin-bottom: 22px;
+
+                border-radius: 24px;
+
+                background:
+                    linear-gradient(135deg, #16a34a, #22c55e);
 
                 overflow: hidden;
 
-            }
-
-            .hero-header::after {
-
-                content: "";
-
-                position: absolute;
-
-                right: -40px;
-
-                top: -60px;
-
-                width: 200px;
-
-                height: 200px;
-
-                background: rgba(255, 255, 255, .08);
-
-                border-radius: 50%;
+                box-shadow:
+                    0 10px 28px rgba(34, 197, 94, .18);
 
             }
 
@@ -331,17 +316,37 @@
 
                 position: absolute;
 
-                right: 60px;
+                right: -40px;
 
-                bottom: -70px;
+                top: -40px;
 
-                width: 140px;
+                width: 160px;
 
-                height: 140px;
-
-                background: rgba(255, 255, 255, .07);
+                height: 160px;
 
                 border-radius: 50%;
+
+                background: rgba(255, 255, 255, .08);
+
+            }
+
+            .hero-header::after {
+
+                content: "";
+
+                position: absolute;
+
+                right: 80px;
+
+                bottom: -55px;
+
+                width: 110px;
+
+                height: 110px;
+
+                border-radius: 50%;
+
+                background: rgba(255, 255, 255, .05);
 
             }
 
@@ -351,53 +356,55 @@
 
                 align-items: center;
 
-                gap: 20px;
+                gap: 18px;
+
+                position: relative;
+
+                z-index: 2;
 
             }
 
             .hero-icon {
 
-                width: 68px;
+                width: 62px;
 
-                height: 68px;
+                height: 62px;
 
-                border-radius: 20px;
-
-                background: rgba(255, 255, 255, .22);
+                border-radius: 18px;
 
                 display: flex;
 
-                align-items: center;
-
                 justify-content: center;
 
-                font-size: 30px;
+                align-items: center;
+
+                background: rgba(255, 255, 255, .18);
 
                 backdrop-filter: blur(10px);
 
-                box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .25);
+                border: 1px solid rgba(255, 255, 255, .25);
 
-                position: relative;
+                color: #fff;
 
-                z-index: 1;
+                font-size: 26px;
+
+                flex-shrink: 0;
 
             }
 
             .hero-title {
 
-                font-family: 'Baloo 2', sans-serif;
+                margin: 0;
 
-                font-size: 30px;
+                font-family: 'Baloo 2';
 
-                font-weight: 800;
+                font-size: 27px;
+
+                font-weight: 700;
+
+                color: #fff;
 
                 line-height: 1.1;
-
-                letter-spacing: -.3px;
-
-                position: relative;
-
-                z-index: 1;
 
             }
 
@@ -405,51 +412,65 @@
 
                 margin-top: 6px;
 
-                color: rgba(255, 255, 255, .88);
+                margin-bottom: 14px;
 
-                font-size: 14px;
+                font-size: 13px;
 
-                max-width: 620px;
+                color: rgba(255, 255, 255, .92);
+
+                max-width: 650px;
+
+                line-height: 1.6;
 
             }
 
-            .hero-badge {
+            .hero-status {
+
+                display: flex;
+
+                gap: 10px;
+
+                flex-wrap: wrap;
+
+            }
+
+            .status-pill {
 
                 display: inline-flex;
 
                 align-items: center;
 
-                gap: 8px;
+                gap: 7px;
 
-                padding: 10px 18px;
+                padding: 7px 14px;
 
-                border-radius: 999px;
+                border-radius: 50px;
 
-                background: rgba(255, 255, 255, .92);
+                background: rgba(255, 255, 255, .18);
 
-                border: 1px solid rgba(255, 255, 255, .5);
+                border: 1px solid rgba(255, 255, 255, .18);
 
-                font-size: 13px;
+                color: #fff;
 
-                font-weight: 700;
+                font-size: 12px;
 
-                color: var(--primary-deep);
+                font-weight: 600;
 
-                backdrop-filter: blur(8px);
-
-                box-shadow: 0 6px 16px rgba(0, 0, 0, .1);
-
-                position: relative;
-
-                z-index: 1;
+                backdrop-filter: blur(12px);
 
             }
 
-            .hero-badge i {
+            .status-pill.secondary {
 
-                font-size: 16px;
+                background: rgba(255, 255, 255, .12);
 
-                color: #25D366;
+            }
+
+            .status-pill i {
+
+                font-size: 14px;
+
+                color: #dcfce7;
 
             }
 
@@ -459,13 +480,7 @@
 
                 .hero-header {
 
-                    flex-direction: column;
-
-                    align-items: flex-start;
-
-                    gap: 18px;
-
-                    padding: 22px;
+                    padding: 20px;
 
                 }
 
@@ -475,25 +490,25 @@
 
                 }
 
-                .hero-title {
+                .hero-icon {
 
-                    font-size: 24px;
+                    width: 54px;
+
+                    height: 54px;
+
+                    font-size: 22px;
 
                 }
 
-                .hero-icon {
+                .hero-title {
 
-                    width: 56px;
-
-                    height: 56px;
-
-                    font-size: 24px;
+                    font-size: 23px;
 
                 }
 
                 .hero-subtitle {
 
-                    font-size: 13px;
+                    font-size: 12px;
 
                 }
 
