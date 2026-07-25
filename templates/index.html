@@ -1566,26 +1566,32 @@
         <div class="debt-wrapper mb-4">
 
 
-            <div class="d-flex align-items-center mb-1">
+            <div class="debt-header">
 
-                <div class="debt-icon">
-                    <i class="bi bi-credit-card-2-front-fill"></i>
-                </div>
+                <div class="debt-header-left">
 
-                <div class="ms-2">
-
-                    <div class="debt-title">
-                        Hutang & Piutang
+                    <div class="debt-icon">
+                        <i class="bi bi-credit-card-2-front-fill"></i>
                     </div>
 
-                    <div class="debt-subtitle">
-                        Kelola kewajiban dan uang yang harus diterima.
+                    <div>
+                        <div class="debt-title">
+                            Hutang & Piutang
+                        </div>
+
+                        <div class="debt-subtitle">
+                            Pantau pinjaman, piutang, dan posisi keuangan secara realtime.
+                        </div>
                     </div>
 
                 </div>
+
+                <span class="badge bg-success">
+                    <i class="bi bi-arrow-repeat"></i>
+                    Live
+                </span>
 
             </div>
-
 
 
 
@@ -1654,10 +1660,9 @@
                 <div class="col-lg-6">
 
 
-                    <h6 class="text-success fw-bold">
-
-                        📥 Piutang Aktif
-
+                    <h6 class="section-title success">
+                        <i class="bi bi-arrow-down-circle-fill"></i>
+                        Piutang Aktif
                     </h6>
 
 
@@ -1769,13 +1774,10 @@
                 <div class="col-lg-6">
 
 
-                    <h6 class="text-danger fw-bold">
-
-                        💳 Hutang Aktif
-
+                    <h6 class="section-title danger">
+                        <i class="bi bi-arrow-up-circle-fill"></i>
+                        Hutang Aktif
                     </h6>
-
-
 
 
                     {% for item in hutang_list %}
@@ -1894,166 +1896,257 @@
 
         </div>
         <style>
-            .debt-wrapper {
+            /* ===========================
+   HUTANG & PIUTANG
+=========================== */
 
-                background: white;
-                border: 1px solid var(--border);
+            .debt-wrapper {
+                background: #fff;
+                border: 1px solid #edf2f7;
                 border-radius: 22px;
                 padding: 20px;
-                box-shadow: 0 8px 24px rgba(7, 94, 84, .06);
-
+                box-shadow: 0 10px 30px rgba(15, 23, 42, .05);
+                margin-bottom: 24px;
             }
 
-
-
-            .debt-icon {
-
-                width: 35px;
-                height: 35px;
-                border-radius: 12px;
-                background: #dcfce7;
-                color: #15803d;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-
-            }
-
-
-
-            .debt-title {
-
-                font-family: 'Baloo 2';
-                font-size: 17px;
-                font-weight: 700;
-                color: var(--primary-deep);
-
-            }
-
-
-
-            .debt-subtitle {
-
-                font-size: 12px;
-                color: var(--muted);
-
-            }
-
-
-
-            .debt-summary {
-
-                display: grid;
-                grid-template-columns: repeat(3, 1fr);
-                gap: 14px;
-
-            }
-
-
-
-            .debt-box {
-
-                padding: 16px;
-                border-radius: 18px;
-
-            }
-
-
-
-            .debt-box small {
-
-                font-size: 12px;
-
-            }
-
-
-
-            .debt-box h4 {
-
-                margin-top: 6px;
-                font-family: 'Baloo 2';
-
-            }
-
-
-
-            .debt-box.green {
-
-                background: #dcfce7;
-                color: #15803d;
-
-            }
-
-
-
-            .debt-box.red {
-
-                background: #fee2e2;
-                color: #dc2626;
-
-            }
-
-
-
-            .debt-box.blue {
-
-                background: #dbeafe;
-                color: #2563eb;
-
-            }
-
-
-
-
-            .debt-card {
-
-                background: #f8fffb;
-                border: 1px solid var(--border);
-                border-radius: 16px;
-                padding: 14px;
+            .debt-header {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                margin-bottom: 10px;
-
+                gap: 15px;
+                margin-bottom: 18px;
             }
 
+            .debt-header-left {
+                display: flex;
+                align-items: center;
+                gap: 14px;
+            }
 
+            .debt-icon {
+                width: 52px;
+                height: 52px;
+                border-radius: 16px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+                color: #16a34a;
+                font-size: 22px;
+                flex-shrink: 0;
+            }
+
+            .debt-title {
+                font-family: 'Baloo 2';
+                font-size: 18px;
+                font-weight: 700;
+                color: #0f766e;
+                line-height: 1.2;
+            }
+
+            .debt-subtitle {
+                font-size: 13px;
+                color: #64748b;
+                margin-top: 2px;
+            }
+
+            /* ===========================
+SUMMARY
+=========================== */
+
+            .debt-summary {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 14px;
+                margin-bottom: 22px;
+            }
+
+            .debt-box {
+                background: #fff;
+                border: 1px solid #eef2f7;
+                border-radius: 18px;
+                padding: 15px 16px;
+                transition: .25s;
+            }
+
+            .debt-box:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 20px rgba(15, 23, 42, .06);
+            }
+
+            .debt-box small {
+                display: block;
+                font-size: 12px;
+                color: #64748b;
+                font-weight: 600;
+            }
+
+            .debt-box h4 {
+                margin-top: 6px;
+                margin-bottom: 0;
+                font-size: 23px;
+                font-family: 'Baloo 2';
+                font-weight: 700;
+            }
+
+            .debt-box.green {
+                background: #f0fdf4;
+                color: #16a34a;
+            }
+
+            .debt-box.red {
+                background: #fef2f2;
+                color: #dc2626;
+            }
+
+            .debt-box.blue {
+                background: #eff6ff;
+                color: #2563eb;
+            }
+
+            /* ===========================
+LIST
+=========================== */
+
+            .debt-card {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 15px;
+                padding: 16px;
+                border-radius: 18px;
+                border: 1px solid #edf2f7;
+                background: linear-gradient(180deg, #fff, #fafdfc);
+                margin-bottom: 12px;
+                transition: .25s;
+            }
+
+            .debt-card:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 12px 25px rgba(0, 0, 0, .05);
+            }
+
+            .debt-card .fw-bold {
+                font-size: 15px;
+            }
+
+            .debt-card .small {
+                font-size: 12px;
+                color: #64748b;
+            }
+
+            .debt-card .text-end {
+                text-align: right;
+            }
+
+            .debt-card .badge {
+                margin-top: 6px;
+                border-radius: 30px;
+                padding: 6px 10px;
+                font-size: 11px;
+                font-weight: 600;
+            }
 
             .empty-debt {
-
-                background: #f8fffb;
-                border-radius: 15px;
-                padding: 18px;
+                background: #f8fafc;
+                border: 2px dashed #dbe4ee;
+                border-radius: 18px;
+                padding: 28px;
                 text-align: center;
-                color: #777;
-
+                color: #94a3b8;
+                font-size: 14px;
             }
 
+            /* ===========================
+SECTION TITLE
+=========================== */
 
+            .section-title {
+                font-size: 15px;
+                font-weight: 700;
+                margin-bottom: 14px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .section-title.success {
+                color: #16a34a;
+            }
+
+            .section-title.danger {
+                color: #dc2626;
+            }
+
+            /* ===========================
+MOBILE
+=========================== */
 
             @media(max-width:768px) {
 
-                .debt-summary {
-
-                    grid-template-columns: 1fr;
-
+                .debt-wrapper {
+                    padding: 16px;
+                    border-radius: 18px;
                 }
 
-
-                .debt-card {
-
+                .debt-header {
                     flex-direction: column;
                     align-items: flex-start;
-                    gap: 10px;
+                }
 
+                .debt-header-left {
+                    width: 100%;
+                }
+
+                .debt-icon {
+                    width: 46px;
+                    height: 46px;
+                    font-size: 20px;
+                    border-radius: 14px;
+                }
+
+                .debt-title {
+                    font-size: 16px;
+                }
+
+                .debt-subtitle {
+                    font-size: 12px;
+                }
+
+                .debt-summary {
+                    grid-template-columns: 1fr;
+                    gap: 10px;
+                }
+
+                .debt-box {
+                    padding: 14px;
+                }
+
+                .debt-box h4 {
+                    font-size: 20px;
+                }
+
+                .debt-card {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 12px;
+                    padding: 14px;
+                }
+
+                .debt-card .text-end {
+                    width: 100%;
+                    text-align: left;
+                }
+
+                .section-title {
+                    margin-top: 10px;
                 }
 
             }
         </style>
         <!-- ===========================
-TARGET TABUNGAN
-============================ -->
+        TARGET TABUNGAN
+        ============================ -->
 
         <div class="card border-0 shadow-sm rounded-4 mb-4">
 
