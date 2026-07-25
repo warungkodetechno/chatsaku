@@ -409,7 +409,9 @@ https://www.chatsaku.com
         or cmd == "hariini"
         or cmd == "insight"
         or cmd == "dashboard"
+        or cmd == "viewer"
         or cmd.startswith("share ")
+        or cmd.startswith("unshare ")
         or cmd.startswith("masuk")
         or cmd.startswith("keluar")
         or cmd.startswith("budget")
@@ -2716,6 +2718,103 @@ Kelola keuangan lebih mudah, cepat, dan praktis.
 
     Nomor tersebut sekarang dapat melihat dashboard dan laporan Anda."""
         )
+
+        return jsonify(status=True)
+
+    if cmd.startswith("unshare "):
+
+        if not has_feature(sender, "share"):
+
+            kirim_wa(
+                sender,
+                "🔒 Fitur Multi User tersedia pada paket PREMIUM."
+            )
+
+            return jsonify(status=True)
+
+        args = message.split()[1:]
+
+        if len(args) < 1:
+
+            kirim_wa(
+                sender,
+                "Format:\n\nunshare 081234567890"
+            )
+
+            return jsonify(status=True)
+
+        nomor = normalize_wa(args[0])
+
+        akses = SharedAccess.query.filter_by(
+            owner=sender,
+            member=nomor,
+            aktif=True
+        ).first()
+
+        if not akses:
+
+            kirim_wa(
+                sender,
+                "❌ Nomor tersebut bukan Viewer Anda."
+            )
+
+            return jsonify(status=True)
+
+        akses.aktif = False
+
+        db.session.commit()
+
+        kirim_wa(
+            sender,
+            f"""✅ Viewer berhasil dihapus
+
+    👤 {nomor}
+
+    Nomor tersebut tidak lagi memiliki akses ke dashboard dan laporan Anda."""
+        )
+
+        return jsonify(status=True)
+
+    if cmd == "viewer":
+
+        if not has_feature(sender, "share"):
+
+            kirim_wa(
+                sender,
+                "🔒 Fitur Multi User tersedia pada paket PREMIUM."
+            )
+
+            return jsonify(status=True)
+
+        data = SharedAccess.query.filter_by(
+            owner=sender,
+            aktif=True
+        ).all()
+
+        if not data:
+
+            kirim_wa(
+                sender,
+                "📭 Belum ada Viewer yang ditambahkan."
+            )
+
+            return jsonify(status=True)
+
+        pesan = "👥 *DAFTAR VIEWER*\n"
+        pesan += "━━━━━━━━━━━━━━\n\n"
+
+        for i, item in enumerate(data, 1):
+
+            pesan += f"{i}. {item.member}\n"
+
+        pesan += (
+            "\n━━━━━━━━━━━━━━\n"
+            "Gunakan:\n"
+            "unshare <nomor>\n"
+            "untuk menghapus Viewer."
+        )
+
+        kirim_wa(sender, pesan)
 
         return jsonify(status=True)
 
