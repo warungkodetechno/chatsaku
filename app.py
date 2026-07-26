@@ -2147,39 +2147,46 @@ def create_payment():
             "error": str(e)
 
         }), 500
-
 @app.route("/midtrans/notification", methods=["POST"])
 def notification():
 
+    print("=" * 50)
+    print("MIDTRANS NOTIFICATION")
+    print(request.get_json())
+    print("=" * 50)
+
     notif = request.get_json()
 
-    order_id = notif["order_id"]
+    order_id = notif.get("order_id")
+    status = notif.get("transaction_status")
 
-    status = notif["transaction_status"]
+    print("ORDER :", order_id)
+    print("STATUS:", status)
 
     payment = Payment.query.filter_by(
         order_id=order_id
     ).first()
 
-    if payment is None:
-        return "Not Found",404
+    print("PAYMENT:", payment)
 
-    if status in [
-        "settlement",
-        "capture"
-    ]:
+    if payment is None:
+        return "Not Found", 404
+
+    if status in ["settlement", "capture"]:
 
         payment.status = "PAID"
+        payment.paid_at = datetime.utcnow()
 
-        user = User.query.get(
-            payment.user_id
-        )
+        user = User.query.get(payment.user_id)
 
-        user.paket = payment.paket
+        if user:
+            user.paket = payment.paket
 
         db.session.commit()
 
-    return "OK"
+        print("PAYMENT UPDATED")
+
+    return "OK", 200
 
 def list_period_between(start_period, end_period):
 
