@@ -26,7 +26,7 @@ from auth import auth_bp
 
 app = Flask(__name__)
 
-app.config["JWT_SECRET_KEY"] = "123chatsaku!!!"
+app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY")
 
 init_extensions(app)
 
