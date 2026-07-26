@@ -2031,21 +2031,13 @@ def create_payment():
         paket = data.get("paket", "").upper()
         user_id = get_jwt_identity()
 
-
         user = User.query.get(user_id)
-
 
         if not user:
             return jsonify({
                 "success": False,
                 "message": "User tidak ditemukan."
             }),404
-
-        if not user:
-            return jsonify({
-                "success": False,
-                "message": "User tidak ditemukan."
-            }), 404
 
         HARGA_PAKET = {
             "STARTER": 10000,
