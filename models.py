@@ -583,3 +583,15 @@ def get_saldo_akhir(nomor_wa):
         return last.saldo_akhir
 
     return 0
+
+def is_viewer(nomor):
+
+    share = SharedAccess.query.filter_by(
+        member=nomor,
+        aktif=True
+    ).first()
+
+    if share:
+        return True
+
+    return False
