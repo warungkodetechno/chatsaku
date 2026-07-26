@@ -3,7 +3,7 @@
 
 <head>
     <title>Kas WhatsApp Dashboard</title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -453,45 +453,121 @@
 
             }
 
-            /* Mobile */
+            /* ===========================
+            MOBILE HERO
+            =========================== */
 
-            @media(max-width:768px) {
+            @media (max-width:768px) {
 
                 .hero-header {
+
+                    padding: 18px;
+
+                    border-radius: 20px;
+
+                    margin-bottom: 18px;
 
                     flex-direction: column;
 
                     align-items: flex-start;
 
-                    gap: 18px;
+                    gap: 14px;
 
-                    padding: 22px;
+                }
+
+                .hero-header::before {
+
+                    width: 90px;
+
+                    height: 90px;
+
+                    right: -20px;
+
+                    bottom: -35px;
+
+                }
+
+                .hero-header::after {
+
+                    width: 120px;
+
+                    height: 120px;
+
+                    right: -35px;
+
+                    top: -35px;
 
                 }
 
                 .hero-left {
 
+                    width: 100%;
+
                     align-items: flex-start;
 
-                }
-
-                .hero-title {
-
-                    font-size: 24px;
+                    gap: 14px;
 
                 }
 
                 .hero-icon {
 
-                    width: 56px;
+                    width: 50px;
 
-                    height: 56px;
+                    height: 50px;
 
-                    font-size: 24px;
+                    border-radius: 16px;
+
+                    font-size: 22px;
+
+                    flex-shrink: 0;
+
+                }
+
+                .hero-title {
+
+                    font-size: 21px;
+
+                    line-height: 1.2;
+
+                    margin-bottom: 4px;
 
                 }
 
                 .hero-subtitle {
+
+                    font-size: 12px;
+
+                    line-height: 1.6;
+
+                    margin: 0;
+
+                    max-width: 100%;
+
+                }
+
+                .hero-right {
+
+                    width: 100%;
+
+                    display: flex;
+
+                    justify-content: flex-start;
+
+                }
+
+                .hero-badge {
+
+                    padding: 7px 14px;
+
+                    font-size: 11px;
+
+                    border-radius: 999px;
+
+                    gap: 6px;
+
+                }
+
+                .hero-badge i {
 
                     font-size: 13px;
 
@@ -1490,26 +1566,32 @@
         <div class="debt-wrapper mb-4">
 
 
-            <div class="d-flex align-items-center mb-1">
+            <div class="debt-header">
 
-                <div class="debt-icon">
-                    <i class="bi bi-credit-card-2-front-fill"></i>
-                </div>
+                <div class="debt-header-left">
 
-                <div class="ms-2">
-
-                    <div class="debt-title">
-                        Hutang & Piutang
+                    <div class="debt-icon">
+                        <i class="bi bi-credit-card-2-front-fill"></i>
                     </div>
 
-                    <div class="debt-subtitle">
-                        Kelola kewajiban dan uang yang harus diterima.
+                    <div>
+                        <div class="debt-title">
+                            Hutang & Piutang
+                        </div>
+
+                        <div class="debt-subtitle">
+                            Pantau pinjaman, piutang, dan posisi keuangan secara realtime.
+                        </div>
                     </div>
 
                 </div>
+
+                <span class="badge bg-success">
+                    <i class="bi bi-arrow-repeat"></i>
+                    Live
+                </span>
 
             </div>
-
 
 
 
@@ -1578,10 +1660,9 @@
                 <div class="col-lg-6">
 
 
-                    <h6 class="text-success fw-bold">
-
-                        📥 Piutang Aktif
-
+                    <h6 class="section-title success">
+                        <i class="bi bi-arrow-down-circle-fill"></i>
+                        Piutang Aktif
                     </h6>
 
 
@@ -1693,13 +1774,10 @@
                 <div class="col-lg-6">
 
 
-                    <h6 class="text-danger fw-bold">
-
-                        💳 Hutang Aktif
-
+                    <h6 class="section-title danger">
+                        <i class="bi bi-arrow-up-circle-fill"></i>
+                        Hutang Aktif
                     </h6>
-
-
 
 
                     {% for item in hutang_list %}
@@ -1818,166 +1896,257 @@
 
         </div>
         <style>
-            .debt-wrapper {
+            /* ===========================
+   HUTANG & PIUTANG
+=========================== */
 
-                background: white;
-                border: 1px solid var(--border);
+            .debt-wrapper {
+                background: #fff;
+                border: 1px solid #edf2f7;
                 border-radius: 22px;
                 padding: 20px;
-                box-shadow: 0 8px 24px rgba(7, 94, 84, .06);
-
+                box-shadow: 0 10px 30px rgba(15, 23, 42, .05);
+                margin-bottom: 24px;
             }
 
-
-
-            .debt-icon {
-
-                width: 35px;
-                height: 35px;
-                border-radius: 12px;
-                background: #dcfce7;
-                color: #15803d;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-
-            }
-
-
-
-            .debt-title {
-
-                font-family: 'Baloo 2';
-                font-size: 17px;
-                font-weight: 700;
-                color: var(--primary-deep);
-
-            }
-
-
-
-            .debt-subtitle {
-
-                font-size: 12px;
-                color: var(--muted);
-
-            }
-
-
-
-            .debt-summary {
-
-                display: grid;
-                grid-template-columns: repeat(3, 1fr);
-                gap: 14px;
-
-            }
-
-
-
-            .debt-box {
-
-                padding: 16px;
-                border-radius: 18px;
-
-            }
-
-
-
-            .debt-box small {
-
-                font-size: 12px;
-
-            }
-
-
-
-            .debt-box h4 {
-
-                margin-top: 6px;
-                font-family: 'Baloo 2';
-
-            }
-
-
-
-            .debt-box.green {
-
-                background: #dcfce7;
-                color: #15803d;
-
-            }
-
-
-
-            .debt-box.red {
-
-                background: #fee2e2;
-                color: #dc2626;
-
-            }
-
-
-
-            .debt-box.blue {
-
-                background: #dbeafe;
-                color: #2563eb;
-
-            }
-
-
-
-
-            .debt-card {
-
-                background: #f8fffb;
-                border: 1px solid var(--border);
-                border-radius: 16px;
-                padding: 14px;
+            .debt-header {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                margin-bottom: 10px;
-
+                gap: 15px;
+                margin-bottom: 18px;
             }
 
+            .debt-header-left {
+                display: flex;
+                align-items: center;
+                gap: 14px;
+            }
 
+            .debt-icon {
+                width: 52px;
+                height: 52px;
+                border-radius: 16px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+                color: #16a34a;
+                font-size: 22px;
+                flex-shrink: 0;
+            }
+
+            .debt-title {
+                font-family: 'Baloo 2';
+                font-size: 18px;
+                font-weight: 700;
+                color: #0f766e;
+                line-height: 1.2;
+            }
+
+            .debt-subtitle {
+                font-size: 13px;
+                color: #64748b;
+                margin-top: 2px;
+            }
+
+            /* ===========================
+SUMMARY
+=========================== */
+
+            .debt-summary {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 14px;
+                margin-bottom: 22px;
+            }
+
+            .debt-box {
+                background: #fff;
+                border: 1px solid #eef2f7;
+                border-radius: 18px;
+                padding: 15px 16px;
+                transition: .25s;
+            }
+
+            .debt-box:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 20px rgba(15, 23, 42, .06);
+            }
+
+            .debt-box small {
+                display: block;
+                font-size: 12px;
+                color: #64748b;
+                font-weight: 600;
+            }
+
+            .debt-box h4 {
+                margin-top: 6px;
+                margin-bottom: 0;
+                font-size: 23px;
+                font-family: 'Baloo 2';
+                font-weight: 700;
+            }
+
+            .debt-box.green {
+                background: #f0fdf4;
+                color: #16a34a;
+            }
+
+            .debt-box.red {
+                background: #fef2f2;
+                color: #dc2626;
+            }
+
+            .debt-box.blue {
+                background: #eff6ff;
+                color: #2563eb;
+            }
+
+            /* ===========================
+LIST
+=========================== */
+
+            .debt-card {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 15px;
+                padding: 16px;
+                border-radius: 18px;
+                border: 1px solid #edf2f7;
+                background: linear-gradient(180deg, #fff, #fafdfc);
+                margin-bottom: 12px;
+                transition: .25s;
+            }
+
+            .debt-card:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 12px 25px rgba(0, 0, 0, .05);
+            }
+
+            .debt-card .fw-bold {
+                font-size: 15px;
+            }
+
+            .debt-card .small {
+                font-size: 12px;
+                color: #64748b;
+            }
+
+            .debt-card .text-end {
+                text-align: right;
+            }
+
+            .debt-card .badge {
+                margin-top: 6px;
+                border-radius: 30px;
+                padding: 6px 10px;
+                font-size: 11px;
+                font-weight: 600;
+            }
 
             .empty-debt {
-
-                background: #f8fffb;
-                border-radius: 15px;
-                padding: 18px;
+                background: #f8fafc;
+                border: 2px dashed #dbe4ee;
+                border-radius: 18px;
+                padding: 28px;
                 text-align: center;
-                color: #777;
-
+                color: #94a3b8;
+                font-size: 14px;
             }
 
+            /* ===========================
+SECTION TITLE
+=========================== */
 
+            .section-title {
+                font-size: 15px;
+                font-weight: 700;
+                margin-bottom: 14px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .section-title.success {
+                color: #16a34a;
+            }
+
+            .section-title.danger {
+                color: #dc2626;
+            }
+
+            /* ===========================
+MOBILE
+=========================== */
 
             @media(max-width:768px) {
 
-                .debt-summary {
-
-                    grid-template-columns: 1fr;
-
+                .debt-wrapper {
+                    padding: 16px;
+                    border-radius: 18px;
                 }
 
-
-                .debt-card {
-
+                .debt-header {
                     flex-direction: column;
                     align-items: flex-start;
-                    gap: 10px;
+                }
 
+                .debt-header-left {
+                    width: 100%;
+                }
+
+                .debt-icon {
+                    width: 46px;
+                    height: 46px;
+                    font-size: 20px;
+                    border-radius: 14px;
+                }
+
+                .debt-title {
+                    font-size: 16px;
+                }
+
+                .debt-subtitle {
+                    font-size: 12px;
+                }
+
+                .debt-summary {
+                    grid-template-columns: 1fr;
+                    gap: 10px;
+                }
+
+                .debt-box {
+                    padding: 14px;
+                }
+
+                .debt-box h4 {
+                    font-size: 20px;
+                }
+
+                .debt-card {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 12px;
+                    padding: 14px;
+                }
+
+                .debt-card .text-end {
+                    width: 100%;
+                    text-align: left;
+                }
+
+                .section-title {
+                    margin-top: 10px;
                 }
 
             }
         </style>
         <!-- ===========================
-TARGET TABUNGAN
-============================ -->
+        TARGET TABUNGAN
+        ============================ -->
 
         <div class="card border-0 shadow-sm rounded-4 mb-4">
 
@@ -2165,19 +2334,29 @@ TARGET TABUNGAN
 
             <div class="ai-header">
 
-                <div class="ai-title">
+                <div>
 
-                    🤖 AI Finance Insight
+                    <div class="ai-title">
 
-                </div>
+                        <i class="bi bi-stars"></i>
 
-                <div class="ai-subtitle">
+                        AI Finance Insight
 
-                    Analisis otomatis kondisi keuangan Anda.
+                        <span class="ai-badge">AI</span>
+
+                    </div>
+
+                    <div class="ai-subtitle">
+
+                        Analisis otomatis berdasarkan aktivitas keuangan Anda.
+
+                    </div>
 
                 </div>
 
             </div>
+
+            {% if insight %}
 
             {% for text in insight %}
 
@@ -2185,11 +2364,11 @@ TARGET TABUNGAN
 
                 <div class="ai-icon">
 
-                    <i class="bi bi-stars"></i>
+                    <i class="bi bi-lightbulb-fill"></i>
 
                 </div>
 
-                <div>
+                <div class="ai-text">
 
                     {{ text }}
 
@@ -2199,83 +2378,229 @@ TARGET TABUNGAN
 
             {% endfor %}
 
+            {% else %}
+
+            <div class="ai-empty">
+
+                <i class="bi bi-robot"></i>
+
+                Belum cukup data untuk membuat analisis.
+
+            </div>
+
+            {% endif %}
+
         </div>
         <style>
+            /*=========================
+AI FINANCE INSIGHT
+==========================*/
+
             .ai-wrapper {
 
-                background: linear-gradient(135deg, #0f766e, #14b8a6);
+                background: linear-gradient(135deg, #14b8a6, #0f766e);
 
-                color: white;
-
-                border-radius: 22px;
+                border-radius: 24px;
 
                 padding: 22px;
 
-                margin-bottom: 20px;
+                color: #fff;
 
-                box-shadow: 0 15px 30px rgba(20, 184, 166, .25);
+                box-shadow: 0 15px 35px rgba(20, 184, 166, .25);
+
+                position: relative;
+
+                overflow: hidden;
+
+            }
+
+            .ai-wrapper::before {
+
+                content: "";
+
+                position: absolute;
+
+                width: 180px;
+
+                height: 180px;
+
+                border-radius: 50%;
+
+                background: rgba(255, 255, 255, .08);
+
+                right: -60px;
+
+                top: -60px;
+
+            }
+
+            .ai-header {
+
+                position: relative;
+
+                z-index: 2;
+
+                margin-bottom: 18px;
 
             }
 
             .ai-title {
 
-                font-family: 'Baloo 2';
+                display: flex;
 
-                font-size: 18px;
+                align-items: center;
+
+                gap: 10px;
+
+                font-size: 20px;
 
                 font-weight: 700;
+
+                font-family: 'Baloo 2';
+
+            }
+
+            .ai-title i {
+
+                font-size: 20px;
+
+            }
+
+            .ai-badge {
+
+                margin-left: auto;
+
+                background: rgba(255, 255, 255, .18);
+
+                backdrop-filter: blur(8px);
+
+                padding: 4px 10px;
+
+                border-radius: 30px;
+
+                font-size: 11px;
+
+                font-weight: 700;
+
+                letter-spacing: .5px;
 
             }
 
             .ai-subtitle {
 
+                margin-top: 6px;
+
                 opacity: .85;
 
-                margin-bottom: 18px;
-
                 font-size: 13px;
+
+                line-height: 1.5;
 
             }
 
             .ai-item {
 
+                position: relative;
+
+                z-index: 2;
+
                 display: flex;
 
                 gap: 14px;
 
-                padding: 14px;
-
-                background: rgba(255, 255, 255, .08);
-
-                border-radius: 14px;
-
-                margin-bottom: 10px;
-
                 align-items: flex-start;
+
+                background: rgba(255, 255, 255, .12);
+
+                backdrop-filter: blur(10px);
+
+                border: 1px solid rgba(255, 255, 255, .12);
+
+                border-radius: 16px;
+
+                padding: 14px 16px;
+
+                margin-bottom: 12px;
+
+                transition: .25s;
+
+            }
+
+            .ai-item:last-child {
+
+                margin-bottom: 0;
+
+            }
+
+            .ai-item:hover {
+
+                transform: translateY(-2px);
+
+                background: rgba(255, 255, 255, .16);
 
             }
 
             .ai-icon {
 
-                width: 38px;
+                width: 42px;
 
-                height: 38px;
+                height: 42px;
 
-                border-radius: 50%;
+                border-radius: 14px;
 
-                background: white;
+                background: #fff;
 
                 color: #0f766e;
 
                 display: flex;
 
+                align-items: center;
+
                 justify-content: center;
 
-                align-items: center;
+                flex-shrink: 0;
 
                 font-size: 18px;
 
-                flex-shrink: 0;
+            }
+
+            .ai-text {
+
+                flex: 1;
+
+                line-height: 1.6;
+
+                font-size: 14px;
+
+            }
+
+            .ai-empty {
+
+                position: relative;
+
+                z-index: 2;
+
+                text-align: center;
+
+                padding: 28px 18px;
+
+                background: rgba(255, 255, 255, .10);
+
+                border-radius: 16px;
+
+                font-size: 14px;
+
+                opacity: .95;
+
+            }
+
+            .ai-empty i {
+
+                display: block;
+
+                font-size: 34px;
+
+                margin-bottom: 12px;
 
             }
         </style>
