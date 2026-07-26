@@ -690,6 +690,6 @@ class Payment(db.Model):
 
 
     user = db.relationship(
-        "User",
+        "UserLogin",
         backref="payments"
     )
