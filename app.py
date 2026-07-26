@@ -2181,7 +2181,7 @@ def notification():
     if status in ["settlement", "capture"]:
 
         payment.status = "PAID"
-        payment.paid_at = datetime.utcnow()
+        payment.paid_at = datetime.sekarang()
 
         user = User.query.get(payment.user_id)
 
