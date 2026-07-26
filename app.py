@@ -21,6 +21,7 @@ from calendar import monthrange
 from apscheduler.schedulers.background import BackgroundScheduler
 from zoneinfo import ZoneInfo
 import atexit
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from auth import auth_bp
 
 app = Flask(__name__)
@@ -2011,9 +2012,6 @@ snap = midtransclient.Snap(
     server_key=os.getenv("MIDTRANS_SERVER_KEY")
 )
 
-import os
-import uuid
-import midtransclient
 from datetime import datetime
 from flask import request, jsonify
 
@@ -2023,6 +2021,7 @@ snap = midtransclient.Snap(
 )
 
 @app.route("/api/payment/create", methods=["POST"])
+@jwt_required()
 def create_payment():
 
     try:
@@ -2030,17 +2029,17 @@ def create_payment():
         data = request.get_json()
 
         paket = data.get("paket", "").upper()
-        nomor_wa = data.get("nomor_wa")
+        user_id = get_jwt_identity()
 
-        if not nomor_wa:
+
+        user = User.query.get(user_id)
+
+
+        if not user:
             return jsonify({
                 "success": False,
-                "message": "Nomor WhatsApp wajib diisi."
-            }), 400
-
-        user = User.query.filter_by(
-            nomor_wa=nomor_wa
-        ).first()
+                "message": "User tidak ditemukan."
+            }),404
 
         if not user:
             return jsonify({
@@ -2107,6 +2106,27 @@ def create_payment():
 
         transaction = snap.create_transaction(parameter)
 
+        payment = Payment(
+
+            order_id=order_id,
+
+            user_id=user.id,
+
+            nomor_wa=user.nomor_wa,
+
+            paket=paket,
+
+            harga=harga,
+
+            status="PENDING"
+
+        )
+
+
+        db.session.add(payment)
+
+        db.session.commit()
+
         return jsonify({
 
             "success": True,
@@ -2150,13 +2170,16 @@ def notification():
     if payment is None:
         return "Not Found",404
 
-    if status == "settlement":
+    if status in [
+        "settlement",
+        "capture"
+    ]:
 
         payment.status = "PAID"
 
-        user = User.query.filter_by(
-            nomor_wa=payment.nomor_wa
-        ).first()
+        user = User.query.get(
+            payment.user_id
+        )
 
         user.paket = payment.paket
 

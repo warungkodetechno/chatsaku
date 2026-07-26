@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="id">
 
@@ -19,122 +18,369 @@
 
     <style>
         * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
             font-family: 'Poppins', sans-serif;
+        }
+
+        html,
+        body {
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
         }
 
         body {
 
+            background: linear-gradient(135deg, #e8fff2, #f9fffb);
+
             min-height: 100vh;
-
-            display: flex;
-
-            justify-content: center;
-
-            align-items: center;
-
-            background: linear-gradient(135deg, #E8FFF1, #F7FFF9);
 
             position: relative;
 
-            overflow-x: hidden;
-
         }
 
-        body::before {
+        /* ===========================
+BACKGROUND
+=========================== */
 
-            content: "";
+        .bg-shape {
 
             position: absolute;
-
-            width: 350px;
-
-            height: 350px;
-
-            background: #25D36620;
 
             border-radius: 50%;
 
-            top: -120px;
+            filter: blur(25px);
 
-            right: -120px;
+            opacity: .45;
+
+            z-index: 0;
 
         }
 
-        body::after {
-
-            content: "";
-
-            position: absolute;
+        .shape-1 {
 
             width: 280px;
 
             height: 280px;
 
-            background: #25D36615;
-
-            border-radius: 50%;
-
-            bottom: -120px;
+            background: #25D366;
 
             left: -120px;
 
+            top: -80px;
+
         }
 
-        .register-card {
+        .shape-2 {
+
+            width: 220px;
+
+            height: 220px;
+
+            background: #86efac;
+
+            right: -80px;
+
+            top: 80px;
+
+        }
+
+        .shape-3 {
+
+            width: 300px;
+
+            height: 300px;
+
+            background: #bbf7d0;
+
+            bottom: -140px;
+
+            left: 35%;
+
+        }
+
+        /* ===========================
+LAYOUT
+=========================== */
+
+        .login-container {
+
+            min-height: 100vh;
+
+            display: flex;
+
+            align-items: center;
+
+            padding: 40px 15px;
 
             position: relative;
 
-            z-index: 10;
-
-            width: 100%;
-
-            max-width: 450px;
-
-            background: white;
-
-            border-radius: 24px;
-
-            padding: 35px;
-
-            box-shadow: 0 25px 60px rgba(0, 0, 0, .08);
+            z-index: 2;
 
         }
 
-        .logo {
+        .row {
 
-            width: 80px;
+            width: 100%;
 
-            display: block;
+            margin: 0;
 
-            margin: auto;
+        }
+
+        /* ===========================
+LEFT HERO
+=========================== */
+
+        .hero-panel {
+
+            padding: 30px;
+
+            color: #17412b;
+
+        }
+
+        .hero-logo {
+
+            width: 72px;
 
             margin-bottom: 18px;
 
         }
 
-        h3 {
+        .hero-badge {
 
-            text-align: center;
+            display: inline-flex;
 
-            font-size: 24px;
+            align-items: center;
+
+            gap: 8px;
+
+            background: white;
+
+            padding: 8px 18px;
+
+            border-radius: 50px;
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+            color: #16a34a;
+
+            box-shadow: 0 10px 30px rgba(0, 0, 0, .05);
+
+            margin-bottom: 20px;
+
+        }
+
+        .hero-panel h1 {
+
+            font-size: 46px;
 
             font-weight: 700;
 
-            color: #214132;
+            line-height: 1.15;
+
+        }
+
+        .hero-panel h1 span {
+
+            color: #16a34a;
+
+        }
+
+        .hero-panel p {
+
+            margin-top: 18px;
+
+            color: #64748b;
+
+            line-height: 1.8;
+
+            font-size: 15px;
+
+        }
+
+        .hero-image {
+
+            margin: 35px 0;
+
+            text-align: center;
+
+        }
+
+        .hero-image img {
+
+            width: 100%;
+
+            max-width: 270px;
+
+            animation: floatPhone 4s ease-in-out infinite;
+
+        }
+
+        @keyframes floatPhone {
+
+            0%,
+            100% {
+
+                transform: translateY(0);
+
+            }
+
+            50% {
+
+                transform: translateY(-12px);
+
+            }
+
+        }
+
+        /* ===========================
+FEATURE
+=========================== */
+
+        .feature-list {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 15px;
+
+        }
+
+        .feature-item {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 15px;
+
+            background: rgba(255, 255, 255, .65);
+
+            backdrop-filter: blur(10px);
+
+            border-radius: 18px;
+
+            padding: 15px;
+
+        }
+
+        .feature-icon {
+
+            width: 52px;
+
+            height: 52px;
+
+            border-radius: 15px;
+
+            background: #dcfce7;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 24px;
+
+        }
+
+        .feature-item h6 {
+
+            margin: 0;
+
+            font-size: 15px;
+
+            font-weight: 700;
+
+        }
+
+        .feature-item small {
+
+            color: #64748b;
+
+        }
+
+        /* ===========================
+CARD
+=========================== */
+
+        .login-card {
+
+            background: rgba(255, 255, 255, .92);
+
+            backdrop-filter: blur(18px);
+
+            border-radius: 28px;
+
+            padding: 38px;
+
+            box-shadow: 0 30px 80px rgba(0, 0, 0, .08);
+
+        }
+
+        .logo {
+
+            width: 78px;
+
+            margin-bottom: 12px;
+
+        }
+
+        .login-badge {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            padding: 8px 18px;
+
+            border-radius: 50px;
+
+            background: #dcfce7;
+
+            color: #15803d;
+
+            font-size: 12px;
+
+            font-weight: 600;
+
+            margin-bottom: 18px;
+
+        }
+
+        .login-card h2 {
+
+            font-size: 32px;
+
+            font-weight: 700;
+
+            color: #0f172a;
 
         }
 
         .subtitle {
 
-            text-align: center;
+            color: #64748b;
 
-            font-size: 13px;
-
-            color: #6d7d76;
+            margin-top: 8px;
 
             margin-bottom: 28px;
 
+            font-size: 14px;
+
         }
+
+        /* ===========================
+FORM
+=========================== */
 
         .form-label {
 
@@ -142,39 +388,85 @@
 
             font-weight: 600;
 
+            color: #334155;
+
+            margin-bottom: 8px;
+
         }
 
-        .input-group {
+        .custom-input {
 
-            margin-bottom: 16px;
+            border-radius: 16px;
+
+            overflow: hidden;
+
+            border: 1px solid #d1fae5;
 
         }
 
         .input-group-text {
 
-            border-radius: 14px 0 0 14px;
+            background: #f0fdf4;
 
-            background: #F3FFF7;
+            border: none;
 
-            border-color: #dcefe2;
+            color: #16a34a;
 
         }
 
         .form-control {
 
-            border-radius: 0 14px 14px 0;
+            border: none;
 
-            height: 50px;
+            height: 54px;
 
-            border-color: #dcefe2;
+            box-shadow: none !important;
+
+            font-size: 14px;
 
         }
 
-        .form-control:focus {
+        .btn-eye {
 
-            border-color: #25D366;
+            background: white;
 
-            box-shadow: none;
+            border: none;
+
+            width: 55px;
+
+            color: #64748b;
+
+        }
+
+        /* ===========================
+BUTTON
+=========================== */
+
+        .btn-login {
+
+            width: 100%;
+
+            height: 55px;
+
+            border: none;
+
+            border-radius: 15px;
+
+            background: #22c55e;
+
+            color: white;
+
+            font-weight: 600;
+
+            transition: .3s;
+
+        }
+
+        .btn-login:hover {
+
+            background: #16a34a;
+
+            transform: translateY(-2px);
 
         }
 
@@ -182,73 +474,222 @@
 
             width: 100%;
 
-            height: 50px;
+            display: block;
 
-            border: none;
+            text-align: center;
 
-            border-radius: 14px;
+            text-decoration: none;
 
-            background: #25D366;
+            padding: 14px;
 
-            color: white;
+            border-radius: 15px;
+
+            border: 1px solid #d1fae5;
+
+            color: #166534;
 
             font-weight: 600;
 
-            transition: .25s;
+            transition: .3s;
 
         }
 
         .btn-register:hover {
 
-            background: #1DB954;
+            background: #f0fdf4;
 
         }
 
-        .alert {
+        /* ===========================
+DIVIDER
+=========================== */
 
-            display: none;
+        .divider {
+
+            display: flex;
+
+            align-items: center;
+
+            margin: 24px 0;
 
         }
 
-        .footer {
+        .divider::before,
+        .divider::after {
 
-            text-align: center;
+            content: "";
 
-            margin-top: 20px;
+            flex: 1;
+
+            height: 1px;
+
+            background: #e5e7eb;
+
+        }
+
+        .divider span {
+
+            padding: 0 15px;
+
+            color: #94a3b8;
 
             font-size: 13px;
 
         }
 
-        .footer a {
+        /* ===========================
+FOOTER
+=========================== */
 
-            text-decoration: none;
+        .login-footer {
 
-            color: #25D366;
+            text-align: center;
 
-            font-weight: 600;
+            margin-top: 20px;
+
+            color: #94a3b8;
+
+            font-size: 13px;
 
         }
 
-        .spinner-border {
+        .alert {
 
-            width: 18px;
+            border-radius: 14px;
 
-            height: 18px;
+            font-size: 14px;
 
-            display: none;
+        }
+
+        /* ===========================
+MOBILE
+=========================== */
+
+        @media(max-width:991px) {
+
+            .hero-panel {
+
+                display: none;
+
+            }
+
+            .login-card {
+
+                max-width: 520px;
+
+                margin: auto;
+
+            }
+
+        }
+
+        @media(max-width:768px) {
+
+            .login-container {
+
+                padding: 20px 12px;
+
+            }
+
+            .login-card {
+
+                padding: 26px;
+
+                border-radius: 22px;
+
+            }
+
+            .login-card h2 {
+
+                font-size: 26px;
+
+            }
+
+            .logo {
+
+                width: 70px;
+
+            }
+
+            .shape-1 {
+
+                width: 170px;
+
+                height: 170px;
+
+                left: -80px;
+
+            }
+
+            .shape-2 {
+
+                width: 150px;
+
+                height: 150px;
+
+                right: -70px;
+
+            }
+
+            .shape-3 {
+
+                display: none;
+
+            }
 
         }
 
         @media(max-width:576px) {
 
-            .register-card {
+            .login-card {
 
-                margin: 20px;
-
-                padding: 25px;
+                padding: 22px;
 
             }
+
+            .btn-login {
+
+                height: 52px;
+
+            }
+
+        }
+
+        .password-strength {
+
+            width: 100%;
+
+            height: 6px;
+
+            background: #e5e7eb;
+
+            border-radius: 50px;
+
+            margin-top: 10px;
+
+            overflow: hidden;
+
+        }
+
+        .password-strength div {
+
+            width: 0;
+
+            height: 100%;
+
+            transition: .35s;
+
+            border-radius: 50px;
+
+        }
+
+        .password-text {
+
+            margin-top: 6px;
+
+            font-size: 12px;
+
+            color: #64748b;
 
         }
     </style>
@@ -257,95 +698,354 @@
 
 <body>
 
-    <div class="register-card">
+    <div class="bg-shape shape-1"></div>
+    <div class="bg-shape shape-2"></div>
+    <div class="bg-shape shape-3"></div>
 
-        <img src="assets/logo.png" class="logo">
+    <div class="container login-container">
 
-        <h3>Buat Akun Baru ✨</h3>
+        <div class="row align-items-center justify-content-center g-4">
 
-        <div class="subtitle">
+            <!-- ===========================
+                 HERO
+            ============================ -->
 
-            Kelola keuanganmu lebih mudah bersama ChatSaku
+            <div class="col-lg-6 d-none d-lg-block">
 
-        </div>
+                <div class="hero-panel">
 
-        <div id="successBox" class="alert alert-success"></div>
 
-        <div id="errorBox" class="alert alert-danger"></div>
+                    <span class="hero-badge">
 
-        <label class="form-label">Nama Lengkap</label>
+                        <i class="bi bi-stars"></i>
 
-        <div class="input-group">
+                        Smart Finance Assistant
 
-            <span class="input-group-text">
+                    </span>
 
-                <i class="bi bi-person"></i>
+                    <h1>
 
-            </span>
+                        Mulai Kelola
+                        <span>Keuanganmu</span>
 
-            <input type="text" id="nama" class="form-control" placeholder="Nama Lengkap">
+                    </h1>
 
-        </div>
+                    <p>
 
-        <label class="form-label">Email</label>
+                        Bergabung bersama ribuan pengguna
+                        ChatSaku untuk mencatat pemasukan,
+                        pengeluaran, hutang, piutang,
+                        budgeting hingga AI Insight
+                        langsung dari WhatsApp.
 
-        <div class="input-group">
+                    </p>
 
-            <span class="input-group-text">
+                    <div class="hero-image">
 
-                <i class="bi bi-envelope"></i>
+                        <img src="assets/logo-chatsaku10.png" class="img-fluid">
 
-            </span>
+                    </div>
 
-            <input type="email" id="email" class="form-control" placeholder="email@gmail.com">
+                    <div class="feature-list">
 
-        </div>
+                        <div class="feature-item">
 
-        <label class="form-label">Nomor WhatsApp</label>
+                            <div class="feature-icon">
 
-        <div class="input-group">
+                                💰
 
-            <span class="input-group-text">
+                            </div>
 
-                <i class="bi bi-whatsapp"></i>
+                            <div>
 
-            </span>
+                                <h6>Pencatatan Mudah</h6>
 
-            <input type="text" id="nomor" class="form-control" placeholder="08xxxxxxxxxx">
+                                <small>
 
-        </div>
+                                    Tinggal chat WhatsApp.
 
-        <label class="form-label">Password</label>
+                                </small>
 
-        <div class="input-group">
+                            </div>
 
-            <span class="input-group-text">
+                        </div>
 
-                <i class="bi bi-lock"></i>
+                        <div class="feature-item">
 
-            </span>
+                            <div class="feature-icon">
 
-            <input type="password" id="password" class="form-control" placeholder="Minimal 6 karakter">
+                                📊
 
-        </div>
+                            </div>
 
-        <button class="btn-register" onclick="register()">
+                            <div>
 
-            <span class="spinner-border spinner-border-sm" id="loading"></span>
+                                <h6>Dashboard Real Time</h6>
 
-            Daftar Sekarang
+                                <small>
 
-        </button>
+                                    Semua transaksi langsung
+                                    tersimpan.
 
-        <div class="footer">
+                                </small>
 
-            Sudah punya akun?
+                            </div>
 
-            <a href="login.html">
+                        </div>
 
-                Login
+                        <div class="feature-item">
 
-            </a>
+                            <div class="feature-icon">
+
+                                🤖
+
+                            </div>
+
+                            <div>
+
+                                <h6>AI Insight</h6>
+
+                                <small>
+
+                                    Analisis keuangan otomatis.
+
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- ===========================
+                 REGISTER
+            ============================ -->
+
+            <div class="col-lg-5 col-md-8">
+
+                <div class="login-card">
+
+                    <div class="text-center">
+
+
+                        <div class="login-badge">
+
+                            <i class="bi bi-shield-check"></i>
+
+                            Aman & Terenkripsi
+
+                        </div>
+
+                        <h2>
+
+                            Buat Akun ✨
+
+                        </h2>
+
+                        <p class="subtitle">
+
+                            Daftar sekarang dan mulai
+                            kelola keuanganmu.
+
+                        </p>
+
+                    </div>
+
+                    <div class="alert alert-success d-none" id="successBox">
+
+                    </div>
+
+                    <div class="alert alert-danger d-none" id="errorBox">
+
+                    </div>
+
+                    <!-- Nama -->
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+
+                            Nama Lengkap
+
+                        </label>
+
+                        <div class="input-group custom-input">
+
+                            <span class="input-group-text">
+
+                                <i class="bi bi-person"></i>
+
+                            </span>
+
+                            <input id="nama" class="form-control" placeholder="Nama Lengkap">
+
+                        </div>
+
+                    </div>
+
+                    <!-- Email -->
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+
+                            Email
+
+                        </label>
+
+                        <div class="input-group custom-input">
+
+                            <span class="input-group-text">
+
+                                <i class="bi bi-envelope"></i>
+
+                            </span>
+
+                            <input id="email" type="email" class="form-control" placeholder="nama@email.com">
+
+                        </div>
+
+                    </div>
+
+                    <!-- WhatsApp -->
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+
+                            Nomor WhatsApp
+
+                        </label>
+
+                        <div class="input-group custom-input">
+
+                            <span class="input-group-text">
+
+                                <i class="bi bi-whatsapp"></i>
+
+                            </span>
+
+                            <input id="nomor" class="form-control" placeholder="08xxxxxxxxxx">
+
+                        </div>
+
+                    </div>
+
+                    <!-- Password -->
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+
+                            Password
+
+                        </label>
+
+                        <div class="input-group custom-input">
+
+                            <span class="input-group-text">
+
+                                <i class="bi bi-lock"></i>
+
+                            </span>
+
+                            <input id="password" type="password" class="form-control" placeholder="Minimal 6 karakter">
+
+                            <button type="button" class="btn btn-eye" id="togglePassword">
+
+                                <i class="bi bi-eye"></i>
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Konfirmasi Password -->
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+
+                            Konfirmasi Password
+
+                        </label>
+
+                        <div class="input-group custom-input">
+
+                            <span class="input-group-text">
+
+                                <i class="bi bi-shield-lock"></i>
+
+                            </span>
+
+                            <input id="confirmPassword" type="password" class="form-control"
+                                placeholder="Ulangi Password">
+
+                        </div>
+
+                    </div>
+
+                    <div class="form-check mb-4">
+
+                        <input class="form-check-input" type="checkbox" id="agree">
+
+                        <label class="form-check-label">
+
+                            Saya menyetujui
+                            Syarat & Ketentuan
+                            ChatSaku.
+
+                        </label>
+
+                    </div>
+
+                    <button class="btn-login" onclick="register()">
+
+                        <span id="loading" class="spinner-border spinner-border-sm me-2 d-none">
+
+                        </span>
+
+                        <i class="bi bi-person-plus me-2"></i>
+
+                        Buat Akun
+
+                    </button>
+
+                    <div class="divider">
+
+                        <span>
+
+                            atau
+
+                        </span>
+
+                    </div>
+
+                    <a href="login.html" class="btn-register">
+
+                        <i class="bi bi-box-arrow-in-right me-2"></i>
+
+                        Sudah Punya Akun
+
+                    </a>
+
+                    <div class="login-footer">
+
+                        <i class="bi bi-shield-lock-fill"></i>
+
+                        Data Anda dilindungi dengan
+                        enkripsi SSL.
+
+                    </div>
+
+                </div>
+
+            </div>
 
         </div>
 
@@ -354,29 +1054,197 @@
     <script>
 
         const API_URL = "https://web-production-c01b5.up.railway.app/register";
-        // Ganti dengan URL backend Railway Anda
+
+        /* ===========================
+           ELEMENT
+        =========================== */
+
+        const nama = document.getElementById("nama");
+        const email = document.getElementById("email");
+        const nomor = document.getElementById("nomor");
+        const password = document.getElementById("password");
+        const confirmPassword = document.getElementById("confirmPassword");
+        const agree = document.getElementById("agree");
+
+        const successBox = document.getElementById("successBox");
+        const errorBox = document.getElementById("errorBox");
+
+        const toggle = document.getElementById("togglePassword");
+
+
+        /* ===========================
+           PASSWORD TOGGLE
+        =========================== */
+
+        toggle.addEventListener("click", () => {
+
+            if (password.type === "password") {
+
+                password.type = "text";
+                confirmPassword.type = "text";
+
+                toggle.innerHTML = '<i class="bi bi-eye-slash"></i>';
+
+            } else {
+
+                password.type = "password";
+                confirmPassword.type = "password";
+
+                toggle.innerHTML = '<i class="bi bi-eye"></i>';
+
+            }
+
+        });
+
+
+        /* ===========================
+           PASSWORD STRENGTH
+        =========================== */
+
+        const strength = document.createElement("div");
+
+        strength.className = "password-strength";
+
+        strength.innerHTML = "<div></div>";
+
+        password.parentElement.parentElement.appendChild(strength);
+
+        const text = document.createElement("div");
+
+        text.className = "password-text";
+
+        password.parentElement.parentElement.appendChild(text);
+
+        password.addEventListener("input", () => {
+
+            const bar = strength.firstElementChild;
+
+            const value = password.value;
+
+            let score = 0;
+
+            if (value.length >= 6) score++;
+
+            if (/[A-Z]/.test(value)) score++;
+
+            if (/[0-9]/.test(value)) score++;
+
+            if (/[^A-Za-z0-9]/.test(value)) score++;
+
+            if (score <= 1) {
+
+                bar.style.width = "30%";
+                bar.style.background = "#ef4444";
+                text.innerHTML = "Password Lemah";
+
+            } else if (score <= 3) {
+
+                bar.style.width = "65%";
+                bar.style.background = "#f59e0b";
+                text.innerHTML = "Password Sedang";
+
+            } else {
+
+                bar.style.width = "100%";
+                bar.style.background = "#22c55e";
+                text.innerHTML = "Password Kuat";
+
+            }
+
+        });
+
+
+        /* ===========================
+           CONFIRM PASSWORD
+        =========================== */
+
+        confirmPassword.addEventListener("input", () => {
+
+            if (confirmPassword.value === "") {
+
+                confirmPassword.style.borderColor = "";
+
+                return;
+
+            }
+
+            if (password.value === confirmPassword.value) {
+
+                confirmPassword.style.borderColor = "#22c55e";
+
+            } else {
+
+                confirmPassword.style.borderColor = "#ef4444";
+
+            }
+
+        });
+
+
+        /* ===========================
+           ENTER
+        =========================== */
+
+        document.addEventListener("keypress", (e) => {
+
+            if (e.key === "Enter") {
+
+                register();
+
+            }
+
+        });
+
+
+        /* ===========================
+           REGISTER
+        =========================== */
 
         async function register() {
 
-            const nama = document.getElementById("nama").value.trim();
+            hideAlert();
 
-            const email = document.getElementById("email").value.trim();
+            if (nama.value.trim().length < 3) {
 
-            const nomor = document.getElementById("nomor").value.trim();
+                return showError("Nama minimal 3 karakter.");
 
-            const password = document.getElementById("password").value;
+            }
 
-            const loading = document.getElementById("loading");
+            if (email.value.trim() == "") {
 
-            const error = document.getElementById("errorBox");
+                return showError("Email wajib diisi.");
 
-            const success = document.getElementById("successBox");
+            }
 
-            error.style.display = "none";
+            if (nomor.value.trim() == "") {
 
-            success.style.display = "none";
+                return showError("Nomor WhatsApp wajib diisi.");
 
-            loading.style.display = "inline-block";
+            }
+
+            if (password.value.length < 6) {
+
+                return showError("Password minimal 6 karakter.");
+
+            }
+
+            if (password.value !== confirmPassword.value) {
+
+                return showError("Konfirmasi password tidak sama.");
+
+            }
+
+            if (!agree.checked) {
+
+                return showError("Silakan setujui syarat & ketentuan.");
+
+            }
+
+            const btn = document.querySelector(".btn-login");
+
+            btn.disabled = true;
+
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Membuat Akun...';
 
             try {
 
@@ -392,13 +1260,13 @@
 
                     body: JSON.stringify({
 
-                        nama: nama,
+                        nama: nama.value.trim(),
 
-                        email: email,
+                        email: email.value.trim(),
 
-                        nomor_whatsapp: nomor,
+                        nomor_whatsapp: nomor.value.trim(),
 
-                        password: password
+                        password: password.value
 
                     })
 
@@ -406,53 +1274,89 @@
 
                 const result = await response.json();
 
-                loading.style.display = "none";
-
                 if (result.success) {
 
-                    success.style.display = "block";
+                    successBox.classList.remove("d-none");
 
-                    success.innerHTML = "✅ Registrasi berhasil. Mengalihkan ke halaman login...";
+                    successBox.innerHTML = '✅ Registrasi berhasil.<br>Mengalihkan ke halaman login...';
 
-                    setTimeout(function () {
+                    btn.innerHTML = '<i class="bi bi-check-circle-fill me-2"></i>Berhasil';
 
-                        window.location = "login.html";
+                    btn.style.background = "#16a34a";
 
-                    }, 2000);
+                    setTimeout(() => {
+
+                        window.location.href = "login.html";
+
+                    }, 1800);
 
                 } else {
 
-                    error.style.display = "block";
+                    btn.disabled = false;
 
-                    error.innerHTML = result.message;
+                    btn.innerHTML = '<i class="bi bi-person-plus me-2"></i>Buat Akun';
+
+                    showError(result.message);
 
                 }
 
-            } catch (e) {
+            } catch (err) {
 
-                loading.style.display = "none";
+                btn.disabled = false;
 
-                error.style.display = "block";
+                btn.innerHTML = '<i class="bi bi-person-plus me-2"></i>Buat Akun';
 
-                error.innerHTML = "Tidak dapat terhubung ke server.";
+                showError("Tidak dapat terhubung ke server.");
 
             }
 
         }
 
-        document.getElementById("password").addEventListener("keypress", function (e) {
 
-            if (e.key === "Enter") {
+        /* ===========================
+           ALERT
+        =========================== */
 
-                register();
+        function showError(msg) {
 
-            }
+            errorBox.classList.remove("d-none");
+
+            errorBox.innerHTML = '<i class="bi bi-exclamation-circle-fill me-2"></i>' + msg;
+
+        }
+
+        function hideAlert() {
+
+            errorBox.classList.add("d-none");
+
+            successBox.classList.add("d-none");
+
+        }
+
+
+        /* ===========================
+           ONLY NUMBER
+        =========================== */
+
+        nomor.addEventListener("input", () => {
+
+            nomor.value = nomor.value.replace(/[^0-9]/g, '');
 
         });
+
+
+        /* ===========================
+           AUTO FOCUS
+        =========================== */
+
+        window.onload = () => {
+
+            nama.focus();
+
+        }
 
     </script>
 
 </body>
 
 </html>
-```

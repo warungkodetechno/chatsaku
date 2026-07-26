@@ -621,3 +621,75 @@ def is_viewer(nomor):
         return True
 
     return False
+
+from datetime import datetime
+
+
+class Payment(db.Model):
+
+    __tablename__ = "payments"
+
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+    )
+
+
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey("user.id"),
+        nullable=False
+    )
+
+
+    order_id = db.Column(
+        db.String(100),
+        unique=True,
+        nullable=False
+    )
+
+
+    paket = db.Column(
+        db.String(50),
+        nullable=False
+    )
+
+
+    harga = db.Column(
+        db.Integer,
+        nullable=False
+    )
+
+
+    status = db.Column(
+        db.String(30),
+        default="PENDING"
+    )
+
+
+    midtrans_token = db.Column(
+        db.String(255)
+    )
+
+
+    midtrans_response = db.Column(
+        db.Text
+    )
+
+
+    created_at = db.Column(
+        db.DateTime,
+        default=datetime.utcnow
+    )
+
+
+    paid_at = db.Column(
+        db.DateTime
+    )
+
+
+    user = db.relationship(
+        "User",
+        backref="payments"
+    )
