@@ -2035,7 +2035,7 @@ def create_payment():
         print("==========================")
         user_id = get_jwt_identity()
         print("JWT USER ID:", user_id)
-        user = UserLogin.query.get(user_id)
+        user = User.query.get(user_id)
 
         if not user:
             return jsonify({
