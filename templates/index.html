@@ -537,6 +537,62 @@
             }
 
         }
+
+        html {
+
+            scroll-behavior: smooth;
+
+        }
+
+        .card {
+
+            transition: .25s;
+
+        }
+
+        .sidebar-menu a.active {
+
+            position: relative;
+
+        }
+
+        .sidebar-menu a.active::before {
+
+            content: "";
+
+            position: absolute;
+
+            left: 0;
+
+            top: 8px;
+
+            bottom: 8px;
+
+            width: 4px;
+
+            border-radius: 20px;
+
+            background: #fff;
+
+        }
+
+        .mobile-nav a {
+
+            transition: .25s;
+
+        }
+
+        .mobile-nav a:active {
+
+            transform: scale(.95);
+
+        }
+
+        .card:hover {
+
+            cursor: pointer;
+
+        }
     </style>
 </head>
 
@@ -1550,7 +1606,7 @@ MOBILE
                 <!-- BUDGET BULAN INI -->
                 <!-- ========================================= -->
 
-                <div class="budget-wrapper mb-4">
+                <div class="budget-wrapper mb-4" id="budget">
 
                     <div class="budget-header">
 
@@ -1860,7 +1916,7 @@ MOBILE
                 <!-- REMINDER TAGIHAN -->
                 <!-- ========================================= -->
 
-                <div class="reminder-wrapper mb-4">
+                <div class="reminder-wrapper mb-4" id="reminder">
 
                     <div class="reminder-header">
 
@@ -2181,7 +2237,7 @@ MOBILE
 
 
 
-                    <div class="row mt-4 g-3">
+                    <div class="row mt-4 g-3" id="piutang">
 
 
                         <!-- ===================== -->
@@ -2303,7 +2359,7 @@ MOBILE
                         <!-- ===================== -->
 
 
-                        <div class="col-lg-6">
+                        <div class="col-lg-6" id="hutang">
 
 
                             <h6 class="section-title danger">
@@ -2680,7 +2736,7 @@ MOBILE
         TARGET TABUNGAN
         ============================ -->
 
-                <div class="card border-0 shadow-sm rounded-4 mb-4">
+                <div class="card border-0 shadow-sm rounded-4 mb-4" id="target">
 
                     <div class="card-body p-4">
 
@@ -2862,7 +2918,7 @@ MOBILE
                     </div>
 
                 </div>
-                <div class="ai-wrapper mb-4">
+                <div class="ai-wrapper mb-4" id="ai">
 
                     <div class="ai-header">
 
@@ -4099,6 +4155,236 @@ AI FINANCE INSIGHT
         </a>
 
     </nav>
+    <script>
+        /* ==========================================================
+           CHATSAKU SIDEBAR V1
+        ========================================================== */
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            // ==========================
+            // Smooth Scroll
+            // ==========================
+
+            document.querySelectorAll(".sidebar-menu a, .mobile-nav a").forEach(link => {
+
+                link.addEventListener("click", function (e) {
+
+                    const href = this.getAttribute("href");
+
+                    if (!href.startsWith("#")) return;
+
+                    const target = document.querySelector(href);
+
+                    if (!target) return;
+
+                    e.preventDefault();
+
+                    window.scrollTo({
+                        top: target.offsetTop - 20,
+                        behavior: "smooth"
+                    });
+
+                });
+
+            });
+
+            // ==========================
+            // Active Menu
+            // ==========================
+
+            const sections = document.querySelectorAll("section,[id]");
+
+            const menus = document.querySelectorAll(".sidebar-menu a");
+
+            const mobileMenus = document.querySelectorAll(".mobile-nav a");
+
+            function setActive(id) {
+
+                menus.forEach(item => {
+
+                    item.classList.remove("active");
+
+                    if (item.getAttribute("href") === "#" + id) {
+
+                        item.classList.add("active");
+
+                    }
+
+                });
+
+                mobileMenus.forEach(item => {
+
+                    item.classList.remove("active");
+
+                    if (item.getAttribute("href") === "#" + id) {
+
+                        item.classList.add("active");
+
+                    }
+
+                });
+
+            }
+
+            window.addEventListener("scroll", () => {
+
+                let current = "dashboard";
+
+                sections.forEach(section => {
+
+                    const top = section.offsetTop - 120;
+
+                    const bottom = top + section.offsetHeight;
+
+                    if (scrollY >= top && scrollY < bottom) {
+
+                        current = section.id;
+
+                    }
+
+                });
+
+                setActive(current);
+
+            });
+
+        });
+
+
+        /* ==========================================================
+           CARD HOVER
+        ========================================================== */
+
+        document.querySelectorAll(".card").forEach(card => {
+
+            card.addEventListener("mouseenter", () => {
+
+                card.style.transform = "translateY(-3px)";
+
+                card.style.transition = ".25s";
+
+                card.style.boxShadow = "0 12px 30px rgba(0,0,0,.08)";
+
+            });
+
+            card.addEventListener("mouseleave", () => {
+
+                card.style.transform = "translateY(0px)";
+
+                card.style.boxShadow = "";
+
+            });
+
+        });
+
+
+        /* ==========================================================
+           NUMBER ANIMATION
+        ========================================================== */
+
+        document.querySelectorAll(".animate-number").forEach(el => {
+
+            const target = parseInt(el.dataset.value);
+
+            if (isNaN(target)) return;
+
+            let value = 0;
+
+            const speed = Math.max(5, Math.floor(target / 80));
+
+            const timer = setInterval(() => {
+
+                value += speed;
+
+                if (value >= target) {
+
+                    value = target;
+
+                    clearInterval(timer);
+
+                }
+
+                el.innerHTML = value.toLocaleString("id-ID");
+
+            }, 15);
+
+        });
+
+
+        /* ==========================================================
+           SHRINK HEADER
+        ========================================================== */
+
+        window.addEventListener("scroll", () => {
+
+            const navbar = document.querySelector(".navbar");
+
+            if (!navbar) return;
+
+            if (window.scrollY > 40) {
+
+                navbar.classList.add("shadow-sm");
+
+            } else {
+
+                navbar.classList.remove("shadow-sm");
+
+            }
+
+        });
+
+
+        /* ==========================================================
+           SECTION FADE
+        ========================================================== */
+
+        const observer = new IntersectionObserver(entries => {
+
+            entries.forEach(entry => {
+
+                if (entry.isIntersecting) {
+
+                    entry.target.style.opacity = 1;
+
+                    entry.target.style.transform = "translateY(0)";
+
+                }
+
+            });
+
+        }, {
+            threshold: .08
+        });
+
+        document.querySelectorAll("section").forEach(sec => {
+
+            sec.style.opacity = 0;
+
+            sec.style.transform = "translateY(20px)";
+
+            sec.style.transition = ".5s";
+
+            observer.observe(sec);
+
+        });
+
+
+        /* ==========================================================
+           MOBILE MENU CLOSE
+        ========================================================== */
+
+        document.querySelectorAll(".mobile-nav a").forEach(btn => {
+
+            btn.addEventListener("click", () => {
+
+                document.activeElement.blur();
+
+            });
+
+        });
+
+    </script>
 </body>
 
 </html>
