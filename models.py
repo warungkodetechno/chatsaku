@@ -638,7 +638,7 @@ class Payment(db.Model):
 
     user_id = db.Column(
         db.Integer,
-        db.ForeignKey("user_login.id"),
+        db.ForeignKey("users.id"),
         nullable=False
     )
 
@@ -690,6 +690,6 @@ class Payment(db.Model):
 
 
     user = db.relationship(
-        "UserLogin",
+        "User",
         backref="payments"
     )

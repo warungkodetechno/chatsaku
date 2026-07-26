@@ -133,7 +133,7 @@ def login():
 
 
     user = User.query.filter_by(
-        email=email
+        nomor_wa=login_user.nomor_whatsapp
     ).first()
 
     token = create_access_token(identity=str(user.id))
