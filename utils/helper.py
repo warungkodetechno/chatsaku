@@ -396,6 +396,9 @@ def verify_token(token):
 # =========================
 def normalize_wa(nomor):
 
+    if not nomor:
+        return None
+
     nomor = str(nomor).strip()
 
     nomor = nomor.replace("@s.whatsapp.net", "")
@@ -406,7 +409,40 @@ def normalize_wa(nomor):
     if nomor.startswith("08"):
         nomor = "62" + nomor[1:]
 
+    elif nomor.startswith("8"):
+        nomor = "62" + nomor
+
+    elif not nomor.startswith("62"):
+        return None
+
+    # Panjang nomor Indonesia umumnya 11-15 digit
+    if len(nomor) < 11 or len(nomor) > 15:
+        return None
+
     return nomor
+
+import re
+
+def normalize_nominal(nominal):
+
+    if nominal is None:
+        return None
+
+    nominal = str(nominal).strip().lower()
+
+    nominal = nominal.replace("rp", "")
+
+    # Jika ada koma, buang bagian desimal
+    if "," in nominal:
+        nominal = nominal.split(",")[0]
+
+    # Sisakan angka saja
+    nominal = re.sub(r"[^0-9]", "", nominal)
+
+    if not nominal:
+        return None
+
+    return int(nominal)
 
 
 # =========================

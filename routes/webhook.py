@@ -1052,9 +1052,11 @@ Selamat menabung 💚"""
 
         try:
 
-            nominal = int(
-                bagian[-1].replace(".","")
-            )
+            nominal = normalize_nominal(parts[2])
+
+            if nominal is None:
+                kirim_wa(sender, "Nominal tabungan tidak valid.")
+                return jsonify(status=True)
 
         except:
 
@@ -1370,7 +1372,25 @@ Selamat menabung 💚"""
 
             parts = message.split()
 
-            nominal = int(parts[1])
+            if len(parts) < 2:
+
+                kirim_wa(
+                    sender,
+                    "Format:\n\nmasuk 100000 gaji"
+                )
+
+                return jsonify(status=True)
+
+            nominal = normalize_nominal(parts[1])
+
+            if nominal is None or nominal <= 0:
+
+                kirim_wa(
+                    sender,
+                    "❌ Nominal tidak valid."
+                )
+
+                return jsonify(status=True)
 
             keterangan = (
                 " ".join(parts[2:])
@@ -1378,17 +1398,24 @@ Selamat menabung 💚"""
                 else "-"
             )
 
-            # link = generate_dashboard_link(sender)
+            nomor = get_owner_number(sender)
 
             trx = Transaksi(
+
                 tanggal=sekarang(),
+
                 tipe="MASUK",
+
                 nominal=nominal,
+
                 keterangan=keterangan,
-                nomor_wa=sender
+
+                nomor_wa=nomor
+
             )
 
             db.session.add(trx)
+
             db.session.commit()
 
             masuk = transaksi_user(sender).filter(
@@ -1408,31 +1435,33 @@ Selamat menabung 💚"""
             kirim_wa(
                 sender,
                 f"""✅ *Transaksi Berhasil*
-┌────────────────────┐
-💰 *KREDIT MASUK*
+    ┌────────────────────┐
+    💰 *PEMASUKAN*
 
-💵 Nominal      : Rp. {nominal:,.0f}
-📝 Keterangan   : {keterangan}
+    💵 Nominal      : Rp {nominal:,.0f}
+    📝 Keterangan   : {keterangan}
 
-🕒 {sekarang().strftime("%d %b %Y • %H:%M")}
-└────────────────────┘
+    🕒 {sekarang().strftime("%d %b %Y • %H:%M")}
+    └────────────────────┘
 
-💳 *Saldo Saat Ini*
-Rp {saldo:,.0f}
+    💳 *Saldo Saat Ini*
+    Rp {saldo:,.0f}
 
-━━━━━━━━━━━━━━━━━━
-🤖 ChatSaku Finance Assistant
-"""
+    ━━━━━━━━━━━━━━━━━━
+    🤖 ChatSaku Finance Assistant
+    """
             )
 
-        except Exception:
+        except Exception as e:
+
+            print(e)
 
             kirim_wa(
                 sender,
-                "Format:\nmasuk 100000 gaji"
+                "Format:\n\nmasuk 100000 gaji"
             )
 
-        return jsonify({"status": True})
+        return jsonify(status=True)
 
     # =========================
     # KELUAR
@@ -1452,11 +1481,16 @@ Rp {saldo:,.0f}
 
                 return jsonify({"status": True})
 
-            nominal = int(
-                parts[1]
-                .replace(".", "")
-                .replace(",", "")
-            )
+            nominal = normalize_nominal(parts[1])
+
+            if nominal <= 0:
+
+                kirim_wa(
+                    sender,
+                    "Nominal harus lebih dari 0."
+                )
+
+                return jsonify({"status": True})
 
             keterangan = " ".join(parts[2:])
 
@@ -1515,7 +1549,6 @@ Rp {saldo:,.0f}
 
             if budget:
 
-                # awal & akhir bulan
                 now = sekarang()
 
                 awal_bulan = now.replace(
@@ -1567,39 +1600,36 @@ Rp {saldo:,.0f}
 
                 if persen <= 50:
                     status = "🟢 Budget Aman"
-
                 elif persen <= 80:
                     status = "🟡 Perlu Perhatian"
-
                 elif persen <= 100:
                     status = "🟠 Hampir Habis"
-
                 else:
                     status = "🔴 Budget Terlampaui"
 
                 budget_text = f"""
-──────────────────
-🏦 *Budget Bulan Ini*
+    ──────────────────
+    🏦 *Budget Bulan Ini*
 
-🏷️ Kategori
-{kategori.title()}
+    🏷️ Kategori
+    {kategori.title()}
 
-💰 Budget
-Rp {budget.nominal:,.0f}
+    💰 Budget
+    Rp {budget.nominal:,.0f}
 
-💸 Terpakai
-Rp {total_keluar:,.0f}
+    💸 Terpakai
+    Rp {total_keluar:,.0f}
 
-💳 Sisa Budget
-Rp {max(sisa,0):,.0f}
+    💳 Sisa Budget
+    Rp {max(sisa,0):,.0f}
 
-📊 Progress
-{persen:.1f}%
+    📊 Progress
+    {persen:.1f}%
 
-{bar}
+    {bar}
 
-{status}
-"""
+    {status}
+    """
 
                 if persen > 100:
 
@@ -1607,52 +1637,59 @@ Rp {max(sisa,0):,.0f}
 
                     budget_text += f"""
 
-⚠️ Melebihi Budget
-Rp {over:,.0f}
-"""
+    ⚠️ Melebihi Budget
+    Rp {over:,.0f}
+    """
 
             else:
 
                 budget_text = """
- ──────────────────
+    ──────────────────
 
-🏦 *Budget Bulan Ini*
+    🏦 *Budget Bulan Ini*
 
-ℹ️ Belum ada budget untuk kategori ini.
+    ℹ️ Belum ada budget untuk kategori ini.
 
-Contoh:
-budget transport 1000000
-"""
+    Contoh:
+    budget transport 1000000
+    """
 
             kirim_wa(
                 sender,
                 f"""🏦 *Notifikasi Transaksi*
-──────────────────
+    ──────────────────
 
-✅ *Debit Berhasil*
-💸 - Rp {nominal:,.0f}
+    ✅ *Debit Berhasil*
+    💸 - Rp {nominal:,.0f}
 
-🏷️ Kategori
-{kategori.title()}
+    🏷️ Kategori
+    {kategori.title()}
 
-📂 Subkategori
-{subkategori.title()}
+    📂 Subkategori
+    {subkategori.title()}
 
-📝 Keterangan
-{keterangan}
+    📝 Keterangan
+    {keterangan}
 
-🕒 {sekarang().strftime("%d %b %Y • %H:%M")}
+    🕒 {sekarang().strftime("%d %b %Y • %H:%M")}
 
-{budget_text}
+    {budget_text}
 
-──────────────────
+    ──────────────────
 
-💳 Saldo Tersedia
-*Rp {saldo:,.0f}*
+    💳 Saldo Tersedia
+    *Rp {saldo:,.0f}*
 
-──────────────────
-🤖 ChatSaku Finance Assistant
-"""
+    ──────────────────
+    🤖 ChatSaku Finance Assistant
+    """
+            )
+
+        except ValueError:
+
+            kirim_wa(
+                sender,
+                "❌ Nominal tidak valid.\n\nContoh:\nkeluar 2.000.000 grab"
             )
 
         except Exception as e:
@@ -1663,11 +1700,11 @@ budget transport 1000000
                 sender,
                 f"""❌ Terjadi kesalahan
 
-{e}
+    {e}
 
-Format:
-keluar 25000 grab
-"""
+    Format:
+    keluar 25000 grab
+    """
             )
 
         return jsonify({"status": True})
@@ -1935,11 +1972,16 @@ budget makanan 1500000
 
                 return jsonify({"status":True})
 
-            nominal = int(
-                parts[2]
-                .replace(".","")
-                .replace(",","")
-            )
+            nominal = normalize_nominal(parts[2])
+
+            if nominal <= 0:
+
+                kirim_wa(
+                    sender,
+                    "Nominal budget harus lebih dari 0."
+                )
+
+                return jsonify(status=True)
 
             periode = periode_sekarang()
 
@@ -1948,20 +1990,23 @@ budget makanan 1500000
             # =========================
 
             # Hitung saldo saat ini
-            saldo = hitung_saldo(sender)
+            saldo = hitung_saldo(nomor)
 
             # Budget yang sudah ada (jika edit)
             budget_lama = Budget.query.filter_by(
-                nomor_wa=sender,
+                nomor_wa=nomor,
                 kategori=kategori,
                 periode=periode
             ).first()
 
             # Total budget bulan ini
             total_budget = db.session.query(
-                db.func.coalesce(db.func.sum(Budget.nominal), 0)
+                db.func.coalesce(
+                    db.func.sum(Budget.nominal),
+                    0
+                )
             ).filter(
-                Budget.nomor_wa == sender,
+                Budget.nomor_wa == nomor,
                 Budget.periode == periode
             ).scalar()
 
@@ -2001,7 +2046,7 @@ Silakan kurangi nominal budget atau tambahkan saldo terlebih dahulu.
                 return jsonify({"status": True})
 
             budget = Budget.query.filter_by(
-                nomor_wa=sender,
+                nomor_wa=nomor,
                 kategori=kategori,
                 periode=periode
             ).first()
@@ -2222,11 +2267,11 @@ untuk melihat semua budget.
 
             tanggal = int(parts[2])
 
-            nominal = int(
-                parts[3]
-                .replace(".", "")
-                .replace(",", "")
-            )
+            nominal = normalize_nominal(parts[3])
+
+            if nominal is None:
+                kirim_wa(sender, "Nominal reminder tidak valid.")
+                return jsonify(status=True)
 
             if tanggal < 1 or tanggal > 31:
 
@@ -2514,7 +2559,7 @@ untuk melihat seluruh reminder.
 
         try:
 
-            nominal = int(data[2])
+            nominal = normalize_nominal(parts[2])
 
         except:
 
@@ -2711,7 +2756,7 @@ untuk melihat seluruh reminder.
 
         try:
 
-            nominal = int(data[2])
+            nominal = normalize_nominal(parts[2])
 
         except:
 
