@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify, render_template, send_file, redirect
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta, time as dt_time
 import time
-from models import db, Transaksi, Budget, Reminder, User, RequestDemo, HutangPiutang, TargetPembelian, PromoPaket, MonthlySummary, get_last_summary, get_saldo_akhir
+from models import db, Transaksi, Budget, Reminder, User, RequestDemo, HutangPiutang, TargetPembelian, PromoPaket, MonthlySummary, get_last_summary, get_saldo_akhir, UserLogin
 from routes.webhook import webhook_bp
 import requests
 import os
@@ -13,6 +13,7 @@ from itsdangerous import URLSafeTimedSerializer
 from itsdangerous import BadSignature
 from itsdangerous import SignatureExpired
 from utils.helper import *
+from config import bcrypt, jwt, cors, init_extensions
 
 from sqlalchemy import func
 from calendar import monthrange
@@ -20,8 +21,16 @@ from calendar import monthrange
 from apscheduler.schedulers.background import BackgroundScheduler
 from zoneinfo import ZoneInfo
 import atexit
+from auth import auth_bp
 
 app = Flask(__name__)
+
+# Inisialisasi extension
+init_extensions(app)
+app.register_blueprint(auth_bp)
+# Konfigurasi lainnya
+app.config["JWT_SECRET_KEY"] = "123chatsaku!!!"
+
 
 # def scheduler_loop():
 

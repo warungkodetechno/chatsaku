@@ -41,6 +41,32 @@ class User(db.Model):
 
     paket = db.Column(db.String(30), default="STARTER")
 
+class UserLogin(db.Model):
+
+    __tablename__ = "user_login"
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    nama = db.Column(db.String(100), nullable=False)
+
+    email = db.Column(
+        db.String(120),
+        unique=True,
+        nullable=False,
+        index=True
+    )
+
+    nomor_whatsapp = db.Column(
+        db.String(30),
+        unique=True,
+        nullable=False
+    )
+
+    password = db.Column(
+        db.String(255),
+        nullable=False
+    )
+
 class Transaksi(db.Model):
 
     __tablename__ = "transaksi"
