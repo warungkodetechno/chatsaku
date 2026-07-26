@@ -69,6 +69,8 @@ db.init_app(app)
 
 app.register_blueprint(webhook_bp)
 
+ADMIN_NUMBER = os.getenv("ADMIN_NUMBER")
+
 with app.app_context():
     db.create_all()
 
@@ -2181,7 +2183,7 @@ def notification():
     if status in ["settlement", "capture"]:
 
         payment.status = "PAID"
-        payment.paid_at = datetime.sekarang()
+        payment.paid_at = sekarang()
 
         user = User.query.get(payment.user_id)
 
@@ -2189,6 +2191,28 @@ def notification():
             user.paket = payment.paket
 
         db.session.commit()
+
+        try:
+
+            pesan = f"""🎉 *Pembayaran ChatSaku Berhasil*
+
+    👤 Nama : {user.nama}
+    📱 WhatsApp : {user.nomor_wa}
+    📦 Paket : {payment.paket}
+    💰 Nominal : Rp {payment.harga:,}
+    🧾 Order ID : {payment.order_id}
+
+    Status : ✅ PAID
+    """
+
+            kirim_pesan(
+                ADMIN_NUMBER,
+                pesan
+            )
+
+        except Exception as e:
+
+            print("Gagal mengirim notifikasi admin:", e)
 
         print("PAYMENT UPDATED")
 
