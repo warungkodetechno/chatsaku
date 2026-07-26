@@ -628,44 +628,47 @@
             }
         </style>
 
-        <div class="summary-wrapper" id="summary-wrapper">
+        <div class="summary-wrapper">
 
             <div class="summary-top">
 
                 <div>
 
                     <div class="summary-title">
-                        Ringkasan Keuangan
+                        📊 Ringkasan Keuangan
                     </div>
 
                     <div class="summary-subtitle">
-                        Statistik transaksi berdasarkan akun WhatsApp Anda
+                        Statistik keuangan realtime
                     </div>
 
                 </div>
 
-                <div>
-                    <span class="badge bg-success" id="last-update">
-                        <i class="bi bi-arrow-repeat"></i>
-                        Live
-                    </span>
-                </div>
+                <span class="summary-live">
+
+                    <span class="live-dot"></span>
+
+                    Live
+
+                </span>
 
             </div>
 
             <div class="metric-grid">
 
-                <div class="metric-box" id="card-masuk">
+                <div class="metric-box income">
 
-                    <div class="metric-icon metric-success">
-                        <i class="bi bi-arrow-down-circle-fill"></i>
+                    <div class="metric-icon">
+
+                        <i class="bi bi-arrow-down"></i>
+
                     </div>
 
-                    <div class="metric-text">
+                    <div class="metric-content">
 
-                        <small>Total Pemasukan</small>
+                        <small>Pemasukan</small>
 
-                        <h4 class="text-success" id="masuk">
+                        <h4 id="masuk">
                             Rp {{ "{:,.0f}".format(total_masuk) }}
                         </h4>
 
@@ -673,17 +676,19 @@
 
                 </div>
 
-                <div class="metric-box" id="card-keluar">
+                <div class="metric-box expense">
 
-                    <div class="metric-icon metric-danger">
-                        <i class="bi bi-arrow-up-circle-fill"></i>
+                    <div class="metric-icon">
+
+                        <i class="bi bi-arrow-up"></i>
+
                     </div>
 
-                    <div class="metric-text">
+                    <div class="metric-content">
 
-                        <small>Total Pengeluaran</small>
+                        <small>Pengeluaran</small>
 
-                        <h4 class="text-danger" id="keluar">
+                        <h4 id="keluar">
                             Rp {{ "{:,.0f}".format(total_keluar) }}
                         </h4>
 
@@ -691,17 +696,19 @@
 
                 </div>
 
-                <div class="metric-box" id="card-saldo">
+                <div class="metric-box balance">
 
-                    <div class="metric-icon metric-primary">
+                    <div class="metric-icon">
+
                         <i class="bi bi-wallet2"></i>
+
                     </div>
 
-                    <div class="metric-text">
+                    <div class="metric-content">
 
-                        <small>Saldo Saat Ini</small>
+                        <small>Saldo</small>
 
-                        <h4 class="text-primary" id="saldo">
+                        <h4 id="saldo">
                             Rp {{ "{:,.0f}".format(saldo) }}
                         </h4>
 
@@ -715,14 +722,14 @@
 
                 <div class="chart-card">
 
-                    <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="chart-header">
 
-                        <div class="chart-title">
+                        <div class="chart-name">
                             Cashflow
                         </div>
 
-                        <span class="badge bg-light text-dark">
-                            Realtime
+                        <span class="chart-badge">
+                            Live
                         </span>
 
                     </div>
@@ -733,14 +740,14 @@
 
                 <div class="chart-card">
 
-                    <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="chart-header">
 
-                        <div class="chart-title">
-                            Trend Transaksi
+                        <div class="chart-name">
+                            Trend Bulanan
                         </div>
 
-                        <span class="badge bg-light text-dark">
-                            Auto Update
+                        <span class="chart-badge">
+                            Auto
                         </span>
 
                     </div>
@@ -754,314 +761,389 @@
         </div>
         <style>
             /* ===========================
-            SUMMARY
-            =========================== */
+SUMMARY
+=========================== */
 
             .summary-wrapper {
+
                 background: #fff;
-                border-radius: 22px;
-                padding: 18px 20px;
-                box-shadow: 0 8px 24px rgba(7, 94, 84, .06);
-                border: 1px solid var(--border);
-                margin-bottom: 22px;
+
+                border: 1px solid #edf3f5;
+
+                border-radius: 24px;
+
+                padding: 20px;
+
+                box-shadow: 0 8px 30px rgba(15, 23, 42, .04);
+
+                margin-bottom: 20px;
+
             }
 
             .summary-top {
+
                 display: flex;
+
                 justify-content: space-between;
+
                 align-items: center;
+
                 margin-bottom: 18px;
-                flex-wrap: wrap;
-                gap: 12px;
+
             }
 
             .summary-title {
-                font-family: 'Baloo 2', sans-serif;
-                font-size: 16px;
+
+                font-family: 'Baloo 2';
+
+                font-size: 17px;
+
                 font-weight: 700;
-                color: var(--primary-deep);
+
+                color: #12463f;
+
             }
 
             .summary-subtitle {
-                font-size: 13px;
-                color: var(--muted);
+
+                font-size: 12px;
+
+                color: #7b8794;
+
+                margin-top: 2px;
+
+            }
+
+            .summary-live {
+
+                display: flex;
+
+                align-items: center;
+
+                gap: 7px;
+
+                padding: 6px 12px;
+
+                background: #ecfff3;
+
+                border-radius: 30px;
+
+                font-size: 11px;
+
+                font-weight: 600;
+
+                color: #16a34a;
+
+            }
+
+            .live-dot {
+
+                width: 8px;
+
+                height: 8px;
+
+                border-radius: 50%;
+
+                background: #22c55e;
+
+                animation: pulse 1.5s infinite;
+
+            }
+
+            @keyframes pulse {
+
+                0% {
+                    opacity: .3
+                }
+
+                50% {
+                    opacity: 1
+                }
+
+                100% {
+                    opacity: .3
+                }
+
             }
 
             .metric-grid {
+
                 display: grid;
+
                 grid-template-columns: repeat(3, 1fr);
+
                 gap: 14px;
-                margin-bottom: 18px;
+
+                margin-bottom: 20px;
+
             }
 
             .metric-box {
+
                 display: flex;
+
                 align-items: center;
+
                 gap: 12px;
-                background: linear-gradient(180deg, #ffffff, #f6fdf9);
-                border: 1px solid var(--border);
-                border-radius: 18px;
-                padding: 14px 16px;
+
+                padding: 16px;
+
+                border-radius: 20px;
+
                 transition: .25s;
+
+                border: 1px solid #eef3f6;
+
+                background: #fafdfc;
+
             }
 
             .metric-box:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 10px 24px rgba(37, 211, 102, .12);
+
+                transform: translateY(-3px);
+
+                box-shadow: 0 12px 25px rgba(0, 0, 0, .05);
+
             }
 
             .metric-icon {
-                width: 48px;
-                height: 48px;
-                border-radius: 16px;
+
+                width: 46px;
+
+                height: 46px;
+
+                border-radius: 15px;
+
                 display: flex;
+
                 align-items: center;
+
                 justify-content: center;
-                font-size: 20px;
+
+                font-size: 18px;
+
                 flex-shrink: 0;
+
             }
 
-            .metric-success {
+            .income .metric-icon {
+
                 background: #dcfce7;
+
                 color: #16a34a;
+
             }
 
-            .metric-danger {
+            .expense .metric-icon {
+
                 background: #fee2e2;
-                color: #ef4444;
+
+                color: #dc2626;
+
             }
 
-            .metric-primary {
-                background: #d7f7e4;
-                color: #128C7E;
+            .balance .metric-icon {
+
+                background: #dbeafe;
+
+                color: #2563eb;
+
             }
 
-            .metric-text small {
+            .metric-content small {
+
                 display: block;
-                color: var(--muted);
-                font-size: 12px;
+
+                font-size: 11px;
+
+                color: #94a3b8;
+
                 font-weight: 600;
+
+                margin-bottom: 2px;
+
             }
 
-            .metric-text h4 {
-                font-family: 'Baloo 2', sans-serif;
-                margin: 2px 0 0;
-                font-size: 23px;
+            .metric-content h4 {
+
+                margin: 0;
+
+                font-size: 20px;
+
+                font-family: 'Baloo 2';
+
                 font-weight: 700;
-            }
 
-            .metric-text h4.text-primary {
-                color: var(--primary-dark) !important;
             }
 
             .chart-grid {
+
                 display: grid;
-                grid-template-columns: 320px 1fr;
-                gap: 18px;
+
+                grid-template-columns: 330px 1fr;
+
+                gap: 16px;
+
             }
 
             .chart-card {
-                background: linear-gradient(180deg, #ffffff, #f7fdfa);
-                border: 1px solid var(--border);
-                border-radius: 18px;
-                padding: 16px;
+
+                background: #fbfdfd;
+
+                border: 1px solid #edf2f5;
+
+                border-radius: 20px;
+
+                padding: 18px;
+
             }
 
-            .chart-title {
-                font-family: 'Baloo 2', sans-serif;
-                font-size: 14px;
+            .chart-header {
+
+                display: flex;
+
+                justify-content: space-between;
+
+                align-items: center;
+
+                margin-bottom: 12px;
+
+            }
+
+            .chart-name {
+
+                font-size: 13px;
+
                 font-weight: 700;
-                margin-bottom: 15px;
-                color: var(--primary-deep);
+
+                color: #134e4a;
+
+            }
+
+            .chart-badge {
+
+                font-size: 10px;
+
+                padding: 5px 10px;
+
+                background: #f3f4f6;
+
+                border-radius: 999px;
+
+                color: #475569;
+
             }
 
             .chart-card canvas {
-                max-height: 280px;
-            }
 
-            @media(max-width:992px) {
-
-                .metric-grid {
-                    grid-template-columns: 1fr;
-                }
-
-                .chart-grid {
-                    grid-template-columns: 1fr;
-                }
+                max-height: 270px;
 
             }
 
             /* ===========================
-            MOBILE UI
-            =========================== */
+MOBILE
+=========================== */
 
-            @media (max-width:768px) {
-
-                .container {
-                    max-width: 100%;
-                    padding: 14px !important;
-                }
-
-                /* Header */
-
-                .page-header {
-                    margin-bottom: 14px;
-                }
-
-                .page-title {
-                    font-size: 22px;
-                }
-
-                .page-subtitle {
-                    font-size: 12px;
-                }
-
-                /* Summary */
+            @media(max-width:768px) {
 
                 .summary-wrapper {
+
                     padding: 14px;
-                    border-radius: 16px;
+
+                    border-radius: 18px;
+
                 }
 
                 .summary-top {
-                    margin-bottom: 14px;
-                }
 
-                .summary-title {
-                    font-size: 15px;
-                }
+                    align-items: flex-start;
 
-                .summary-subtitle {
-                    font-size: 12px;
-                }
+                    gap: 10px;
 
-                /* Metric */
+                    flex-direction: column;
+
+                }
 
                 .metric-grid {
-                    display: flex;
-                    flex-direction: column;
+
+                    grid-template-columns: repeat(2, 1fr);
+
                     gap: 10px;
-                    margin-bottom: 14px;
+
                 }
 
                 .metric-box {
+
                     padding: 12px;
-                    border-radius: 14px;
+
+                    border-radius: 16px;
+
+                    gap: 10px;
+
                 }
 
                 .metric-icon {
-                    width: 42px;
-                    height: 42px;
-                    font-size: 18px;
+
+                    width: 40px;
+
+                    height: 40px;
+
+                    font-size: 16px;
+
+                    border-radius: 12px;
+
                 }
 
-                .metric-text small {
-                    font-size: 11px;
+                .metric-content small {
+
+                    font-size: 10px;
+
                 }
 
-                .metric-text h4 {
-                    font-size: 19px;
-                }
+                .metric-content h4 {
 
-                /* Chart */
+                    font-size: 15px;
+
+                    line-height: 1.2;
+
+                    word-break: break-word;
+
+                }
 
                 .chart-grid {
-                    display: flex;
-                    flex-direction: column;
+
+                    grid-template-columns: 1fr;
+
                     gap: 12px;
+
                 }
 
                 .chart-card {
-                    background: linear-gradient(180deg, #ffffff, #fbfcff);
-                    border: 1px solid #edf2f7;
-                    border-radius: 18px;
-                    padding: 16px;
-                }
 
-                .chart-title {
-                    font-size: 13px;
+                    padding: 14px;
+
+                    border-radius: 18px;
+
                 }
 
                 .chart-card canvas {
+
                     max-height: 220px;
+
                 }
 
-                /* Filter */
+                .chart-name {
 
-                .filter-toolbar form {
-                    row-gap: 12px;
-                }
-
-                .filter-toolbar .btn {
-                    height: 44px;
-                    border-radius: 12px;
-                    font-weight: 600;
-                }
-
-                /* Table */
-
-                .table-responsive {
-                    border-radius: 14px;
-                }
-
-                .table {
-                    font-size: 13px;
-                }
-
-                .table td,
-                .table th {
-                    padding: 10px;
-                    white-space: nowrap;
-                }
-
-                /* Pagination */
-
-                .pagination-wrapper {
-                    flex-direction: column;
-                    align-items: center;
-                    text-align: center;
-                    gap: 12px;
-                }
-
-                .pagination-info {
                     font-size: 12px;
+
                 }
 
-                .pagination {
-                    justify-content: center;
-                    flex-wrap: wrap;
-                }
+                .chart-badge {
 
-                .page-link {
-                    width: 38px;
-                    height: 38px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                }
+                    font-size: 9px;
 
-                /* Badge */
+                    padding: 4px 8px;
 
-                .badge {
-                    font-size: 10px;
-                }
-
-                /* Card */
-
-                .content-card {
-                    background: #fff;
-                    border: none;
-                    border-radius: 18px;
-                    box-shadow: 0 8px 25px rgba(15, 23, 42, .05);
-                    overflow: hidden;
-                }
-
-                .card-header-modern {
-                    padding: 14px;
-                }
-
-                .card-title-modern {
-                    font-size: 14px;
                 }
 
             }
