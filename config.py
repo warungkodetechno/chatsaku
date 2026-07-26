@@ -4,33 +4,38 @@ from flask_cors import CORS
 
 bcrypt = Bcrypt()
 jwt = JWTManager()
-@jwt.unauthorized_loader
-def unauthorized_callback(reason):
-
-    print("JWT ERROR:", reason)
-
-    return jsonify({
-
-        "success":False,
-
-        "message":reason
-
-    }),401
-
-
-
 @jwt.invalid_token_loader
-def invalid_callback(reason):
+def invalid_token(reason):
 
     print("JWT INVALID:", reason)
 
     return jsonify({
-
         "success":False,
-
         "message":reason
-
     }),401
+
+
+@jwt.unauthorized_loader
+def missing_token(reason):
+
+    print("JWT MISSING:", reason)
+
+    return jsonify({
+        "success":False,
+        "message":reason
+    }),401
+
+
+@jwt.expired_token_loader
+def expired_token(jwt_header, jwt_payload):
+
+    print("JWT EXPIRED")
+
+    return jsonify({
+        "success":False,
+        "message":"Token expired"
+    }),401
+
 cors = CORS()
 
 def init_extensions(app):
