@@ -2029,6 +2029,10 @@ def create_payment():
         data = request.get_json()
 
         paket = data.get("paket", "").upper()
+        print("==========================")
+        print("AUTH HEADER:")
+        print(request.headers.get("Authorization"))
+        print("==========================")
         user_id = get_jwt_identity()
         print("JWT USER ID:", user_id)
         user = UserLogin.query.get(user_id)
