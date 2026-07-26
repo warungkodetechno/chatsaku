@@ -100,6 +100,7 @@ def login():
     email = data.get("email", "").strip().lower()
     password = data.get("password", "")
 
+
     if not email or not password:
 
         return jsonify({
@@ -108,53 +109,84 @@ def login():
 
             "message": "Email dan password wajib diisi."
 
-        }), 400
+        }),400
+
+
 
     login_user = UserLogin.query.filter_by(
         email=email
     ).first()
 
 
+
     if not login_user:
+
         return jsonify({
+
             "success":False,
+
             "message":"Email atau password salah"
+
         }),401
+
 
 
     if not bcrypt.check_password_hash(
         login_user.password,
         password
     ):
+
         return jsonify({
+
             "success":False,
+
             "message":"Email atau password salah"
+
         }),401
 
+
+
+    # Ambil user ChatSaku
 
     user = User.query.filter_by(
         nomor_wa=login_user.nomor_whatsapp
     ).first()
 
-    token = create_access_token(identity=str(user.id))
+
+
+    if not user:
+
+        return jsonify({
+
+            "success":False,
+
+            "message":"Akun ChatSaku belum terhubung."
+
+        }),404
+
+
+
+    token = create_access_token(
+        identity=str(user.id)
+    )
+
+
 
     return jsonify({
 
-        "success": True,
+        "success":True,
 
-        "message": "Login berhasil",
+        "message":"Login berhasil",
 
-        "token": token,
+        "token":token,
 
-        "user": {
+        "user":{
 
-            "id": user.id,
+            "id":user.id,
 
-            "nama": user.nama,
+            "nama":user.nama,
 
-            "email": user.email,
-
-            "nomor_whatsapp": user.nomor_whatsapp
+            "nomor_wa":user.nomor_wa
 
         }
 
