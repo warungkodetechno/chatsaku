@@ -314,6 +314,22 @@ def webhook():
     Selamat mencoba 😊"""
             )
 
+            # ==========================
+            # NOTIFIKASI KE ADMIN
+            # ==========================
+
+            kirim_wa(
+                ADMIN_NUMBER,   # contoh: "6281234567890"
+                f"""🚀 *Request ChatSaku Free Baru*
+
+    👤 Nama : {pushname or '-'}
+    📱 Nomor : {sender}
+
+    Ada pengguna baru yang meminta akses ChatSaku Free.
+
+    Silakan lakukan follow up."""
+            )
+
         else:
 
             kirim_wa(
