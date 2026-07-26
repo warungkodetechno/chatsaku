@@ -10,7 +10,7 @@ from models import db, UserLogin
 
 auth_bp = Blueprint("auth", __name__)
 
-@auth_bp.route("/api/register", methods=["POST"])
+@auth_bp.route("/register", methods=["POST"])
 def register():
 
     data = request.get_json()
@@ -92,7 +92,7 @@ def register():
 
     }), 201
 
-@auth_bp.route("/api/login", methods=["POST"])
+@auth_bp.route("/login", methods=["POST"])
 def login():
 
     data = request.get_json()
@@ -159,7 +159,7 @@ def login():
 
     })
 
-@auth_bp.route("/api/profile")
+@auth_bp.route("/profile")
 @jwt_required()
 def profile():
 
@@ -193,7 +193,7 @@ def profile():
 
     })
 
-@auth_bp.route("/api/logout", methods=["POST"])
+@auth_bp.route("/logout", methods=["POST"])
 def logout():
 
     return jsonify({
