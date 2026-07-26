@@ -459,25 +459,49 @@ https://www.chatsaku.com
         if not is_admin(sender):
             return jsonify(status=True)
 
-        users = User.query.order_by(User.created_at.desc()).all()
+        users = User.query.order_by(
+            User.created_at.desc()
+        ).all()
 
         if not users:
 
-            kirim_wa(sender, "Belum ada user.")
+            kirim_wa(
+                sender,
+                "📭 Belum ada user."
+            )
 
             return jsonify(status=True)
 
-        text = "👥 *DAFTAR USER*\n\n"
+        text = (
+            f"👥 *DAFTAR USER CHATSAKU*\n"
+            f"━━━━━━━━━━━━━━\n\n"
+            f"Total User : {len(users)}\n\n"
+        )
 
         for i, u in enumerate(users, 1):
 
+            status = "🟢 Aktif" if u.aktif else "🔴 Nonaktif"
+
+            expired = "-"
+
+            if u.akhir_langganan:
+                expired = u.akhir_langganan.strftime("%d-%m-%Y")
+
             text += (
-                f"{i}. {u.nomor_wa}\n"
-                f"Paket : {u.paket}\n"
-                f"Status : {'Aktif' if u.status else 'Nonaktif'}\n\n"
+                f"*{i}. {u.nama}*\n"
+                f"📱 {u.nomor_wa}\n"
+                f"💎 {u.paket}\n"
+                f"{status}\n"
+                f"📅 Expired : {expired}\n\n"
             )
 
-        kirim_wa(sender, text)
+            # Hindari pesan WA terlalu panjang
+            if len(text) > 3300:
+                kirim_wa(sender, text)
+                text = ""
+
+        if text:
+            kirim_wa(sender, text)
 
         return jsonify(status=True)
 
@@ -492,26 +516,42 @@ https://www.chatsaku.com
 
         args = message.split()
 
-        if len(args) != 3:
+        if len(args) < 5:
 
             kirim_wa(
                 sender,
-                "Format:\n\nadduser 628123456789 premium"
+                """Format:
+
+    adduser 628123456789 Bambang PREMIUM 30
+
+    Paket:
+    • STARTER
+    • PRO
+    • PREMIUM
+    """
             )
 
             return jsonify(status=True)
 
         nomor = normalize_wa(args[1])
 
-        paket = args[2].upper()
+        nama = args[2]
+
+        paket = args[3].upper()
 
         if paket not in FEATURES:
 
             kirim_wa(
                 sender,
-                "Paket:\nSTARTER\nPRO\nPREMIUM"
+                "Paket hanya:\nSTARTER\nPRO\nPREMIUM"
             )
 
+            return jsonify(status=True)
+
+        try:
+            lama = int(args[4])
+        except:
+            kirim_wa(sender, "Durasi harus berupa angka (hari).")
             return jsonify(status=True)
 
         cek = User.query.filter_by(
@@ -520,17 +560,29 @@ https://www.chatsaku.com
 
         if cek:
 
-            kirim_wa(sender, "User sudah ada.")
+            kirim_wa(
+                sender,
+                "❌ User sudah terdaftar."
+            )
 
             return jsonify(status=True)
 
+        mulai = date.today()
+        akhir = mulai + timedelta(days=lama)
+
         user = User(
+
+            nama=nama,
 
             nomor_wa=nomor,
 
             paket=paket,
 
-            status=True
+            aktif=True,
+
+            mulai_langganan=mulai,
+
+            akhir_langganan=akhir
 
         )
 
@@ -540,13 +592,22 @@ https://www.chatsaku.com
 
         kirim_wa(
             sender,
-            f"""✅ User berhasil dibuat
+            f"""✅ *User Berhasil Ditambahkan*
 
-    Nomor :
+    👤 Nama
+    {nama}
+
+    📱 Nomor
     {nomor}
 
-    Paket :
+    🎁 Paket
     {paket}
+
+    📅 Mulai
+    {mulai.strftime('%d-%m-%Y')}
+
+    📅 Berakhir
+    {akhir.strftime('%d-%m-%Y')}
     """
         )
 
@@ -567,12 +628,25 @@ https://www.chatsaku.com
 
             kirim_wa(
                 sender,
-                "Format:\n\ndeluser 628123456789"
+                """Format:
+
+    deluser 628123456789
+    """
             )
 
             return jsonify(status=True)
 
         nomor = normalize_wa(args[1])
+
+        # Tidak boleh menghapus admin
+        if nomor == "6285872362212":
+
+            kirim_wa(
+                sender,
+                "❌ User admin tidak dapat dihapus."
+            )
+
+            return jsonify(status=True)
 
         user = User.query.filter_by(
             nomor_wa=nomor
@@ -580,7 +654,10 @@ https://www.chatsaku.com
 
         if not user:
 
-            kirim_wa(sender, "User tidak ditemukan.")
+            kirim_wa(
+                sender,
+                "❌ User tidak ditemukan."
+            )
 
             return jsonify(status=True)
 
@@ -590,7 +667,17 @@ https://www.chatsaku.com
 
         kirim_wa(
             sender,
-            "✅ User berhasil dihapus."
+            f"""✅ User berhasil dihapus
+
+    👤 Nama
+    {user.nama}
+
+    📱 Nomor
+    {user.nomor_wa}
+
+    🎁 Paket
+    {user.paket}
+    """
         )
 
         return jsonify(status=True)
@@ -609,7 +696,10 @@ https://www.chatsaku.com
 
             kirim_wa(
                 sender,
-                "Format:\n\npaket 628123456789 premium"
+                """Format:
+
+    paket 628123456789 PREMIUM
+    """
             )
 
             return jsonify(status=True)
@@ -620,7 +710,15 @@ https://www.chatsaku.com
 
         if paket not in FEATURES:
 
-            kirim_wa(sender, "STARTER\nPRO\nPREMIUM")
+            kirim_wa(
+                sender,
+                """Paket tersedia:
+
+    • STARTER
+    • PRO
+    • PREMIUM
+    """
+            )
 
             return jsonify(status=True)
 
@@ -630,11 +728,17 @@ https://www.chatsaku.com
 
         if not user:
 
-            kirim_wa(sender, "User tidak ditemukan.")
+            kirim_wa(
+                sender,
+                "❌ User tidak ditemukan."
+            )
 
             return jsonify(status=True)
 
+        paket_lama = user.paket
+
         user.paket = paket
+        user.aktif = True
 
         db.session.commit()
 
@@ -642,10 +746,16 @@ https://www.chatsaku.com
             sender,
             f"""✅ Paket berhasil diubah
 
-    Nomor :
-    {nomor}
+    👤 Nama
+    {user.nama}
 
-    Paket :
+    📱 Nomor
+    {user.nomor_wa}
+
+    📦 Paket Lama
+    {paket_lama}
+
+    🎁 Paket Baru
     {paket}
     """
         )
@@ -667,7 +777,10 @@ https://www.chatsaku.com
 
             kirim_wa(
                 sender,
-                "Format:\n\naktif 628123456789"
+                """Format:
+
+    aktif 628123456789
+    """
             )
 
             return jsonify(status=True)
@@ -680,17 +793,46 @@ https://www.chatsaku.com
 
         if not user:
 
-            kirim_wa(sender, "User tidak ditemukan.")
+            kirim_wa(
+                sender,
+                "❌ User tidak ditemukan."
+            )
 
             return jsonify(status=True)
 
-        user.status = True
+        if user.aktif:
+
+            kirim_wa(
+                sender,
+                f"""ℹ️ User sudah aktif
+
+    👤 {user.nama}
+    📱 {user.nomor_wa}
+    """
+            )
+
+            return jsonify(status=True)
+
+        user.aktif = True
 
         db.session.commit()
 
         kirim_wa(
             sender,
-            "✅ User berhasil diaktifkan."
+            f"""✅ User berhasil diaktifkan
+
+    👤 Nama
+    {user.nama}
+
+    📱 Nomor
+    {user.nomor_wa}
+
+    🎁 Paket
+    {user.paket}
+
+    🟢 Status
+    Aktif
+    """
         )
 
         return jsonify(status=True)
@@ -710,12 +852,25 @@ https://www.chatsaku.com
 
             kirim_wa(
                 sender,
-                "Format:\n\nnonaktif 628123456789"
+                """Format:
+
+    nonaktif 628123456789
+    """
             )
 
             return jsonify(status=True)
 
         nomor = normalize_wa(args[1])
+
+        # Jangan sampai admin menonaktifkan dirinya sendiri
+        if nomor == sender:
+
+            kirim_wa(
+                sender,
+                "❌ Anda tidak dapat menonaktifkan akun admin sendiri."
+            )
+
+            return jsonify(status=True)
 
         user = User.query.filter_by(
             nomor_wa=nomor
@@ -723,17 +878,46 @@ https://www.chatsaku.com
 
         if not user:
 
-            kirim_wa(sender, "User tidak ditemukan.")
+            kirim_wa(
+                sender,
+                "❌ User tidak ditemukan."
+            )
 
             return jsonify(status=True)
 
-        user.status = False
+        if not user.aktif:
+
+            kirim_wa(
+                sender,
+                f"""ℹ️ User sudah nonaktif
+
+    👤 {user.nama}
+    📱 {user.nomor_wa}
+    """
+            )
+
+            return jsonify(status=True)
+
+        user.aktif = False
 
         db.session.commit()
 
         kirim_wa(
             sender,
-            "✅ User berhasil dinonaktifkan."
+            f"""✅ User berhasil dinonaktifkan
+
+    👤 Nama
+    {user.nama}
+
+    📱 Nomor
+    {user.nomor_wa}
+
+    🎁 Paket
+    {user.paket}
+
+    🔴 Status
+    Nonaktif
+    """
         )
 
         return jsonify(status=True)
