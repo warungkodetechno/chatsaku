@@ -1029,7 +1029,138 @@ QUICK ACTION
                     </a>
 
                 </div>
+                <div class="kpi-grid">
+
+                    <div class="kpi-card">
+
+                        <div class="kpi-icon">
+
+                            💰
+
+                        </div>
+
+                        <div>
+
+                            <div class="kpi-title">
+
+                                Pemasukan
+
+                            </div>
+
+                            <div class="kpi-value">
+
+                                Rp {{ pemasukan }}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="kpi-card">
+
+                        <div class="kpi-icon">
+
+                            💸
+
+                        </div>
+
+                        <div>
+
+                            <div class="kpi-title">
+
+                                Pengeluaran
+
+                            </div>
+
+                            <div class="kpi-value">
+
+                                Rp {{ pengeluaran }}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="kpi-card">
+
+                        <div class="kpi-icon">
+
+                            🎯
+
+                        </div>
+
+                        <div>
+
+                            <div class="kpi-title">
+
+                                Target
+
+                            </div>
+
+                            <div class="kpi-value">
+
+                                {{ total_target }}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="kpi-card">
+
+                        <div class="kpi-icon">
+
+                            🤖
+
+                        </div>
+
+                        <div>
+
+                            <div class="kpi-title">
+
+                                AI Insight
+
+                            </div>
+
+                            <div class="kpi-value">
+
+                                {{ total_ai }}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
                 <style>
+                    .sidebar.small {
+
+                        width: 78px;
+
+                    }
+
+                    .sidebar.small .sidebar-header h5 {
+
+                        display: none;
+
+                    }
+
+                    .sidebar.small .sidebar-menu span {
+
+                        display: none;
+
+                    }
+
+                    .sidebar.small+.main-wrapper {
+
+                        margin-left: 78px;
+
+                    }
+
                     /* ===================================
    HERO
 =================================== */
@@ -4436,6 +4567,12 @@ AI FINANCE INSIGHT
 
     <nav class="mobile-nav">
 
+        <button id="toggleSidebar" class="btn btn-light">
+
+            <i class="bi bi-list"></i>
+
+        </button>
+
         <a href="#dashboard" class="active">
             <i class="bi bi-house-fill"></i>
             <span>Home</span>
@@ -4463,6 +4600,15 @@ AI FINANCE INSIGHT
 
     </nav>
     <script>
+        const toggle = document.getElementById("toggleSidebar");
+
+        const sidebar = document.querySelector(".sidebar");
+
+        toggle.onclick = function () {
+
+            sidebar.classList.toggle("small");
+
+        };
         /* ==========================================================
            CHATSAKU SIDEBAR V1
         ========================================================== */
