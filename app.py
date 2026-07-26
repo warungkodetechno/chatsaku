@@ -2108,8 +2108,6 @@ def create_payment():
 
             user_id=user.id,
 
-            nomor_wa=user.nomor_wa,
-
             paket=paket,
 
             harga=harga,
