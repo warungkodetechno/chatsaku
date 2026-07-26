@@ -4,17 +4,24 @@ from flask_cors import CORS
 
 bcrypt = Bcrypt()
 jwt = JWTManager()
+cors = CORS()
 
 def init_extensions(app):
 
     bcrypt.init_app(app)
     jwt.init_app(app)
 
-    CORS(
+    cors.init_app(
         app,
-        origins=[
-            "https://chatsaku.com",
-            "https://www.chatsaku.com"
-        ],
+        resources={
+            r"/*": {
+                "origins": [
+                    "https://chatsaku.com",
+                    "https://www.chatsaku.com",
+                    "http://localhost:5500",
+                    "http://127.0.0.1:5500"
+                ]
+            }
+        },
         supports_credentials=True
     )
