@@ -18,6 +18,11 @@ from utils.helper import *
 
 webhook_bp = Blueprint("webhook", __name__)
 
+ADMIN_NUMBER = "6285872362212"
+
+def is_admin(sender):
+    return sender == ADMIN_NUMBER
+
 def get_current_balance(nomor_wa):
     verify_monthly_summary(
         nomor_wa
@@ -410,6 +415,12 @@ https://www.chatsaku.com
         or cmd == "insight"
         or cmd == "dashboard"
         or cmd == "viewer"
+        or cmd == "user"
+        or cmd.startswith("adduser ")
+        or cmd.startswith("deluser ")
+        or cmd.startswith("paket ")
+        or cmd.startswith("aktif ")
+        or cmd.startswith("nonaktif ")
         or cmd.startswith("share ")
         or cmd.startswith("unshare ")
         or cmd.startswith("masuk")
@@ -439,6 +450,293 @@ https://www.chatsaku.com
             "status": True,
             "ignored": True
         })
+
+    # ======================================
+    # List User
+    # ======================================
+    if cmd == "user":
+
+        if not is_admin(sender):
+            return jsonify(status=True)
+
+        users = User.query.order_by(User.created_at.desc()).all()
+
+        if not users:
+
+            kirim_wa(sender, "Belum ada user.")
+
+            return jsonify(status=True)
+
+        text = "👥 *DAFTAR USER*\n\n"
+
+        for i, u in enumerate(users, 1):
+
+            text += (
+                f"{i}. {u.nomor_wa}\n"
+                f"Paket : {u.paket}\n"
+                f"Status : {'Aktif' if u.status else 'Nonaktif'}\n\n"
+            )
+
+        kirim_wa(sender, text)
+
+        return jsonify(status=True)
+
+    # ======================================
+    # Tambah User
+    # ======================================
+
+    if cmd.startswith("adduser "):
+
+        if not is_admin(sender):
+            return jsonify(status=True)
+
+        args = message.split()
+
+        if len(args) != 3:
+
+            kirim_wa(
+                sender,
+                "Format:\n\nadduser 628123456789 premium"
+            )
+
+            return jsonify(status=True)
+
+        nomor = normalize_wa(args[1])
+
+        paket = args[2].upper()
+
+        if paket not in FEATURES:
+
+            kirim_wa(
+                sender,
+                "Paket:\nSTARTER\nPRO\nPREMIUM"
+            )
+
+            return jsonify(status=True)
+
+        cek = User.query.filter_by(
+            nomor_wa=nomor
+        ).first()
+
+        if cek:
+
+            kirim_wa(sender, "User sudah ada.")
+
+            return jsonify(status=True)
+
+        user = User(
+
+            nomor_wa=nomor,
+
+            paket=paket,
+
+            status=True
+
+        )
+
+        db.session.add(user)
+
+        db.session.commit()
+
+        kirim_wa(
+            sender,
+            f"""✅ User berhasil dibuat
+
+    Nomor :
+    {nomor}
+
+    Paket :
+    {paket}
+    """
+        )
+
+        return jsonify(status=True)
+
+    # ======================================
+    # Delete User
+    # ======================================
+
+    if cmd.startswith("deluser "):
+
+        if not is_admin(sender):
+            return jsonify(status=True)
+
+        args = message.split()
+
+        if len(args) != 2:
+
+            kirim_wa(
+                sender,
+                "Format:\n\ndeluser 628123456789"
+            )
+
+            return jsonify(status=True)
+
+        nomor = normalize_wa(args[1])
+
+        user = User.query.filter_by(
+            nomor_wa=nomor
+        ).first()
+
+        if not user:
+
+            kirim_wa(sender, "User tidak ditemukan.")
+
+            return jsonify(status=True)
+
+        db.session.delete(user)
+
+        db.session.commit()
+
+        kirim_wa(
+            sender,
+            "✅ User berhasil dihapus."
+        )
+
+        return jsonify(status=True)
+
+    # ======================================
+    # Ganti Paket User
+    # ======================================
+    if cmd.startswith("paket "):
+
+        if not is_admin(sender):
+            return jsonify(status=True)
+
+        args = message.split()
+
+        if len(args) != 3:
+
+            kirim_wa(
+                sender,
+                "Format:\n\npaket 628123456789 premium"
+            )
+
+            return jsonify(status=True)
+
+        nomor = normalize_wa(args[1])
+
+        paket = args[2].upper()
+
+        if paket not in FEATURES:
+
+            kirim_wa(sender, "STARTER\nPRO\nPREMIUM")
+
+            return jsonify(status=True)
+
+        user = User.query.filter_by(
+            nomor_wa=nomor
+        ).first()
+
+        if not user:
+
+            kirim_wa(sender, "User tidak ditemukan.")
+
+            return jsonify(status=True)
+
+        user.paket = paket
+
+        db.session.commit()
+
+        kirim_wa(
+            sender,
+            f"""✅ Paket berhasil diubah
+
+    Nomor :
+    {nomor}
+
+    Paket :
+    {paket}
+    """
+        )
+
+        return jsonify(status=True)
+
+    # ======================================
+    # Aktifkan User
+    # ======================================
+
+    if cmd.startswith("aktif "):
+
+        if not is_admin(sender):
+            return jsonify(status=True)
+
+        args = message.split()
+
+        if len(args) != 2:
+
+            kirim_wa(
+                sender,
+                "Format:\n\naktif 628123456789"
+            )
+
+            return jsonify(status=True)
+
+        nomor = normalize_wa(args[1])
+
+        user = User.query.filter_by(
+            nomor_wa=nomor
+        ).first()
+
+        if not user:
+
+            kirim_wa(sender, "User tidak ditemukan.")
+
+            return jsonify(status=True)
+
+        user.status = True
+
+        db.session.commit()
+
+        kirim_wa(
+            sender,
+            "✅ User berhasil diaktifkan."
+        )
+
+        return jsonify(status=True)
+
+    # ======================================
+    # Non Aktifkan User
+    # ======================================
+
+    if cmd.startswith("nonaktif "):
+
+        if not is_admin(sender):
+            return jsonify(status=True)
+
+        args = message.split()
+
+        if len(args) != 2:
+
+            kirim_wa(
+                sender,
+                "Format:\n\nnonaktif 628123456789"
+            )
+
+            return jsonify(status=True)
+
+        nomor = normalize_wa(args[1])
+
+        user = User.query.filter_by(
+            nomor_wa=nomor
+        ).first()
+
+        if not user:
+
+            kirim_wa(sender, "User tidak ditemukan.")
+
+            return jsonify(status=True)
+
+        user.status = False
+
+        db.session.commit()
+
+        kirim_wa(
+            sender,
+            "✅ User berhasil dinonaktifkan."
+        )
+
+        return jsonify(status=True)
 
     # ======================================
     # TARGET BARU
