@@ -110,30 +110,31 @@ def login():
 
         }), 400
 
-    user = UserLogin.query.filter_by(email=email).first()
+    login_user = UserLogin.query.filter_by(
+        email=email
+    ).first()
 
-    if not user:
 
+    if not login_user:
         return jsonify({
+            "success":False,
+            "message":"Email atau password salah"
+        }),401
 
-            "success": False,
-
-            "message": "Email atau password salah."
-
-        }), 401
 
     if not bcrypt.check_password_hash(
-        user.password,
+        login_user.password,
         password
     ):
-
         return jsonify({
+            "success":False,
+            "message":"Email atau password salah"
+        }),401
 
-            "success": False,
 
-            "message": "Email atau password salah."
-
-        }), 401
+    user = User.query.filter_by(
+        email=email
+    ).first()
 
     token = create_access_token(identity=str(user.id))
 

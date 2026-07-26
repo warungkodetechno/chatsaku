@@ -638,7 +638,7 @@ class Payment(db.Model):
 
     user_id = db.Column(
         db.Integer,
-        db.ForeignKey("users.id"),
+        db.ForeignKey("user_login.id"),
         nullable=False
     )
 
