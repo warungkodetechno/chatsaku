@@ -2084,7 +2084,7 @@ def create_payment():
 
             "customer_details": {
                 "first_name": user.nama,
-                "phone": user.nomor_wa
+                "phone": user.nomor_whatsapp
             },
 
             "item_details": [
