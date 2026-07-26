@@ -4,6 +4,33 @@ from flask_cors import CORS
 
 bcrypt = Bcrypt()
 jwt = JWTManager()
+@jwt.unauthorized_loader
+def unauthorized_callback(reason):
+
+    print("JWT ERROR:", reason)
+
+    return jsonify({
+
+        "success":False,
+
+        "message":reason
+
+    }),401
+
+
+
+@jwt.invalid_token_loader
+def invalid_callback(reason):
+
+    print("JWT INVALID:", reason)
+
+    return jsonify({
+
+        "success":False,
+
+        "message":reason
+
+    }),401
 cors = CORS()
 
 def init_extensions(app):

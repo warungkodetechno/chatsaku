@@ -2030,7 +2030,7 @@ def create_payment():
 
         paket = data.get("paket", "").upper()
         user_id = get_jwt_identity()
-
+        print("JWT USER ID:", user_id)
         user = UserLogin.query.get(user_id)
 
         if not user:
