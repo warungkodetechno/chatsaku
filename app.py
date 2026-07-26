@@ -2108,7 +2108,7 @@ def create_payment():
 
             user_id=user.id,
 
-            nomor_wa=user.nomor_wa,
+            nomor_wa=user.nomor_whatsapp,
 
             paket=paket,
 
