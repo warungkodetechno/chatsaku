@@ -2121,6 +2121,12 @@ def create_payment():
 
         db.session.commit()
 
+        print("=" * 50)
+        print("ORDER CREATED :", order_id)
+        print("USER :", user.id)
+        print("PAKET :", paket)
+        print("HARGA :", harga)
+
         return jsonify({
 
             "success": True,
