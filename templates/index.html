@@ -764,6 +764,30 @@
 SUMMARY
 =========================== */
 
+            .chart-card {
+                width: 100%;
+                overflow: hidden;
+            }
+
+            .chart-card canvas {
+                width: 100% !important;
+                height: 260px !important;
+                max-width: 100%;
+                display: block;
+            }
+
+            @media (max-width:768px) {
+
+                .chart-card {
+                    padding: 14px;
+                }
+
+                .chart-card canvas {
+                    height: 220px !important;
+                }
+
+            }
+
             .summary-wrapper {
 
                 background: #fff;
@@ -3339,6 +3363,8 @@ AI FINANCE INSIGHT
         const TOKEN = "{{ token }}";
 
         let lastTransaction = null;
+        let pieChart = null;
+        let lineChart = null;
 
         async function loadDashboard() {
 
@@ -3351,7 +3377,7 @@ AI FINANCE INSIGHT
                 const data = await res.json();
 
                 // ==========================
-                // UPDATE SUMMARY
+                // SUMMARY
                 // ==========================
 
                 document.getElementById("masuk").innerHTML =
@@ -3364,7 +3390,7 @@ AI FINANCE INSIGHT
                     "Rp " + Number(data.saldo).toLocaleString("id-ID");
 
                 // ==========================
-                // UPDATE TRANSAKSI
+                // LEDGER
                 // ==========================
 
                 const list = document.getElementById("ledger-list");
@@ -3387,15 +3413,11 @@ AI FINANCE INSIGHT
                         <div class="ledger-meta">
 
                             <span class="pill ${row.tipe == "MASUK" ? "pill-success" : "pill-danger"}">
-
                                 ${row.tipe}
-
                             </span>
 
                             <span class="ledger-desc">
-
                                 ${row.keterangan}
-
                             </span>
 
                         </div>
@@ -3405,16 +3427,13 @@ AI FINANCE INSIGHT
                     <div class="ledger-right">
 
                         <div class="ledger-amount">
-
                             Rp ${Number(row.nominal).toLocaleString("id-ID")}
-
                         </div>
 
                     </div>
 
                 </div>
                 `;
-
                     });
 
                 }
@@ -3427,12 +3446,9 @@ AI FINANCE INSIGHT
 
                     const trx = data.rows[0];
 
-                    const key = trx.id || (
-                        trx.tanggal +
-                        trx.nominal +
-                        trx.tipe +
-                        trx.keterangan
-                    );
+                    const key =
+                        trx.id ??
+                        trx.tanggal + trx.nominal + trx.tipe + trx.keterangan;
 
                     if (lastTransaction !== null && lastTransaction !== key) {
 
@@ -3458,120 +3474,154 @@ AI FINANCE INSIGHT
 
         function showRealtimeNotification(trx) {
 
-            const icon =
-                document.getElementById("toastIcon");
-
-            const iconClass =
-                document.getElementById("toastIconClass");
-
-            const title =
-                document.getElementById("toastTitle");
-
-            const desc =
-                document.getElementById("toastDesc");
+            const icon = document.getElementById("toastIcon");
+            const iconClass = document.getElementById("toastIconClass");
+            const title = document.getElementById("toastTitle");
+            const desc = document.getElementById("toastDesc");
 
             if (trx.tipe === "MASUK") {
 
                 icon.style.background = "#25D366";
-
-                iconClass.className =
-                    "bi bi-arrow-down-circle-fill";
-
+                iconClass.className = "bi bi-arrow-down-circle-fill";
                 title.innerHTML = "💰 Pemasukan Baru";
 
             } else {
 
                 icon.style.background = "#ef4444";
-
-                iconClass.className =
-                    "bi bi-arrow-up-circle-fill";
-
+                iconClass.className = "bi bi-arrow-up-circle-fill";
                 title.innerHTML = "💸 Pengeluaran Baru";
 
             }
 
             desc.innerHTML = `
-
         <div class="fw-semibold">
-
             Rp ${Number(trx.nominal).toLocaleString("id-ID")}
-
         </div>
 
-        <div>
-
-            ${trx.keterangan}
-
-        </div>
+        <div>${trx.keterangan}</div>
 
         <small class="text-success">
-
             ${trx.kategori}
-
         </small>
-
     `;
 
-            const toastElement =
-                document.getElementById("trxToast");
-
-            const toast =
-                bootstrap.Toast.getOrCreateInstance(
-                    toastElement,
-                    {
-                        delay: 5000
-                    }
-                );
-
-            toast.show();
+            bootstrap.Toast
+                .getOrCreateInstance(
+                    document.getElementById("trxToast"),
+                    { delay: 5000 }
+                )
+                .show();
 
         }
-
     </script>
 
     <script>
-        const pieCtx = document.getElementById('pieChart');
 
-        new Chart(pieCtx, {
-            type: 'doughnut',
+        const pieCtx = document.getElementById("pieChart");
+        const lineCtx = document.getElementById("lineChart");
+
+        if (pieChart) pieChart.destroy();
+
+        pieChart = new Chart(pieCtx, {
+
+            type: "doughnut",
+
             data: {
-                labels: ['Masuk', 'Keluar'],
+                labels: ["Masuk", "Keluar"],
                 datasets: [{
                     data: [
                         {{ total_masuk }},
                 {{ total_keluar }}
             ],
-            backgroundColor: ['#25D366', '#ef4444'],
+            backgroundColor: [
+                "#25D366",
+                "#ef4444"
+            ],
             borderWidth: 0
         }]
+    },
+
+            options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: "bottom",
+                    labels: {
+                        boxWidth: 12,
+                        font: {
+                            size: 11
+                        }
+                    }
+                }
+            }
         }
-    });
 
-        const lineCtx = document.getElementById('lineChart');
+});
 
-        new Chart(lineCtx, {
-            type: 'line',
+
+        if (lineChart) lineChart.destroy();
+
+        lineChart = new Chart(lineCtx, {
+
+            type: "line",
+
             data: {
                 labels: [
                     {% for row in data %}
             "{{ row.tanggal }}",
             {% endfor %}
-            ],
+        ],
+
             datasets: [{
-                label: 'Transaksi',
+
+                label: "Transaksi",
+
                 data: [
                     {% for row in data %}
-            {{ row.nominal }},
+                {{ row.nominal }},
             {% endfor %}
         ],
-            borderColor: '#128C7E',
-            backgroundColor: 'rgba(37, 211, 102, 0.12)',
+
+            borderColor: "#128C7E",
+            backgroundColor: "rgba(37,211,102,.12)",
             fill: true,
-            pointBackgroundColor: '#25D366',
-            tension: 0.3
-            }]
+            pointRadius: 3,
+            pointHoverRadius: 5,
+            tension: .35
+
+        }]
+    },
+
+            options: {
+
+            responsive: true,
+            maintainAspectRatio: false,
+
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+
+            scales: {
+
+                x: {
+                    ticks: {
+                        maxTicksLimit: 6
+                    }
+                },
+
+                y: {
+                    beginAtZero: true
+                }
+
+            }
+
         }
-    });
+
+});
+
     </script>
     <!-- Realtime Notification -->
     <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index:99999">
