@@ -25,11 +25,11 @@ from auth import auth_bp
 
 app = Flask(__name__)
 
-# Inisialisasi extension
-init_extensions(app)
-app.register_blueprint(auth_bp)
-# Konfigurasi lainnya
 app.config["JWT_SECRET_KEY"] = "123chatsaku!!!"
+
+init_extensions(app)
+
+app.register_blueprint(auth_bp)
 
 
 # def scheduler_loop():
