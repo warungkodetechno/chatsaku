@@ -593,6 +593,246 @@
             cursor: pointer;
 
         }
+
+        /* ======================================================
+    HERO COMPACT
+====================================================== */
+
+        .hero-compact {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            padding: 18px 22px;
+
+            border-radius: 22px;
+
+            background: linear-gradient(135deg, #25D366, #19b75a);
+
+            color: white;
+
+            margin-bottom: 18px;
+
+            overflow: hidden;
+
+            position: relative;
+
+        }
+
+        .hero-compact::after {
+
+            content: "";
+
+            position: absolute;
+
+            right: -40px;
+
+            top: -40px;
+
+            width: 180px;
+
+            height: 180px;
+
+            background: rgba(255, 255, 255, .08);
+
+            border-radius: 50%;
+
+        }
+
+        .hero-title {
+
+            font-size: 18px;
+
+            font-weight: 700;
+
+            margin-bottom: 4px;
+
+        }
+
+        .hero-sub {
+
+            font-size: 12px;
+
+            opacity: .9;
+
+        }
+
+        .hero-balance {
+
+            text-align: right;
+
+        }
+
+        .hero-balance small {
+
+            display: block;
+
+            font-size: 12px;
+
+            opacity: .8;
+
+        }
+
+        .hero-balance h2 {
+
+            margin: 0;
+
+            font-size: 28px;
+
+            font-weight: 700;
+
+        }
+
+
+        /* ==========================================
+KPI CARD
+========================================== */
+
+        .kpi-grid {
+
+            display: grid;
+
+            grid-template-columns: repeat(4, 1fr);
+
+            gap: 15px;
+
+            margin-bottom: 20px;
+
+        }
+
+        .kpi-card {
+
+            background: #fff;
+
+            border-radius: 18px;
+
+            padding: 15px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            box-shadow: 0 10px 20px rgba(0, 0, 0, .05);
+
+            transition: .25s;
+
+        }
+
+        .kpi-card:hover {
+
+            transform: translateY(-4px);
+
+        }
+
+        .kpi-icon {
+
+            width: 48px;
+
+            height: 48px;
+
+            border-radius: 14px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            background: #effcf5;
+
+            font-size: 22px;
+
+            color: #25D366;
+
+        }
+
+        .kpi-title {
+
+            font-size: 12px;
+
+            color: #7d938a;
+
+        }
+
+        .kpi-value {
+
+            font-size: 17px;
+
+            font-weight: 700;
+
+            color: #18342d;
+
+        }
+
+
+        /* ==========================================
+QUICK ACTION
+========================================== */
+
+        .quick-action {
+
+            display: grid;
+
+            grid-template-columns: repeat(4, 1fr);
+
+            gap: 12px;
+
+            margin-bottom: 20px;
+
+        }
+
+        .action-btn {
+
+            background: white;
+
+            border-radius: 18px;
+
+            padding: 15px;
+
+            text-align: center;
+
+            text-decoration: none;
+
+            transition: .25s;
+
+            box-shadow: 0 8px 18px rgba(0, 0, 0, .05);
+
+            color: #18342d;
+
+        }
+
+        .action-btn:hover {
+
+            background: #25D366;
+
+            color: white;
+
+            transform: translateY(-4px);
+
+        }
+
+        .action-btn i {
+
+            font-size: 24px;
+
+            margin-bottom: 8px;
+
+            display: block;
+
+        }
+
+        .action-btn span {
+
+            font-size: 12px;
+
+            font-weight: 600;
+
+        }
     </style>
 </head>
 
@@ -669,6 +909,38 @@
 
         <div class="main-wrapper">
 
+            <div class="hero-compact" id="dashboard">
+
+                <div>
+
+                    <div class="hero-title">
+
+                        👋 Halo {{ current_user.nama }}
+
+                    </div>
+
+                    <div class="hero-sub">
+
+                        Selamat datang kembali di ChatSaku
+
+                    </div>
+
+                </div>
+
+                <div class="hero-balance">
+
+                    <small>Total Saldo</small>
+
+                    <h2>
+
+                        Rp {{ "{:,.0f}".format(total_saldo).replace(",",".") }}
+
+                    </h2>
+
+                </div>
+
+            </div>
+
             <div class="container py-4">
 
                 <!-- HEADER -->
@@ -720,6 +992,41 @@
                         </div>
 
                     </div>
+
+                </div>
+                <div class="quick-action">
+
+                    <a href="#pemasukan" class="action-btn">
+
+                        <i class="bi bi-plus-circle-fill"></i>
+
+                        <span>Pemasukan</span>
+
+                    </a>
+
+                    <a href="#pengeluaran" class="action-btn">
+
+                        <i class="bi bi-dash-circle-fill"></i>
+
+                        <span>Pengeluaran</span>
+
+                    </a>
+
+                    <a href="#hutang">
+
+                        <i class="bi bi-credit-card"></i>
+
+                        <span>Hutang</span>
+
+                    </a>
+
+                    <a href="#piutang">
+
+                        <i class="bi bi-wallet2"></i>
+
+                        <span>Piutang</span>
+
+                    </a>
 
                 </div>
                 <style>
