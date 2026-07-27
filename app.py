@@ -2056,7 +2056,15 @@ def create_payment():
                 "message": "Paket tidak ditemukan."
             }), 400
 
-        harga = HARGA_PAKET[paket]
+        # =====================================
+        # Harga normal
+        # =====================================
+
+        harga_normal = HARGA_PAKET[paket]
+
+        harga_bayar = harga_normal
+
+        promo_id = None
 
         hari_ini = sekarang().date()
 
@@ -2068,33 +2076,49 @@ def create_payment():
         ).first()
 
         if promo:
-            harga = promo.harga_promo
+
+            harga_bayar = promo.harga_promo
+
+            promo_id = promo.id
 
         order_id = f"CHATSAKU-{uuid.uuid4().hex[:12]}"
 
         parameter = {
 
             "transaction_details": {
+
                 "order_id": order_id,
-                "gross_amount": int(harga)
+
+                "gross_amount": int(harga_bayar)
+
             },
 
             "credit_card": {
+
                 "secure": True
+
             },
 
             "customer_details": {
+
                 "first_name": login_user.nama,
+
                 "phone": login_user.nomor_whatsapp
+
             },
 
             "item_details": [
 
                 {
+
                     "id": paket,
-                    "price": int(harga),
+
+                    "price": int(harga_bayar),
+
                     "quantity": 1,
+
                     "name": f"ChatSaku {paket}"
+
                 }
 
             ]
@@ -2104,18 +2128,30 @@ def create_payment():
         transaction = snap.create_transaction(parameter)
 
         payment = Payment(
+
             user_login_id=login_user.id,
+
+            promo_id=promo_id,
+
             order_id=order_id,
+
             paket=paket,
-            harga=harga,
+
+            harga_normal=harga_normal,
+
+            harga_bayar=harga_bayar,
+
             status="PENDING",
+
             midtrans_token=transaction["token"],
+
             midtrans_response=json.dumps(transaction)
+
         )
 
         db.session.add(payment)
-        db.session.commit()
 
+        db.session.commit()
         print("=" * 50)
         print("ORDER CREATED :", order_id)
         print("LOGIN USER :", login_user.id)
@@ -2267,7 +2303,7 @@ def notification():
 👤 Nama : {login_user.nama}
 📱 WhatsApp : {login_user.nomor_whatsapp}
 📦 Paket : {payment.paket}
-💰 Nominal : Rp {payment.harga:,}
+💰 Nominal : Rp {payment.harga_bayar:,}
 🧾 Order ID : {payment.order_id}
 
 Status : ✅ PAID
@@ -2373,6 +2409,62 @@ def cascade_reclosing(start_period):
         closing_month(
             periode
         )
+
+@app.route("/payment/pending")
+@jwt_required()
+def pending_payment():
+
+    user_id = get_jwt_identity()
+
+    payment = Payment.query.filter_by(
+        user_login_id=user_id,
+        status="PENDING"
+    ).order_by(
+        Payment.created_at.desc()
+    ).first()
+
+    if not payment:
+        return jsonify({
+            "success": True,
+            "payment": None
+        })
+
+    return jsonify({
+        "success": True,
+        "payment": {
+            "order_id": payment.order_id,
+            "paket": payment.paket,
+            "harga": payment.harga_bayar,
+            "status": payment.status,
+            "created_at": payment.created_at.strftime("%d-%m-%Y %H:%M")
+        }
+    })
+
+@app.route("/api/payment/history")
+@jwt_required()
+def payment_history():
+
+    user_id = get_jwt_identity()
+
+    payments = Payment.query.filter_by(
+        user_login_id=user_id
+    ).order_by(
+        Payment.created_at.desc()
+    ).all()
+
+    return jsonify({
+        "success": True,
+        "payments": [
+            {
+                "order_id": p.order_id,
+                "paket": p.paket,
+                "harga": p.harga,
+                "status": p.status,
+                "created_at": p.created_at.strftime("%d-%m-%Y %H:%M")
+            }
+            for p in payments
+        ]
+    })
 
 # =========================
 # TEST

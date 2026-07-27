@@ -652,9 +652,24 @@ class Payment(db.Model):
         nullable=False
     )
 
-    harga = db.Column(
+    harga_normal = db.Column(
         db.Integer,
         nullable=False
+    )
+
+    harga_bayar = db.Column(
+        db.Integer,
+        nullable=False
+    )
+
+    promo_id = db.Column(
+        db.Integer,
+        db.ForeignKey("promo_paket.id"),
+        nullable=True
+    )
+
+    promo = db.relationship(
+        "PromoPaket"
     )
 
     status = db.Column(
