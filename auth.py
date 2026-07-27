@@ -95,41 +95,28 @@ def register():
 @auth_bp.route("/login", methods=["POST"])
 def login():
 
-    data = request.get_json()
+    data = request.get_json() or {}
 
     email = data.get("email", "").strip().lower()
     password = data.get("password", "")
 
-
     if not email or not password:
 
         return jsonify({
-
             "success": False,
-
             "message": "Email dan password wajib diisi."
-
-        }),400
-
-
+        }), 400
 
     login_user = UserLogin.query.filter_by(
         email=email
     ).first()
 
-
-
-    if not login_user:
+    if login_user is None:
 
         return jsonify({
-
-            "success":False,
-
-            "message":"Email atau password salah"
-
-        }),401
-
-
+            "success": False,
+            "message": "Email atau password salah."
+        }), 401
 
     if not bcrypt.check_password_hash(
         login_user.password,
@@ -137,60 +124,43 @@ def login():
     ):
 
         return jsonify({
+            "success": False,
+            "message": "Email atau password salah."
+        }), 401
 
-            "success":False,
-
-            "message":"Email atau password salah"
-
-        }),401
-
-
-
-    # Ambil user ChatSaku
-
-    user = User.query.filter_by(
-        nomor_wa=login_user.nomor_whatsapp
-    ).first()
-
-
-
-    if not user:
+    # Pastikan user sudah memiliki nomor WhatsApp
+    if not login_user.nomor_whatsapp:
 
         return jsonify({
-
-            "success":False,
-
-            "message":"Akun ChatSaku belum terhubung."
-
-        }),404
-
-
+            "success": False,
+            "message": "Nomor WhatsApp belum dihubungkan."
+        }), 400
 
     token = create_access_token(
         identity=str(login_user.id)
     )
 
-
-
     return jsonify({
 
-        "success":True,
+        "success": True,
 
-        "message":"Login berhasil",
+        "message": "Login berhasil",
 
-        "token":token,
+        "token": token,
 
-        "user":{
+        "user": {
 
-            "id":user.id,
+            "id": login_user.id,
 
-            "nama":user.nama,
+            "nama": login_user.nama,
 
-            "nomor_wa":user.nomor_wa
+            "email": login_user.email,
+
+            "nomor_whatsapp": login_user.nomor_whatsapp
 
         }
 
-    })
+    }), 200
 
 @auth_bp.route("/profile")
 @jwt_required()

@@ -2042,17 +2042,6 @@ def create_payment():
                 "message": "User login tidak ditemukan."
             }),404
 
-        # Optional
-        user = User.query.filter_by(
-            nomor_wa=login_user.nomor_whatsapp
-        ).first()
-
-        if not user:
-            return jsonify({
-                "success": False,
-                "message": "User tidak ditemukan."
-            }),404
-
         HARGA_PAKET = {
             "STARTER": 10000,
             "PRO": 25000,
@@ -2117,17 +2106,18 @@ def create_payment():
             order_id=order_id,
             paket=paket,
             harga=harga,
-            status="PENDING"
+            status="PENDING",
+            midtrans_token=transaction["token"],
+            midtrans_response=json.dumps(transaction)
         )
 
-
         db.session.add(payment)
-
         db.session.commit()
 
         print("=" * 50)
         print("ORDER CREATED :", order_id)
-        print("USER :", user.id)
+        print("LOGIN USER :", login_user.id)
+        print("WA :", login_user.nomor_whatsapp)
         print("PAKET :", paket)
         print("HARGA :", harga)
 
