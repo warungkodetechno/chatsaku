@@ -2154,23 +2154,24 @@ def create_payment():
         db.session.commit()
         print("=" * 50)
         print("ORDER CREATED :", order_id)
-        print("LOGIN USER :", login_user.id)
-        print("WA :", login_user.nomor_whatsapp)
+        print("USER LOGIN :", login_user.id)
         print("PAKET :", paket)
-        print("HARGA :", harga)
+        print("HARGA NORMAL :", harga_normal)
+        print("HARGA BAYAR :", harga_bayar)
+
+        if promo:
+            print("PROMO :", promo.nama)
+        else:
+            print("PROMO : Tidak ada")
 
         return jsonify({
-
             "success": True,
-
             "token": transaction["token"],
-
             "redirect_url": transaction["redirect_url"],
-
             "order_id": order_id,
-
-            "harga": harga
-
+            "harga_normal": harga_normal,
+            "harga_bayar": harga_bayar,
+            "promo": promo.nama if promo else None
         })
 
     except Exception as e:
