@@ -2459,7 +2459,7 @@ def payment_history():
             {
                 "order_id": p.order_id,
                 "paket": p.paket,
-                "harga": p.harga,
+                "harga": p.harga_bayar,
                 "status": p.status,
                 "created_at": p.created_at.strftime("%d-%m-%Y %H:%M")
             }
