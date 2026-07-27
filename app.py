@@ -2031,12 +2031,9 @@ def create_payment():
         data = request.get_json()
 
         paket = data.get("paket", "").upper()
-        print("==========================")
-        print("AUTH HEADER:")
-        print(request.headers.get("Authorization"))
-        print("==========================")
+
         user_id = get_jwt_identity()
-        print("JWT USER ID:", user_id)
+
         login_user = UserLogin.query.get(user_id)
 
         if not login_user:
@@ -2044,6 +2041,11 @@ def create_payment():
                 "success": False,
                 "message": "User login tidak ditemukan."
             }),404
+
+        # Optional
+        user = User.query.filter_by(
+            nomor_wa=login_user.nomor_whatsapp
+        ).first()
 
         if not user:
             return jsonify({
