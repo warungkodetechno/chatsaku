@@ -629,19 +629,17 @@ class Payment(db.Model):
 
     __tablename__ = "payments"
 
-
     id = db.Column(
         db.Integer,
         primary_key=True
     )
 
-
-    user_id = db.Column(
+    # Relasi ke akun website
+    user_login_id = db.Column(
         db.Integer,
-        db.ForeignKey("users.id"),
+        db.ForeignKey("user_login.id"),
         nullable=False
     )
-
 
     order_id = db.Column(
         db.String(100),
@@ -649,47 +647,33 @@ class Payment(db.Model):
         nullable=False
     )
 
-
     paket = db.Column(
         db.String(50),
         nullable=False
     )
-
 
     harga = db.Column(
         db.Integer,
         nullable=False
     )
 
-
     status = db.Column(
         db.String(30),
         default="PENDING"
     )
 
+    midtrans_token = db.Column(db.String(255))
 
-    midtrans_token = db.Column(
-        db.String(255)
-    )
-
-
-    midtrans_response = db.Column(
-        db.Text
-    )
-
+    midtrans_response = db.Column(db.Text)
 
     created_at = db.Column(
         db.DateTime,
-        default=datetime.utcnow
+        default=now_jakarta
     )
 
+    paid_at = db.Column(db.DateTime)
 
-    paid_at = db.Column(
-        db.DateTime
-    )
-
-
-    user = db.relationship(
-        "User",
+    login_user = db.relationship(
+        "UserLogin",
         backref="payments"
     )

@@ -2037,7 +2037,13 @@ def create_payment():
         print("==========================")
         user_id = get_jwt_identity()
         print("JWT USER ID:", user_id)
-        user = User.query.get(user_id)
+        login_user = UserLogin.query.get(user_id)
+
+        if not login_user:
+            return jsonify({
+                "success": False,
+                "message": "User login tidak ditemukan."
+            }),404
 
         if not user:
             return jsonify({
@@ -2085,8 +2091,8 @@ def create_payment():
             },
 
             "customer_details": {
-                "first_name": user.nama,
-                "phone": user.nomor_wa
+                "first_name": login_user.nama,
+                "phone": login_user.nomor_whatsapp
             },
 
             "item_details": [
@@ -2105,17 +2111,11 @@ def create_payment():
         transaction = snap.create_transaction(parameter)
 
         payment = Payment(
-
+            user_login_id=login_user.id,
             order_id=order_id,
-
-            user_id=user.id,
-
             paket=paket,
-
             harga=harga,
-
             status="PENDING"
-
         )
 
 
@@ -2155,13 +2155,15 @@ def create_payment():
             "error": str(e)
 
         }), 500
+
+
 @app.route("/midtrans/notification", methods=["POST"])
 def notification():
 
-    print("=" * 50)
+    print("=" * 60)
     print("MIDTRANS NOTIFICATION")
     print(request.get_json())
-    print("=" * 50)
+    print("=" * 60)
 
     notif = request.get_json()
 
@@ -2175,46 +2177,121 @@ def notification():
         order_id=order_id
     ).first()
 
-    print("PAYMENT:", payment)
-
     if payment is None:
-        return "Not Found", 404
+        return "Not Found",404
 
-    if status in ["settlement", "capture"]:
+    if payment.status == "PAID":
+        return "OK",200
 
-        payment.status = "PAID"
-        payment.paid_at = sekarang()
+    if status not in [
+        "settlement",
+        "capture"
+    ]:
+        return "OK",200
 
-        user = User.query.get(payment.user_id)
+    payment.status="PAID"
+    payment.paid_at=sekarang()
 
-        if user:
-            user.paket = payment.paket
+    login_user = UserLogin.query.get(
+        payment.user_login_id
+    )
 
-        db.session.commit()
+    if not login_user:
 
-        try:
+        print("UserLogin tidak ditemukan")
 
-            pesan = f"""🎉 *Pembayaran ChatSaku Berhasil*
+        return "OK", 200
 
-    👤 Nama : {user.nama}
-    📱 WhatsApp : {user.nomor_wa}
-    📦 Paket : {payment.paket}
-    💰 Nominal : Rp {payment.harga:,}
-    🧾 Order ID : {payment.order_id}
+    # Cari user WhatsApp
+    user = User.query.filter_by(
+        nomor_wa=login_user.nomor_whatsapp
+    ).first()
 
-    Status : ✅ PAID
-    """
+    if user:
 
-            kirim_pesan(
-                ADMIN_NUMBER,
-                pesan
-            )
+        user.nama = login_user.nama
+        user.paket = payment.paket
+        user.aktif = True
 
-        except Exception as e:
+        if user.akhir_langganan and user.akhir_langganan >= sekarang().date():
 
-            print("Gagal mengirim notifikasi admin:", e)
+            user.akhir_langganan += timedelta(days=30)
 
-        print("PAYMENT UPDATED")
+        else:
+
+            user.akhir_langganan = sekarang().date() + timedelta(days=30)
+
+    else:
+
+        user = User(
+            nama=login_user.nama,
+            nomor_wa=login_user.nomor_whatsapp,
+            paket=payment.paket,
+            aktif=True,
+            akhir_langganan=sekarang().date()+timedelta(days=30)
+        )
+
+        db.session.add(user)
+
+    db.session.commit()
+
+    # ===============================
+    # WA ADMIN
+    # ===============================
+
+    try:
+
+        pesan_admin = f"""🎉 *Pembayaran ChatSaku Berhasil*
+
+👤 Nama : {login_user.nama}
+📱 WhatsApp : {login_user.nomor_whatsapp}
+📦 Paket : {payment.paket}
+💰 Nominal : Rp {payment.harga:,}
+🧾 Order ID : {payment.order_id}
+
+Status : ✅ PAID
+"""
+
+        kirim_pesan(
+            ADMIN_NUMBER,
+            pesan_admin
+        )
+
+    except Exception as e:
+
+        print("WA ADMIN ERROR :", e)
+
+    # ===============================
+    # WA CUSTOMER
+    # ===============================
+
+    try:
+
+        pesan_user = f"""🎉 *Pembayaran Berhasil*
+
+Halo *{login_user.nama}* 👋
+
+Terima kasih telah berlangganan ChatSaku.
+
+📦 Paket : *{payment.paket}*
+📅 Berlaku sampai :
+{user.akhir_langganan.strftime('%d-%m-%Y')}
+
+Silakan mulai menggunakan seluruh fitur paket Anda.
+
+Terima kasih 🙏
+"""
+
+        kirim_pesan(
+            login_user.nomor_whatsapp,
+            pesan_user
+        )
+
+    except Exception as e:
+
+        print("WA USER ERROR :", e)
+
+    print("PAYMENT UPDATED")
 
     return "OK", 200
 

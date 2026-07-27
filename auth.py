@@ -167,7 +167,7 @@ def login():
 
 
     token = create_access_token(
-        identity=str(user.id)
+        identity=str(login_user.id)
     )
 
 
