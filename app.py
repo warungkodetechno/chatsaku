@@ -2172,31 +2172,57 @@ def notification():
     ).first()
 
     if payment is None:
-        return "Not Found",404
+        return "Not Found", 404
 
+    # Jangan diproses dua kali
     if payment.status == "PAID":
-        return "OK",200
+        return "OK", 200
 
-    if status not in [
-        "settlement",
-        "capture"
-    ]:
-        return "OK",200
+    # ==========================
+    # STATUS YANG BELUM BERHASIL
+    # ==========================
 
-    payment.status="PAID"
-    payment.paid_at=sekarang()
+    if status == "pending":
+        payment.status = "PENDING"
+        db.session.commit()
+        return "OK", 200
+
+    if status == "expire":
+        payment.status = "EXPIRED"
+        db.session.commit()
+        return "OK", 200
+
+    if status == "cancel":
+        payment.status = "CANCELLED"
+        db.session.commit()
+        return "OK", 200
+
+    if status == "deny":
+        payment.status = "DENIED"
+        db.session.commit()
+        return "OK", 200
+
+    if status not in ["settlement", "capture"]:
+        payment.status = status.upper()
+        db.session.commit()
+        return "OK", 200
+
+    # ==========================
+    # PEMBAYARAN BERHASIL
+    # ==========================
+
+    payment.status = "PAID"
+    payment.paid_at = sekarang()
 
     login_user = UserLogin.query.get(
         payment.user_login_id
     )
 
     if not login_user:
-
         print("UserLogin tidak ditemukan")
-
+        db.session.commit()
         return "OK", 200
 
-    # Cari user WhatsApp
     user = User.query.filter_by(
         nomor_wa=login_user.nomor_whatsapp
     ).first()
@@ -2222,16 +2248,16 @@ def notification():
             nomor_wa=login_user.nomor_whatsapp,
             paket=payment.paket,
             aktif=True,
-            akhir_langganan=sekarang().date()+timedelta(days=30)
+            akhir_langganan=sekarang().date() + timedelta(days=30)
         )
 
         db.session.add(user)
 
     db.session.commit()
 
-    # ===============================
+    # ==========================
     # WA ADMIN
-    # ===============================
+    # ==========================
 
     try:
 
@@ -2252,12 +2278,11 @@ Status : ✅ PAID
         )
 
     except Exception as e:
+        print("WA ADMIN ERROR:", e)
 
-        print("WA ADMIN ERROR :", e)
-
-    # ===============================
+    # ==========================
     # WA CUSTOMER
-    # ===============================
+    # ==========================
 
     try:
 
@@ -2282,8 +2307,7 @@ Terima kasih 🙏
         )
 
     except Exception as e:
-
-        print("WA USER ERROR :", e)
+        print("WA USER ERROR:", e)
 
     print("PAYMENT UPDATED")
 
