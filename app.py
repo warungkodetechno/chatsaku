@@ -2296,7 +2296,7 @@ def notification():
     # ==========================
     # WA ADMIN
     # ==========================
-
+    print("Kirim WA Admin ke :", ADMIN_NUMBER)
     try:
 
         pesan_admin = f"""🎉 *Pembayaran ChatSaku Berhasil*
@@ -2321,7 +2321,7 @@ Status : ✅ PAID
     # ==========================
     # WA CUSTOMER
     # ==========================
-
+    print("Kirim WA User ke :", login_user.nomor_whatsapp)
     try:
 
         pesan_user = f"""🎉 *Pembayaran Berhasil*
