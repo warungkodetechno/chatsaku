@@ -2310,7 +2310,7 @@ def notification():
 Status : ✅ PAID
 """
 
-        kirim_pesan(
+        kirim_wa(
             ADMIN_NUMBER,
             pesan_admin
         )
@@ -2339,7 +2339,7 @@ Silakan mulai menggunakan seluruh fitur paket Anda.
 Terima kasih 🙏
 """
 
-        kirim_pesan(
+        kirim_wa(
             login_user.nomor_whatsapp,
             pesan_user
         )
