@@ -17,7 +17,7 @@
         href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Nunito:wght@400;500;600;700&display=swap"
         rel="stylesheet">
 
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style/styler.css">
     <style>
         :root {
 
@@ -613,9 +613,11 @@
 
                     backdrop-filter: blur(18px);
 
-                    padding: 22px 30px;
-
                     border-bottom: 1px solid rgba(0, 0, 0, .05);
+
+                    width: 100%;
+                    padding: 20px 32px;
+                    box-sizing: border-box;
 
                 }
 
@@ -623,9 +625,11 @@
 
                     display: flex;
 
+                    align-items: center;
+
                     justify-content: space-between;
 
-                    align-items: center;
+                    gap: 24px;
 
                     margin-bottom: 20px;
 
@@ -638,6 +642,8 @@
                     align-items: center;
 
                     gap: 18px;
+
+                    flex: 1;
 
                 }
 
@@ -694,7 +700,7 @@
                 }
 
                 .search-wrapper {
-
+                    max-width: 550px;
                     height: 58px;
 
                     background: #f5f8f6;
@@ -2216,15 +2222,11 @@
         </main>
         <style>
             .content {
-
                 flex: 1;
-
                 display: flex;
-
                 flex-direction: column;
-
-                background: #f7faf8;
-
+                min-width: 0;
+                background: #f5f9f6;
             }
 
 

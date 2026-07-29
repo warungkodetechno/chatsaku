@@ -1,0 +1,275 @@
+:root {
+
+            --green: #25D366;
+            --green2: #1db954;
+            --green3: #15803d;
+            --white: #ffffff;
+            --text: #143126;
+
+        }
+
+        * {
+
+            margin: 0;
+
+            padding: 0;
+
+            box-sizing: border-box;
+
+            font-family: 'Nunito', sans-serif;
+
+        }
+
+        body {
+
+            background: #edf7f0;
+
+        }
+
+        .layout {
+
+            display: flex;
+
+            min-height: 100vh;
+
+        }
+
+        .sidebar {
+
+            width: 255px;
+
+            background: linear-gradient(180deg, #25D366, #20bf60, #169b4c);
+
+            padding: 22px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            color: white;
+
+            box-shadow: 0 18px 45px rgba(0, 0, 0, .12);
+
+        }
+
+        .sidebar-logo {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 15px;
+
+            margin-bottom: 35px;
+
+        }
+
+        .logo-icon {
+
+            width: 58px;
+
+            height: 58px;
+
+            border-radius: 18px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            background: rgba(255, 255, 255, .18);
+
+            backdrop-filter: blur(10px);
+
+            font-size: 28px;
+
+        }
+
+        .sidebar-logo h4 {
+
+            margin: 0;
+
+            font-family: 'Baloo 2';
+
+            font-size: 24px;
+
+        }
+
+        .sidebar-logo span {
+
+            font-size: 12px;
+
+            opacity: .9;
+
+        }
+
+        .menu-title {
+
+            margin: 18px 0 10px;
+
+            font-size: 11px;
+
+            letter-spacing: 2px;
+
+            font-weight: 700;
+
+            opacity: .75;
+
+        }
+
+        .sidebar-menu {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 8px;
+
+        }
+
+        .sidebar-menu a {
+
+            height: 50px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 14px;
+
+            padding: 0 14px;
+
+            border-radius: 16px;
+
+            text-decoration: none;
+
+            color: white;
+
+            transition: .25s;
+
+            font-weight: 600;
+
+            cursor: pointer;
+
+        }
+
+        .sidebar-menu a:hover {
+
+            background: rgba(255, 255, 255, .12);
+
+            transform: translateX(4px);
+
+        }
+
+        .sidebar-menu a.active {
+
+            background: white;
+
+            color: #17994d;
+
+            box-shadow: 0 12px 25px rgba(0, 0, 0, .10);
+
+        }
+
+        .icon {
+
+            width: 36px;
+
+            height: 36px;
+
+            border-radius: 12px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            background: rgba(255, 255, 255, .18);
+
+            transition: .25s;
+
+        }
+
+        .active .icon {
+
+            background: #e9fff0;
+
+        }
+
+        .sidebar-footer {
+
+            margin-top: auto;
+
+        }
+
+        .status-card {
+
+            background: rgba(255, 255, 255, .14);
+
+            padding: 16px;
+
+            border-radius: 20px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            backdrop-filter: blur(12px);
+
+        }
+
+        .status-dot {
+
+            width: 12px;
+
+            height: 12px;
+
+            border-radius: 50%;
+
+            background: #8fff9d;
+
+            box-shadow: 0 0 12px #8fff9d;
+
+        }
+
+        .status-card strong {
+
+            display: block;
+
+            font-size: 14px;
+
+        }
+
+        .status-card small {
+
+            opacity: .9;
+
+        }
+
+        .content {
+
+            flex: 1;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+        }
+
+        .coming {
+
+            font-size: 40px;
+
+            font-weight: 700;
+
+            color: #15803d;
+
+            font-family: 'Baloo 2';
+
+        }
