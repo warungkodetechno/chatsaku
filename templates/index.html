@@ -498,13 +498,294 @@
 
         <main class="content">
 
-            <div class="coming">
+            <header class="topbar">
 
-                Dashboard Coming Soon
+                <div class="left-side">
 
-            </div>
+                    <button class="menu-btn">
+
+                        <i class="bi bi-list"></i>
+
+                    </button>
+
+                    <div class="search-box">
+
+                        <i class="bi bi-search"></i>
+
+                        <input type="text" placeholder="Cari transaksi, budget, AI Insight...">
+
+                    </div>
+
+                </div>
+
+                <div class="right-side">
+
+                    <button class="icon-btn">
+
+                        <i class="bi bi-bell"></i>
+
+                        <span class="badge-dot"></span>
+
+                    </button>
+
+                    <button class="icon-btn">
+
+                        <i class="bi bi-moon-stars"></i>
+
+                    </button>
+
+                    <div class="profile-card">
+
+                        <img src="https://ui-avatars.com/api/?name=ChatSaku&background=25D366&color=fff">
+
+                        <div>
+
+                            <strong>ChatSaku</strong>
+
+                            <small>Premium User</small>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </header>
+
+            <section class="dashboard-body">
+
+                <div class="coming">
+
+                    Dashboard Coming Soon
+
+                </div>
+
+            </section>
 
         </main>
+        <style>
+            .content {
+
+                flex: 1;
+
+                display: flex;
+
+                flex-direction: column;
+
+                background: #f7faf8;
+
+            }
+
+            .topbar {
+
+                height: 78px;
+
+                background: white;
+
+                display: flex;
+
+                justify-content: space-between;
+
+                align-items: center;
+
+                padding: 0 30px;
+
+                border-bottom: 1px solid #edf2f7;
+
+                position: sticky;
+
+                top: 0;
+
+                z-index: 99;
+
+            }
+
+            .left-side {
+
+                display: flex;
+
+                align-items: center;
+
+                gap: 18px;
+
+            }
+
+            .menu-btn {
+
+                width: 44px;
+
+                height: 44px;
+
+                border: none;
+
+                border-radius: 14px;
+
+                background: #eefbf2;
+
+                color: #17994d;
+
+                font-size: 20px;
+
+                transition: .25s;
+
+            }
+
+            .menu-btn:hover {
+
+                transform: rotate(90deg);
+
+            }
+
+            .search-box {
+
+                width: 420px;
+
+                height: 46px;
+
+                background: #f7faf8;
+
+                border-radius: 16px;
+
+                display: flex;
+
+                align-items: center;
+
+                padding: 0 18px;
+
+                gap: 12px;
+
+                border: 1px solid #e5ece7;
+
+            }
+
+            .search-box input {
+
+                flex: 1;
+
+                border: none;
+
+                background: transparent;
+
+                outline: none;
+
+            }
+
+            .search-box i {
+
+                color: #94a3b8;
+
+            }
+
+            .right-side {
+
+                display: flex;
+
+                align-items: center;
+
+                gap: 16px;
+
+            }
+
+            .icon-btn {
+
+                width: 46px;
+
+                height: 46px;
+
+                border: none;
+
+                background: white;
+
+                border-radius: 16px;
+
+                box-shadow: 0 8px 20px rgba(0, 0, 0, .05);
+
+                position: relative;
+
+                transition: .25s;
+
+            }
+
+            .icon-btn:hover {
+
+                transform: translateY(-3px);
+
+            }
+
+            .badge-dot {
+
+                width: 8px;
+
+                height: 8px;
+
+                border-radius: 50%;
+
+                background: #ef4444;
+
+                position: absolute;
+
+                right: 12px;
+
+                top: 12px;
+
+            }
+
+            .profile-card {
+
+                display: flex;
+
+                align-items: center;
+
+                gap: 12px;
+
+                background: white;
+
+                border-radius: 18px;
+
+                padding: 8px 16px;
+
+                box-shadow: 0 8px 24px rgba(0, 0, 0, .05);
+
+            }
+
+            .profile-card img {
+
+                width: 46px;
+
+                height: 46px;
+
+                border-radius: 50%;
+
+            }
+
+            .profile-card strong {
+
+                display: block;
+
+                color: #143126;
+
+            }
+
+            .profile-card small {
+
+                color: #6b7280;
+
+            }
+
+            .dashboard-body {
+
+                flex: 1;
+
+                display: flex;
+
+                justify-content: center;
+
+                align-items: center;
+
+                padding: 40px;
+
+            }
+        </style>
 
     </div>
 
