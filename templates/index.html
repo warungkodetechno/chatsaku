@@ -2475,10 +2475,125 @@
                 }
 
             }
+
+            @media(max-width:1200px) {
+
+                .sidebar {
+
+                    width: 86px;
+
+                }
+
+                .sidebar .menu-text,
+                .sidebar .menu-title,
+                .sidebar-logo div,
+                .sidebar-footer {
+
+                    display: none;
+
+                }
+
+                .content {
+
+                    margin-left: 86px;
+
+                }
+
+            }
+
+            @media(max-width:992px) {
+
+                .sidebar {
+
+                    position: fixed;
+
+                    left: -100%;
+
+                    transition: .35s;
+
+                }
+
+                .sidebar.show {
+
+                    left: 0;
+
+                }
+
+                .content {
+
+                    margin-left: 0;
+
+                }
+
+            }
+
+            @media(max-width:992px) {
+
+                .hero {
+
+                    grid-template-columns: 1fr;
+
+                }
+
+            }
+
+            .overview-grid {
+
+                display: grid;
+
+                grid-template-columns:
+
+                    repeat(auto-fit, minmax(260px, 1fr));
+
+            }
+
+            .analytics-grid {
+
+                grid-template-columns:
+
+                    repeat(auto-fit, minmax(350px, 1fr));
+
+            }
+
+            .fab {
+
+                position: fixed;
+
+                bottom: 22px;
+
+                right: 22px;
+
+                width: 64px;
+
+                height: 64px;
+
+                border-radius: 50%;
+
+                background: linear-gradient(135deg,
+                        #25D366,
+                        #169b4c);
+
+                box-shadow:
+
+                    0 18px 40px rgba(37, 211, 102, .35);
+
+            }
         </style>
 
     </div>
     <script>
+        const menu = document.querySelector(".menu-btn");
+
+        const sidebar = document.querySelector(".sidebar");
+
+        menu.onclick = () => {
+
+            sidebar.classList.toggle("show");
+
+        }
+    </script>
+    <script>
+
         const ctx = document.getElementById("cashflowChart");
 
         new Chart(ctx, {
