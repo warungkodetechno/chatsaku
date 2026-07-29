@@ -1,2410 +1,2271 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-
-    <meta charset="UTF-8">
-
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-
-    <title>ChatSaku Dashboard</title>
+    <title>Kas WhatsApp Dashboard</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link
-        href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Nunito:wght@400;500;600;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <link rel="stylesheet" href="style/styler.css">
     <style>
         :root {
-
-            --green: #25D366;
-            --green2: #1db954;
-            --green3: #15803d;
-            --white: #ffffff;
-            --text: #143126;
-
+            --primary: #25D366;
+            --primary-dark: #128C7E;
+            --primary-deep: #075E54;
+            --success: #16a34a;
+            --danger: #ef4444;
+            --bg: #eafaf1;
+            --border: #d9f2e6;
+            --text: #1f2b23;
+            --muted: #6b8a7a;
         }
 
         * {
-
-            margin: 0;
-
-            padding: 0;
-
-            box-sizing: border-box;
-
-            font-family: 'Nunito', sans-serif;
-
+            font-family: 'Nunito', 'Baloo 2', sans-serif;
         }
 
         body {
-
-            background: #edf7f0;
-
-        }
-
-        .layout {
-
-            display: flex;
-
-            min-height: 100vh;
-
-        }
-
-        .sidebar {
-
-            width: 255px;
-
-            background: linear-gradient(180deg, #25D366, #20bf60, #169b4c);
-
-            padding: 22px;
-
-            display: flex;
-
-            flex-direction: column;
-
-            color: white;
-
-            box-shadow: 0 18px 45px rgba(0, 0, 0, .12);
-
-        }
-
-        .sidebar-logo {
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 15px;
-
-            margin-bottom: 35px;
-
-        }
-
-        .logo-icon {
-
-            width: 58px;
-
-            height: 58px;
-
-            border-radius: 18px;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            background: rgba(255, 255, 255, .18);
-
-            backdrop-filter: blur(10px);
-
-            font-size: 28px;
-
-        }
-
-        .sidebar-logo h4 {
-
-            margin: 0;
-
-            font-family: 'Baloo 2';
-
-            font-size: 24px;
-
-        }
-
-        .sidebar-logo span {
-
-            font-size: 12px;
-
-            opacity: .9;
-
-        }
-
-        .menu-title {
-
-            margin: 18px 0 10px;
-
-            font-size: 11px;
-
-            letter-spacing: 2px;
-
-            font-weight: 700;
-
-            opacity: .75;
-
-        }
-
-        .sidebar-menu {
-
-            display: flex;
-
-            flex-direction: column;
-
-            gap: 8px;
-
-        }
-
-        .sidebar-menu a {
-
-            height: 50px;
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 14px;
-
-            padding: 0 14px;
-
-            border-radius: 16px;
-
-            text-decoration: none;
-
-            color: white;
-
-            transition: .25s;
-
-            font-weight: 600;
-
-            cursor: pointer;
-
-        }
-
-        .sidebar-menu a:hover {
-
-            background: rgba(255, 255, 255, .12);
-
-            transform: translateX(4px);
-
-        }
-
-        .sidebar-menu a.active {
-
-            background: white;
-
-            color: #17994d;
-
-            box-shadow: 0 12px 25px rgba(0, 0, 0, .10);
-
-        }
-
-        .icon {
-
-            width: 36px;
-
-            height: 36px;
-
-            border-radius: 12px;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            background: rgba(255, 255, 255, .18);
-
-            transition: .25s;
-
-        }
-
-        .active .icon {
-
-            background: #e9fff0;
-
-        }
-
-        .sidebar-footer {
-
-            margin-top: auto;
-
-        }
-
-        .status-card {
-
-            background: rgba(255, 255, 255, .14);
-
-            padding: 16px;
-
-            border-radius: 20px;
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 12px;
-
-            backdrop-filter: blur(12px);
-
-        }
-
-        .status-dot {
-
-            width: 12px;
-
-            height: 12px;
-
-            border-radius: 50%;
-
-            background: #8fff9d;
-
-            box-shadow: 0 0 12px #8fff9d;
-
-        }
-
-        .status-card strong {
-
-            display: block;
-
+            background: linear-gradient(180deg, #e8f9ee 0%, #f3fdf6 40%, #eafaf1 100%);
+            background-attachment: fixed;
+            color: var(--text);
             font-size: 14px;
-
         }
 
-        .status-card small {
-
-            opacity: .9;
-
+        .container {
+            max-width: 1400px;
         }
 
-        .content {
+        /* HEADER */
 
-            flex: 1;
-
+        .page-header {
             display: flex;
-
+            justify-content: space-between;
             align-items: center;
-
-            justify-content: center;
-
+            margin-bottom: 20px;
         }
 
-        .coming {
-
-            font-size: 40px;
-
+        .page-title {
+            font-family: 'Baloo 2', sans-serif;
+            font-size: 26px;
             font-weight: 700;
+            margin-bottom: 2px;
+            color: var(--primary-deep);
+        }
 
-            color: #15803d;
+        .page-subtitle {
+            color: var(--muted);
+            font-size: 13px;
+        }
 
-            font-family: 'Baloo 2';
+        /* METRIC */
+
+        .metric-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 18px;
+            box-shadow: 0 4px 16px rgba(7, 94, 84, .07);
+            height: 100%;
+            transition: .2s;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(37, 211, 102, .15);
+        }
+
+        .metric-label {
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .metric-value {
+            font-family: 'Baloo 2', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        /* CARD */
+
+        .content-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            box-shadow: 0 4px 16px rgba(7, 94, 84, .07);
+            overflow: hidden;
+        }
+
+        .card-header-modern {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            background: white;
+        }
+
+        .card-title-modern {
+            font-family: 'Baloo 2', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            margin: 0;
+            color: var(--primary-deep);
+        }
+
+        /* TABLE */
+
+        .table {
+            margin: 0;
+        }
+
+        .table thead th {
+            background: #f0fbf4;
+            color: var(--primary-dark);
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .4px;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        .table td {
+            vertical-align: middle;
+            padding: 14px;
+        }
+
+        .table tbody tr:hover {
+            background: #f3fdf6;
+        }
+
+        .amount {
+            font-weight: 600;
+        }
+
+        .badge {
+            border-radius: 999px;
+            padding: 6px 10px;
+            font-size: 11px;
+        }
+
+        /* CHART */
+
+        .chart-wrapper {
+            padding: 18px;
+        }
+
+        .chart-wrapper canvas {
+            max-height: 320px;
+        }
+
+        /* PAGINATION */
+
+        .pagination-wrapper {
+            border-top: 1px solid var(--border);
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .pagination-info {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .pagination {
+            margin: 0;
+        }
+
+        .page-link {
+            border: none;
+            border-radius: 10px;
+            min-width: 38px;
+            text-align: center;
+            margin: 0 2px;
+            color: #374151;
+        }
+
+        .page-link:hover {
+            background: #e6f9ed;
+            color: var(--primary-dark);
+        }
+
+        .page-item.active .page-link {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .form-label {
+            margin-bottom: .35rem;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .filter-toolbar .btn {
+            height: 38px;
+        }
+
+        /* MOBILE */
+
+        @media(max-width:768px) {
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .metric-value {
+                font-size: 20px;
+            }
+
+            .pagination-wrapper {
+                flex-direction: column;
+            }
 
         }
     </style>
-
 </head>
 
 <body>
 
-    <div class="layout">
+    <div class="container py-4">
 
-        <aside class="sidebar">
+        <!-- HEADER -->
+        <div class="hero-header">
 
-            <!-- LOGO -->
+            <div class="hero-left">
 
-            <div class="sidebar-logo">
-
-                <div class="logo-icon">
-
-                    <i class="bi bi-whatsapp"></i>
-
+                <div class="hero-icon">
+                    <i class="bi bi-wallet2"></i>
                 </div>
 
                 <div>
 
-                    <h4>ChatSaku</h4>
-
-                    <span>Smart Finance</span>
-
-                </div>
-
-            </div>
-
-            <!-- MAIN -->
-
-            <div class="menu-title">
-
-                MAIN
-
-            </div>
-
-            <nav class="sidebar-menu">
-
-                <a class="active">
-
-                    <div class="icon">
-
-                        <i class="bi bi-house"></i>
-
+                    <div class="hero-title">
+                        ChatSaku Finance Assistant
                     </div>
 
-                    Dashboard
-
-                </a>
-
-                <a>
-
-                    <div class="icon">
-
-                        <i class="bi bi-wallet2"></i>
-
-                    </div>
-
-                    Saldo
-
-                </a>
-
-                <a>
-
-                    <div class="icon">
-
-                        <i class="bi bi-graph-up"></i>
-
-                    </div>
-
-                    Cashflow
-
-                </a>
-
-            </nav>
-
-            <div class="menu-title">
-
-                KEUANGAN
-
-            </div>
-
-            <nav class="sidebar-menu">
-
-                <a>
-
-                    <div class="icon">
-
-                        <i class="bi bi-bullseye"></i>
-
-                    </div>
-
-                    Target
-
-                </a>
-
-                <a>
-
-                    <div class="icon">
-
-                        <i class="bi bi-pie-chart"></i>
-
-                    </div>
-
-                    Budget
-
-                </a>
-
-                <a>
-
-                    <div class="icon">
-
-                        <i class="bi bi-bell"></i>
-
-                    </div>
-
-                    Reminder
-
-                </a>
-
-                <a>
-
-                    <div class="icon">
-
-                        <i class="bi bi-person-dash"></i>
-
-                    </div>
-
-                    Hutang
-
-                </a>
-
-                <a>
-
-                    <div class="icon">
-
-                        <i class="bi bi-person-check"></i>
-
-                    </div>
-
-                    Piutang
-
-                </a>
-
-            </nav>
-
-            <div class="menu-title">
-
-                AI
-
-            </div>
-
-            <nav class="sidebar-menu">
-
-                <a>
-
-                    <div class="icon">
-
-                        <i class="bi bi-stars"></i>
-
-                    </div>
-
-                    AI Insight
-
-                </a>
-
-                <a>
-
-                    <div class="icon">
-
-                        <i class="bi bi-clock-history"></i>
-
-                    </div>
-
-                    Riwayat
-
-                </a>
-
-            </nav>
-
-            <div class="sidebar-footer">
-
-                <div class="status-card">
-
-                    <div class="status-dot"></div>
-
-                    <div>
-
-                        <strong>WhatsApp Connected</strong>
-
-                        <small>Premium Plan</small>
-
+                    <div class="hero-subtitle">
+                        Kelola pemasukan, pengeluaran, saldo, dan laporan keuangan secara otomatis melalui WhatsApp.
                     </div>
 
                 </div>
 
             </div>
 
-        </aside>
+            <div class="hero-right">
 
-        <main class="content">
+                <span class="hero-badge">
+                    <i class="bi bi-whatsapp"></i>
+                    WhatsApp Connected
+                </span>
 
-            <header class="topbar">
+            </div>
 
-                <div class="topbar-row">
+        </div>
+        <style>
+            /* ===========================
+            HERO HEADER
+            =========================== */
 
-                    <div class="topbar-left">
+            .hero-header {
 
-                        <button class="menu-btn">
-                            <i class="bi bi-list"></i>
-                        </button>
+                background: linear-gradient(135deg, #128C7E, #25D366 65%, #34e07a);
 
-                        <div class="page-title">
+                border-radius: 26px;
 
-                            <h2>Dashboard</h2>
+                padding: 28px 32px;
 
-                            <small>Selamat datang kembali 👋</small>
+                color: #fff;
 
-                        </div>
+                display: flex;
 
-                    </div>
+                justify-content: space-between;
 
-                    <div class="topbar-right">
+                align-items: center;
 
-                        <button class="circle-btn">
-                            <i class="bi bi-bell"></i>
-                        </button>
+                margin-bottom: 28px;
 
-                        <button class="circle-btn">
-                            <i class="bi bi-gear"></i>
-                        </button>
+                box-shadow: 0 15px 35px rgba(18, 140, 126, .25);
 
-                        <div class="profile-card">
+                position: relative;
 
-                            <img src="https://ui-avatars.com/api/?name=ChatSaku&background=25D366&color=fff">
+                overflow: hidden;
 
-                            <div>
+            }
 
-                                <strong>Bambang</strong>
+            .hero-header::after {
 
-                                <small>Premium User</small>
+                content: "";
 
-                            </div>
+                position: absolute;
 
-                        </div>
+                right: -40px;
 
-                    </div>
+                top: -60px;
 
-                </div>
+                width: 200px;
 
-                <div class="search-wrapper">
+                height: 200px;
 
-                    <i class="bi bi-search"></i>
+                background: rgba(255, 255, 255, .08);
 
-                    <input type="text" placeholder="Cari transaksi, kategori, AI Insight...">
+                border-radius: 50%;
 
-                </div>
+            }
 
-            </header>
-            <style>
-                .profile-card {
+            .hero-header::before {
 
-                    display: flex;
+                content: "";
 
-                    align-items: center;
+                position: absolute;
 
-                    gap: 14px;
+                right: 60px;
 
-                    padding: 8px 10px 8px 8px;
+                bottom: -70px;
 
-                    border-radius: 18px;
+                width: 140px;
 
-                    background: white;
+                height: 140px;
 
-                    box-shadow: 0 10px 25px rgba(15, 23, 42, .06);
+                background: rgba(255, 255, 255, .07);
 
-                }
+                border-radius: 50%;
 
-                .profile-card img {
+            }
 
-                    width: 50px;
+            .hero-left {
 
-                    height: 50px;
+                display: flex;
 
-                    border-radius: 50%;
+                align-items: center;
 
-                }
+                gap: 20px;
 
-                .profile-card strong {
+            }
 
-                    display: block;
+            .hero-icon {
 
-                    font-size: 15px;
+                width: 68px;
 
-                }
+                height: 68px;
 
-                .profile-card small {
+                border-radius: 20px;
 
-                    color: #6b7280;
+                background: rgba(255, 255, 255, .22);
 
-                }
-            </style>
+                display: flex;
 
+                align-items: center;
 
-            <style>
-                .topbar {
+                justify-content: center;
 
-                    position: sticky;
+                font-size: 30px;
 
-                    top: 0;
+                backdrop-filter: blur(10px);
 
-                    z-index: 100;
+                box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .25);
 
-                    background: rgba(255, 255, 255, .82);
+                position: relative;
 
-                    backdrop-filter: blur(18px);
+                z-index: 1;
 
-                    border-bottom: 1px solid rgba(0, 0, 0, .05);
+            }
 
-                    width: 100%;
-                    padding: 20px 32px;
-                    box-sizing: border-box;
+            .hero-title {
 
-                }
+                font-family: 'Baloo 2', sans-serif;
 
-                .topbar-row {
+                font-size: 30px;
 
-                    display: flex;
+                font-weight: 800;
 
-                    align-items: center;
+                line-height: 1.1;
 
-                    justify-content: space-between;
+                letter-spacing: -.3px;
 
-                    gap: 24px;
+                position: relative;
 
-                    margin-bottom: 20px;
+                z-index: 1;
 
-                }
+            }
 
-                .topbar-left {
+            .hero-subtitle {
 
-                    display: flex;
+                margin-top: 6px;
 
-                    align-items: center;
+                color: rgba(255, 255, 255, .88);
 
-                    gap: 18px;
+                font-size: 14px;
 
-                    flex: 1;
+                max-width: 620px;
 
-                }
+            }
 
-                .page-title h2 {
+            .hero-badge {
 
-                    margin: 0;
+                display: inline-flex;
 
-                    font-size: 28px;
+                align-items: center;
 
-                    font-weight: 800;
+                gap: 8px;
 
-                    color: #143126;
+                padding: 10px 18px;
 
-                }
+                border-radius: 999px;
 
-                .page-title small {
+                background: rgba(255, 255, 255, .92);
 
-                    color: #6b7280;
+                border: 1px solid rgba(255, 255, 255, .5);
 
-                }
+                font-size: 13px;
 
-                .topbar-right {
+                font-weight: 700;
 
-                    display: flex;
+                color: var(--primary-deep);
 
-                    align-items: center;
+                backdrop-filter: blur(8px);
 
-                    gap: 14px;
+                box-shadow: 0 6px 16px rgba(0, 0, 0, .1);
 
-                }
+                position: relative;
 
-                .circle-btn {
+                z-index: 1;
 
-                    width: 48px;
+            }
 
-                    height: 48px;
+            .hero-badge i {
 
-                    border: none;
+                font-size: 16px;
 
-                    border-radius: 16px;
+                color: #25D366;
 
-                    background: white;
+            }
 
-                    box-shadow: 0 10px 25px rgba(15, 23, 42, .06);
+            /* Mobile */
 
-                    transition: .25s;
+            @media(max-width:768px) {
 
-                }
+                .hero-header {
 
-                .circle-btn:hover {
-
-                    transform: translateY(-3px);
-
-                }
-
-                .search-wrapper {
-                    max-width: 550px;
-                    height: 58px;
-
-                    background: #f5f8f6;
-
-                    border-radius: 18px;
-
-                    display: flex;
-
-                    align-items: center;
-
-                    padding: 0 22px;
-
-                    gap: 15px;
-
-                    border: 1px solid #e8efe9;
-
-                }
-
-                .search-wrapper input {
-
-                    width: 100%;
-
-                    border: none;
-
-                    outline: none;
-
-                    background: transparent;
-
-                    font-size: 15px;
-
-                }
-
-                .search-wrapper i {
-
-                    color: #94a3b8;
-
-                    font-size: 20px;
-
-                }
-            </style>
-
-            <section class="dashboard-body">
-
-                <section class="hero-card">
-
-                    <div class="hero-top">
-
-                        <div>
-
-                            <span class="hero-badge">
-
-                                👋 Selamat Datang
-
-                            </span>
-
-                            <h1>
-
-                                Hai, Bambang
-
-                            </h1>
-
-                            <p>
-
-                                Kelola seluruh keuangan melalui WhatsApp dengan lebih mudah,
-                                cepat, dan rapi.
-
-                            </p>
-
-                        </div>
-
-                        <div class="today">
-
-                            29 Juli 2026
-
-                        </div>
-
-                    </div>
-
-                    <div class="hero-action">
-
-                        <button class="btn-primary">
-
-                            <i class="bi bi-plus-circle"></i>
-
-                            Catat Transaksi
-
-                        </button>
-
-                        <button class="btn-outline">
-
-                            <i class="bi bi-bar-chart"></i>
-
-                            Dashboard
-
-                        </button>
-
-                        <button class="btn-outline">
-
-                            <i class="bi bi-stars"></i>
-
-                            AI Insight
-
-                        </button>
-
-                    </div>
-
-                    <div class="summary-grid">
-
-                        <div class="summary-card big">
-
-                            <small>Saldo Saat Ini</small>
-
-                            <h2>Rp12.540.000</h2>
-
-                        </div>
-
-                        <div class="summary-card">
-
-                            <small>Pemasukan</small>
-
-                            <h3>Rp2.400.000</h3>
-
-                        </div>
-
-                        <div class="summary-card">
-
-                            <small>Pengeluaran</small>
-
-                            <h3>Rp1.120.000</h3>
-
-                        </div>
-
-                        <div class="summary-card">
-
-                            <small>Cashflow</small>
-
-                            <h3 style="color:#16a34a">
-
-                                +Rp1.280.000
-
-                            </h3>
-
-                        </div>
-
-                    </div>
-
-                </section>
-
-            </section>
-            <style>
-                .dashboard-body {
-
-                    padding: 30px;
-
-                }
-
-                .hero-card {
-
-                    background: white;
-
-                    border-radius: 30px;
-
-                    padding: 35px;
-
-                    box-shadow: 0 20px 45px rgba(15, 23, 42, .06);
-
-                }
-
-                .hero-top {
-
-                    display: flex;
-
-                    justify-content: space-between;
+                    flex-direction: column;
 
                     align-items: flex-start;
 
-                }
-
-                .hero-badge {
-
-                    display: inline-block;
-
-                    padding: 8px 18px;
-
-                    border-radius: 50px;
-
-                    background: #eafcf0;
-
-                    color: #17994d;
-
-                    font-weight: 700;
-
-                    margin-bottom: 16px;
-
-                }
-
-                .hero-top h1 {
-
-                    font-size: 38px;
-
-                    font-weight: 800;
-
-                    color: #163c2c;
-
-                    margin-bottom: 10px;
-
-                }
-
-                .hero-top p {
-
-                    color: #64748b;
-
-                    max-width: 520px;
-
-                }
-
-                .today {
-
-                    color: #64748b;
-
-                    font-weight: 700;
-
-                }
-
-                .hero-action {
-
-                    display: flex;
-
-                    gap: 14px;
-
-                    margin: 30px 0;
-
-                }
-
-                .btn-primary {
-
-                    background: #25D366;
-
-                    color: white;
-
-                    border: none;
-
-                    border-radius: 16px;
-
-                    padding: 13px 22px;
-
-                    font-weight: 700;
-
-                }
-
-                .btn-outline {
-
-                    border: 1px solid #dce7df;
-
-                    background: white;
-
-                    border-radius: 16px;
-
-                    padding: 13px 22px;
-
-                    font-weight: 700;
-
-                }
-
-                .summary-grid {
-
-                    display: grid;
-
-                    grid-template-columns: 2fr 1fr 1fr 1fr;
-
                     gap: 18px;
-
-                }
-
-                .summary-card {
-
-                    background: #f8fbf9;
-
-                    border-radius: 20px;
 
                     padding: 22px;
 
                 }
 
-                .summary-card.big {
+                .hero-left {
 
-                    background: linear-gradient(135deg, #25D366, #17994d);
-
-                    color: white;
+                    align-items: flex-start;
 
                 }
 
-                .summary-card.big h2 {
-
-                    font-size: 36px;
-
-                    margin-top: 10px;
-
-                }
-
-                .summary-card h3 {
-
-                    margin-top: 8px;
+                .hero-title {
 
                     font-size: 24px;
 
-                    color: #143126;
+                }
+
+                .hero-icon {
+
+                    width: 56px;
+
+                    height: 56px;
+
+                    font-size: 24px;
 
                 }
-            </style>
-            <section class="overview-section">
 
-                <div class="section-header">
+                .hero-subtitle {
 
-                    <div>
+                    font-size: 13px;
 
-                        <h2>Financial Overview</h2>
+                }
 
-                        <span>Ringkasan kondisi keuangan bulan ini</span>
+            }
+        </style>
 
+        <div class="summary-wrapper" id="summary-wrapper">
+
+            <div class="summary-top">
+
+                <div>
+
+                    <div class="summary-title">
+                        Ringkasan Keuangan
                     </div>
 
-                    <button class="month-btn">
-
-                        Juli 2026
-
-                        <i class="bi bi-chevron-down"></i>
-
-                    </button>
+                    <div class="summary-subtitle">
+                        Statistik transaksi berdasarkan akun WhatsApp Anda
+                    </div>
 
                 </div>
 
-                <div class="overview-grid">
+                <div>
+                    <span class="badge bg-success" id="last-update">
+                        <i class="bi bi-arrow-repeat"></i>
+                        Live
+                    </span>
+                </div>
 
-                    <div class="overview-card saldo">
+            </div>
 
-                        <div class="overview-icon">
+            <div class="metric-grid">
 
-                            <i class="bi bi-wallet2"></i>
+                <div class="metric-box" id="card-masuk">
 
-                        </div>
-
-                        <small>Total Saldo</small>
-
-                        <h3>Rp12.540.000</h3>
-
-                        <span class="success">
-
-                            +12% dari bulan lalu
-
-                        </span>
-
+                    <div class="metric-icon metric-success">
+                        <i class="bi bi-arrow-down-circle-fill"></i>
                     </div>
 
-                    <div class="overview-card income">
+                    <div class="metric-text">
 
-                        <div class="overview-icon">
+                        <small>Total Pemasukan</small>
 
-                            <i class="bi bi-arrow-up-circle"></i>
-
-                        </div>
-
-                        <small>Pemasukan</small>
-
-                        <h3>Rp2.400.000</h3>
-
-                        <span>
-
-                            18 transaksi
-
-                        </span>
-
-                    </div>
-
-                    <div class="overview-card expense">
-
-                        <div class="overview-icon">
-
-                            <i class="bi bi-arrow-down-circle"></i>
-
-                        </div>
-
-                        <small>Pengeluaran</small>
-
-                        <h3>Rp1.120.000</h3>
-
-                        <span>
-
-                            32 transaksi
-
-                        </span>
-
-                    </div>
-
-                    <div class="overview-card budget">
-
-                        <div class="overview-icon">
-
-                            <i class="bi bi-pie-chart"></i>
-
-                        </div>
-
-                        <small>Budget Terpakai</small>
-
-                        <h3>72%</h3>
-
-                        <div class="progress modern">
-
-                            <div class="progress-bar" style="width:72%"></div>
-
-                        </div>
+                        <h4 class="text-success" id="masuk">
+                            Rp {{ "{:,.0f}".format(total_masuk) }}
+                        </h4>
 
                     </div>
 
                 </div>
 
-            </section>
-            <style>
-                .overview-section {
+                <div class="metric-box" id="card-keluar">
 
-                    margin-top: 28px;
+                    <div class="metric-icon metric-danger">
+                        <i class="bi bi-arrow-up-circle-fill"></i>
+                    </div>
 
+                    <div class="metric-text">
+
+                        <small>Total Pengeluaran</small>
+
+                        <h4 class="text-danger" id="keluar">
+                            Rp {{ "{:,.0f}".format(total_keluar) }}
+                        </h4>
+
+                    </div>
+
+                </div>
+
+                <div class="metric-box" id="card-saldo">
+
+                    <div class="metric-icon metric-primary">
+                        <i class="bi bi-wallet2"></i>
+                    </div>
+
+                    <div class="metric-text">
+
+                        <small>Saldo Saat Ini</small>
+
+                        <h4 class="text-primary" id="saldo">
+                            Rp {{ "{:,.0f}".format(saldo) }}
+                        </h4>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="chart-grid">
+
+                <div class="chart-card">
+
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+
+                        <div class="chart-title">
+                            Cashflow
+                        </div>
+
+                        <span class="badge bg-light text-dark">
+                            Realtime
+                        </span>
+
+                    </div>
+
+                    <canvas id="pieChart"></canvas>
+
+                </div>
+
+                <div class="chart-card">
+
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+
+                        <div class="chart-title">
+                            Trend Transaksi
+                        </div>
+
+                        <span class="badge bg-light text-dark">
+                            Auto Update
+                        </span>
+
+                    </div>
+
+                    <canvas id="lineChart"></canvas>
+
+                </div>
+
+            </div>
+
+        </div>
+        <style>
+            /* ===========================
+            SUMMARY
+            =========================== */
+
+            .summary-wrapper {
+                background: #fff;
+                border-radius: 22px;
+                padding: 18px 20px;
+                box-shadow: 0 8px 24px rgba(7, 94, 84, .06);
+                border: 1px solid var(--border);
+                margin-bottom: 22px;
+            }
+
+            .summary-top {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 18px;
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+
+            .summary-title {
+                font-family: 'Baloo 2', sans-serif;
+                font-size: 16px;
+                font-weight: 700;
+                color: var(--primary-deep);
+            }
+
+            .summary-subtitle {
+                font-size: 13px;
+                color: var(--muted);
+            }
+
+            .metric-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 14px;
+                margin-bottom: 18px;
+            }
+
+            .metric-box {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                background: linear-gradient(180deg, #ffffff, #f6fdf9);
+                border: 1px solid var(--border);
+                border-radius: 18px;
+                padding: 14px 16px;
+                transition: .25s;
+            }
+
+            .metric-box:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 24px rgba(37, 211, 102, .12);
+            }
+
+            .metric-icon {
+                width: 48px;
+                height: 48px;
+                border-radius: 16px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 20px;
+                flex-shrink: 0;
+            }
+
+            .metric-success {
+                background: #dcfce7;
+                color: #16a34a;
+            }
+
+            .metric-danger {
+                background: #fee2e2;
+                color: #ef4444;
+            }
+
+            .metric-primary {
+                background: #d7f7e4;
+                color: #128C7E;
+            }
+
+            .metric-text small {
+                display: block;
+                color: var(--muted);
+                font-size: 12px;
+                font-weight: 600;
+            }
+
+            .metric-text h4 {
+                font-family: 'Baloo 2', sans-serif;
+                margin: 2px 0 0;
+                font-size: 23px;
+                font-weight: 700;
+            }
+
+            .metric-text h4.text-primary {
+                color: var(--primary-dark) !important;
+            }
+
+            .chart-grid {
+                display: grid;
+                grid-template-columns: 320px 1fr;
+                gap: 18px;
+            }
+
+            .chart-card {
+                background: linear-gradient(180deg, #ffffff, #f7fdfa);
+                border: 1px solid var(--border);
+                border-radius: 18px;
+                padding: 16px;
+            }
+
+            .chart-title {
+                font-family: 'Baloo 2', sans-serif;
+                font-size: 14px;
+                font-weight: 700;
+                margin-bottom: 15px;
+                color: var(--primary-deep);
+            }
+
+            .chart-card canvas {
+                max-height: 280px;
+            }
+
+            @media(max-width:992px) {
+
+                .metric-grid {
+                    grid-template-columns: 1fr;
                 }
 
-                .section-header {
+                .chart-grid {
+                    grid-template-columns: 1fr;
+                }
 
+            }
+
+            /* ===========================
+            MOBILE UI
+            =========================== */
+
+            @media (max-width:768px) {
+
+                .container {
+                    max-width: 100%;
+                    padding: 14px !important;
+                }
+
+                /* Header */
+
+                .page-header {
+                    margin-bottom: 14px;
+                }
+
+                .page-title {
+                    font-size: 22px;
+                }
+
+                .page-subtitle {
+                    font-size: 12px;
+                }
+
+                /* Summary */
+
+                .summary-wrapper {
+                    padding: 14px;
+                    border-radius: 16px;
+                }
+
+                .summary-top {
+                    margin-bottom: 14px;
+                }
+
+                .summary-title {
+                    font-size: 15px;
+                }
+
+                .summary-subtitle {
+                    font-size: 12px;
+                }
+
+                /* Metric */
+
+                .metric-grid {
                     display: flex;
-
-                    justify-content: space-between;
-
-                    align-items: center;
-
-                    margin-bottom: 20px;
-
+                    flex-direction: column;
+                    gap: 10px;
+                    margin-bottom: 14px;
                 }
 
-                .section-header h2 {
-
-                    font-size: 24px;
-
-                    font-weight: 800;
-
-                    color: #143126;
-
-                    margin-bottom: 4px;
-
-                }
-
-                .section-header span {
-
-                    color: #64748b;
-
-                }
-
-                .month-btn {
-
-                    background: white;
-
-                    border: 1px solid #e5e7eb;
-
-                    padding: 12px 18px;
-
+                .metric-box {
+                    padding: 12px;
                     border-radius: 14px;
+                }
 
-                    font-weight: 700;
+                .metric-icon {
+                    width: 42px;
+                    height: 42px;
+                    font-size: 18px;
+                }
 
+                .metric-text small {
+                    font-size: 11px;
+                }
+
+                .metric-text h4 {
+                    font-size: 19px;
+                }
+
+                /* Chart */
+
+                .chart-grid {
                     display: flex;
+                    flex-direction: column;
+                    gap: 12px;
+                }
 
+                .chart-card {
+                    background: linear-gradient(180deg, #ffffff, #fbfcff);
+                    border: 1px solid #edf2f7;
+                    border-radius: 18px;
+                    padding: 16px;
+                }
+
+                .chart-title {
+                    font-size: 13px;
+                }
+
+                .chart-card canvas {
+                    max-height: 220px;
+                }
+
+                /* Filter */
+
+                .filter-toolbar form {
+                    row-gap: 12px;
+                }
+
+                .filter-toolbar .btn {
+                    height: 44px;
+                    border-radius: 12px;
+                    font-weight: 600;
+                }
+
+                /* Table */
+
+                .table-responsive {
+                    border-radius: 14px;
+                }
+
+                .table {
+                    font-size: 13px;
+                }
+
+                .table td,
+                .table th {
+                    padding: 10px;
+                    white-space: nowrap;
+                }
+
+                /* Pagination */
+
+                .pagination-wrapper {
+                    flex-direction: column;
                     align-items: center;
+                    text-align: center;
+                    gap: 12px;
+                }
 
+                .pagination-info {
+                    font-size: 12px;
+                }
+
+                .pagination {
+                    justify-content: center;
+                    flex-wrap: wrap;
+                }
+
+                .page-link {
+                    width: 38px;
+                    height: 38px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                /* Badge */
+
+                .badge {
+                    font-size: 10px;
+                }
+
+                /* Card */
+
+                .content-card {
+                    background: #fff;
+                    border: none;
+                    border-radius: 18px;
+                    box-shadow: 0 8px 25px rgba(15, 23, 42, .05);
+                    overflow: hidden;
+                }
+
+                .card-header-modern {
+                    padding: 14px;
+                }
+
+                .card-title-modern {
+                    font-size: 14px;
+                }
+
+            }
+        </style>
+        <!-- ========================================= -->
+        <!-- BUDGET BULAN INI -->
+        <!-- ========================================= -->
+
+        <div class="budget-wrapper mb-4">
+
+            <div class="budget-header">
+
+                <div>
+
+                    <div class="budget-title">
+                        <i class="bi bi-pie-chart-fill"></i>
+                        Budget Bulan Ini
+                    </div>
+
+                    <div class="budget-subtitle">
+                        Pantau penggunaan anggaran setiap kategori.
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% if budget_data %}
+
+            <div class="row g-3">
+
+                {% for item in budget_data %}
+
+                {% if item.persen >= 100 %}
+                {% set warna = "danger" %}
+                {% elif item.persen >= 90 %}
+                {% set warna = "warning" %}
+                {% else %}
+                {% set warna = "success" %}
+                {% endif %}
+
+                <div class="col-lg-6">
+
+                    <div class="budget-card">
+
+                        <div class="budget-top">
+
+                            <div>
+
+                                <div class="budget-category">
+                                    {{ item.kategori }}
+                                </div>
+
+                                <div class="budget-used">
+
+                                    Rp {{ "{:,.0f}".format(item.terpakai) }}
+
+                                    /
+
+                                    Rp {{ "{:,.0f}".format(item.budget) }}
+
+                                </div>
+
+                            </div>
+
+                            <div class="budget-percent text-{{ warna }}">
+                                {{ item.persen }}%
+                            </div>
+
+                        </div>
+
+                        <div class="progress budget-progress">
+
+                            <div class="progress-bar bg-{{ warna }}"
+                                style="width:{{ 100 if item.persen > 100 else item.persen }}%">
+                            </div>
+
+                        </div>
+
+                        <div class="budget-footer">
+
+                            {% if item.sisa >= 0 %}
+
+                            <span class="text-success">
+
+                                <i class="bi bi-check-circle-fill"></i>
+
+                                Sisa
+                                Rp {{ "{:,.0f}".format(item.sisa) }}
+
+                            </span>
+
+                            {% else %}
+
+                            <span class="text-danger">
+
+                                <i class="bi bi-exclamation-triangle-fill"></i>
+
+                                Melebihi
+                                Rp {{ "{:,.0f}".format(item.sisa|abs) }}
+
+                            </span>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+            {% else %}
+
+            <div class="budget-empty">
+
+                <i class="bi bi-wallet2"></i>
+
+                <div>
+
+                    <h6>Belum ada budget bulan ini</h6>
+
+                    <small>
+                        Tambahkan budget melalui WhatsApp agar penggunaan anggaran dapat dipantau.
+                    </small>
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+        <style>
+            .budget-wrapper {
+
+                background: #fff;
+                border: 1px solid var(--border);
+                border-radius: 22px;
+                padding: 20px;
+                box-shadow: 0 8px 24px rgba(7, 94, 84, .06);
+
+            }
+
+            .budget-header {
+
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 18px;
+
+            }
+
+            .budget-title {
+
+                font-family: 'Baloo 2', sans-serif;
+                font-size: 16px;
+                font-weight: 700;
+                color: var(--primary-deep);
+
+            }
+
+            .budget-title i {
+
+                color: #25D366;
+                margin-right: 6px;
+
+            }
+
+            .budget-subtitle {
+
+                color: var(--muted);
+                font-size: 12px;
+
+            }
+
+            .budget-card {
+
+                background: linear-gradient(180deg, #fff, #f8fffb);
+                border: 1px solid var(--border);
+                border-radius: 18px;
+                padding: 16px;
+                transition: .25s;
+
+            }
+
+            .budget-card:hover {
+
+                transform: translateY(-2px);
+                box-shadow: 0 10px 22px rgba(37, 211, 102, .12);
+
+            }
+
+            .budget-top {
+
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 12px;
+
+            }
+
+            .budget-category {
+
+                font-weight: 700;
+                font-size: 15px;
+                color: var(--primary-deep);
+
+            }
+
+            .budget-used {
+
+                font-size: 12px;
+                color: var(--muted);
+
+            }
+
+            .budget-percent {
+
+                font-size: 18px;
+                font-weight: 800;
+                font-family: 'Baloo 2', sans-serif;
+
+            }
+
+            .budget-progress {
+
+                height: 12px;
+                border-radius: 50px;
+                background: #edf7f1;
+                overflow: hidden;
+
+            }
+
+            .budget-progress .progress-bar {
+
+                border-radius: 50px;
+
+            }
+
+            .budget-footer {
+
+                margin-top: 12px;
+                font-size: 13px;
+                font-weight: 600;
+
+            }
+
+            .budget-empty {
+
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                background: #f8fffb;
+                border: 1px dashed #ccefdc;
+                border-radius: 18px;
+                padding: 25px;
+
+            }
+
+            .budget-empty i {
+
+                font-size: 42px;
+                color: #25D366;
+
+            }
+
+            .budget-empty h6 {
+
+                margin-bottom: 4px;
+                font-weight: 700;
+
+            }
+
+            .budget-empty small {
+
+                color: #777;
+
+            }
+
+            @media(max-width:768px) {
+
+                .budget-wrapper {
+
+                    padding: 16px;
+
+                }
+
+                .budget-card {
+
+                    padding: 14px;
+
+                }
+
+                .budget-top {
+
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 8px;
+
+                }
+
+                .budget-percent {
+
+                    font-size: 16px;
+
+                }
+
+            }
+        </style>
+        <!-- ========================================= -->
+        <!-- REMINDER TAGIHAN -->
+        <!-- ========================================= -->
+
+        <div class="reminder-wrapper mb-4">
+
+            <div class="reminder-header">
+
+                <div>
+
+                    <div class="reminder-title">
+                        <i class="bi bi-bell-fill"></i>
+                        Reminder Tagihan
+                    </div>
+
+                    <div class="reminder-subtitle">
+                        Tagihan yang perlu dibayar setiap bulan.
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% if reminders %}
+
+            <div class="row g-3">
+
+                {% for item in reminders %}
+
+                {% set hari_ini = now.day %}
+                {% set selisih = item.tanggal - hari_ini %}
+
+                <div class="col-lg-6">
+
+                    <div class="reminder-card">
+
+                        <div class="reminder-top">
+
+                            <div>
+
+                                <div class="reminder-name">
+
+                                    <i class="bi bi-receipt"></i>
+
+                                    {{ item.nama }}
+
+                                </div>
+
+                                <div class="reminder-date">
+
+                                    Tanggal {{ item.tanggal }}
+
+                                </div>
+
+                            </div>
+
+                            <div class="reminder-nominal">
+
+                                Rp {{ "{:,.0f}".format(item.nominal) }}
+
+                            </div>
+
+                        </div>
+
+                        <div class="reminder-status">
+
+                            {% if selisih > 0 %}
+
+                            <span class="badge bg-success">
+
+                                {{ selisih }} hari lagi
+
+                            </span>
+
+                            {% elif selisih == 0 %}
+
+                            <span class="badge bg-warning text-dark">
+
+                                Hari ini
+
+                            </span>
+
+                            {% else %}
+
+                            <span class="badge bg-danger">
+
+                                Terlambat {{ selisih|abs }} hari
+
+                            </span>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+            {% else %}
+
+            <div class="reminder-empty">
+
+                <i class="bi bi-bell-slash"></i>
+
+                <div>
+
+                    <h6>Tidak ada reminder</h6>
+
+                    <small>
+                        Belum ada tagihan yang dibuat.
+                    </small>
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+        <style>
+            .reminder-wrapper {
+
+                background: #fff;
+                border: 1px solid var(--border);
+                border-radius: 22px;
+                padding: 20px;
+                box-shadow: 0 8px 24px rgba(7, 94, 84, .06);
+
+            }
+
+            .reminder-header {
+
+                margin-bottom: 18px;
+
+            }
+
+            .reminder-title {
+
+                font-family: 'Baloo 2', sans-serif;
+                font-size: 16px;
+                font-weight: 700;
+                color: var(--primary-deep);
+
+            }
+
+            .reminder-title i {
+
+                color: #25D366;
+                margin-right: 6px;
+
+            }
+
+            .reminder-subtitle {
+
+                font-size: 12px;
+                color: #777;
+
+            }
+
+            .reminder-card {
+
+                background: #f9fffb;
+                border: 1px solid var(--border);
+                border-radius: 18px;
+                padding: 16px;
+                transition: .25s;
+
+            }
+
+            .reminder-card:hover {
+
+                transform: translateY(-2px);
+                box-shadow: 0 8px 20px rgba(37, 211, 102, .10);
+
+            }
+
+            .reminder-top {
+
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+
+            }
+
+            .reminder-name {
+
+                font-weight: 700;
+                color: var(--primary-deep);
+
+            }
+
+            .reminder-date {
+
+                color: #888;
+                font-size: 12px;
+
+            }
+
+            .reminder-nominal {
+
+                font-family: 'Baloo 2', sans-serif;
+                font-size: 18px;
+                font-weight: 700;
+                color: var(--primary-dark);
+
+            }
+
+            .reminder-status {
+
+                margin-top: 12px;
+
+            }
+
+            .reminder-empty {
+
+                display: flex;
+                gap: 15px;
+                align-items: center;
+                border: 1px dashed #ccefdc;
+                border-radius: 18px;
+                padding: 25px;
+
+            }
+
+            .reminder-empty i {
+
+                font-size: 42px;
+                color: #25D366;
+
+            }
+        </style>
+        <!-- ================================= -->
+        <!-- HUTANG & PIUTANG -->
+        <!-- ================================= -->
+
+        <div class="debt-wrapper mb-4">
+
+
+            <div class="d-flex align-items-center mb-1">
+
+                <div class="debt-icon">
+                    <i class="bi bi-credit-card-2-front-fill"></i>
+                </div>
+
+                <div class="ms-2">
+
+                    <div class="debt-title">
+                        Hutang & Piutang
+                    </div>
+
+                    <div class="debt-subtitle">
+                        Kelola kewajiban dan uang yang harus diterima.
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+
+            <!-- SUMMARY -->
+
+            <div class="debt-summary mt-3">
+
+
+                <div class="debt-box green">
+
+                    <small>
+                        📥 Total Piutang
+                    </small>
+
+                    <h4>
+                        Rp {{ "{:,.0f}".format(total_piutang or 0) }}
+                    </h4>
+
+                </div>
+
+
+
+
+                <div class="debt-box red">
+
+                    <small>
+                        💳 Total Hutang
+                    </small>
+
+                    <h4>
+                        Rp {{ "{:,.0f}".format(total_hutang or 0) }}
+                    </h4>
+
+                </div>
+
+
+
+
+                <div class="debt-box blue">
+
+                    <small>
+                        ⚖️ Net Balance
+                    </small>
+
+                    <h4>
+                        Rp {{ "{:,.0f}".format(net_balance or 0) }}
+                    </h4>
+
+                </div>
+
+
+            </div>
+
+
+
+
+
+            <div class="row mt-4 g-3">
+
+
+                <!-- ===================== -->
+                <!-- PIUTANG -->
+                <!-- ===================== -->
+
+
+                <div class="col-lg-6">
+
+
+                    <h6 class="text-success fw-bold">
+
+                        📥 Piutang Aktif
+
+                    </h6>
+
+
+
+                    {% for item in piutang_list %}
+
+
+                    <div class="debt-card">
+
+
+                        <div class="flex-grow-1">
+
+
+                            <div class="fw-bold">
+
+                                {{ item.nama }}
+
+                            </div>
+
+
+
+                            <div class="small text-muted">
+
+                                {{ item.keterangan or "-" }}
+
+                            </div>
+
+
+
+                            <div class="small text-muted mt-1">
+
+                                {{ item.tanggal.strftime("%d %b %Y") }}
+
+                            </div>
+
+
+                        </div>
+
+
+
+
+                        <div class="text-end">
+
+
+                            <div class="fw-bold text-success">
+
+                                Rp {{ "{:,.0f}".format(item.nominal) }}
+
+                            </div>
+
+
+
+                            {% if item.status == "LUNAS" %}
+
+                            <span class="badge bg-success">
+
+                                LUNAS
+
+                            </span>
+
+
+                            {% else %}
+
+
+                            <span class="badge bg-warning text-dark">
+
+                                BELUM DIBAYAR
+
+                            </span>
+
+
+                            {% endif %}
+
+
+                        </div>
+
+
+                    </div>
+
+
+
+                    {% else %}
+
+
+                    <div class="empty-debt">
+
+                        Tidak ada piutang aktif 😊
+
+                    </div>
+
+
+                    {% endfor %}
+
+
+
+                </div>
+
+
+
+
+
+
+
+                <!-- ===================== -->
+                <!-- HUTANG -->
+                <!-- ===================== -->
+
+
+                <div class="col-lg-6">
+
+
+                    <h6 class="text-danger fw-bold">
+
+                        💳 Hutang Aktif
+
+                    </h6>
+
+
+
+
+                    {% for item in hutang_list %}
+
+
+
+                    <div class="debt-card">
+
+
+                        <div class="flex-grow-1">
+
+
+                            <div class="fw-bold">
+
+                                {{ item.nama }}
+
+                            </div>
+
+
+
+
+                            <div class="small text-muted">
+
+                                {{ item.keterangan or "-" }}
+
+                            </div>
+
+
+
+
+                            <div class="small text-muted mt-1">
+
+                                {{ item.tanggal.strftime("%d %b %Y") }}
+
+                            </div>
+
+
+
+                        </div>
+
+
+
+
+
+                        <div class="text-end">
+
+
+                            <div class="fw-bold text-danger">
+
+                                Rp {{ "{:,.0f}".format(item.nominal) }}
+
+                            </div>
+
+
+
+
+                            {% if item.status == "LUNAS" %}
+
+
+                            <span class="badge bg-success">
+
+                                LUNAS
+
+                            </span>
+
+
+
+                            {% else %}
+
+
+
+                            <span class="badge bg-danger">
+
+                                BELUM LUNAS
+
+                            </span>
+
+
+
+                            {% endif %}
+
+
+
+                        </div>
+
+
+
+                    </div>
+
+
+
+
+                    {% else %}
+
+
+                    <div class="empty-debt">
+
+                        Tidak ada hutang aktif 😊
+
+                    </div>
+
+
+
+                    {% endfor %}
+
+
+
+
+                </div>
+
+
+
+            </div>
+
+
+
+        </div>
+        <style>
+            .debt-wrapper {
+
+                background: white;
+                border: 1px solid var(--border);
+                border-radius: 22px;
+                padding: 20px;
+                box-shadow: 0 8px 24px rgba(7, 94, 84, .06);
+
+            }
+
+
+
+            .debt-icon {
+
+                width: 35px;
+                height: 35px;
+                border-radius: 12px;
+                background: #dcfce7;
+                color: #15803d;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+            }
+
+
+
+            .debt-title {
+
+                font-family: 'Baloo 2';
+                font-size: 17px;
+                font-weight: 700;
+                color: var(--primary-deep);
+
+            }
+
+
+
+            .debt-subtitle {
+
+                font-size: 12px;
+                color: var(--muted);
+
+            }
+
+
+
+            .debt-summary {
+
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 14px;
+
+            }
+
+
+
+            .debt-box {
+
+                padding: 16px;
+                border-radius: 18px;
+
+            }
+
+
+
+            .debt-box small {
+
+                font-size: 12px;
+
+            }
+
+
+
+            .debt-box h4 {
+
+                margin-top: 6px;
+                font-family: 'Baloo 2';
+
+            }
+
+
+
+            .debt-box.green {
+
+                background: #dcfce7;
+                color: #15803d;
+
+            }
+
+
+
+            .debt-box.red {
+
+                background: #fee2e2;
+                color: #dc2626;
+
+            }
+
+
+
+            .debt-box.blue {
+
+                background: #dbeafe;
+                color: #2563eb;
+
+            }
+
+
+
+
+            .debt-card {
+
+                background: #f8fffb;
+                border: 1px solid var(--border);
+                border-radius: 16px;
+                padding: 14px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 10px;
+
+            }
+
+
+
+            .empty-debt {
+
+                background: #f8fffb;
+                border-radius: 15px;
+                padding: 18px;
+                text-align: center;
+                color: #777;
+
+            }
+
+
+
+            @media(max-width:768px) {
+
+                .debt-summary {
+
+                    grid-template-columns: 1fr;
+
+                }
+
+
+                .debt-card {
+
+                    flex-direction: column;
+                    align-items: flex-start;
                     gap: 10px;
 
                 }
 
-                .overview-grid {
+            }
+        </style>
+        <!-- ===========================
+TARGET TABUNGAN
+============================ -->
 
-                    display: grid;
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
 
-                    grid-template-columns: repeat(4, 1fr);
+            <div class="card-body p-4">
 
-                    gap: 20px;
-
-                }
-
-                .overview-card {
-
-                    background: white;
-
-                    border-radius: 24px;
-
-                    padding: 24px;
-
-                    box-shadow: 0 12px 30px rgba(15, 23, 42, .05);
-
-                    transition: .25s;
-
-                }
-
-                .overview-card:hover {
-
-                    transform: translateY(-6px);
-
-                }
-
-                .overview-icon {
-
-                    width: 52px;
-
-                    height: 52px;
-
-                    border-radius: 18px;
-
-                    display: flex;
-
-                    align-items: center;
-
-                    justify-content: center;
-
-                    font-size: 24px;
-
-                    margin-bottom: 18px;
-
-                }
-
-                .saldo .overview-icon {
-
-                    background: #e9fff0;
-
-                    color: #16a34a;
-
-                }
-
-                .income .overview-icon {
-
-                    background: #dcfce7;
-
-                    color: #16a34a;
-
-                }
-
-                .expense .overview-icon {
-
-                    background: #fee2e2;
-
-                    color: #ef4444;
-
-                }
-
-                .budget .overview-icon {
-
-                    background: #ecfeff;
-
-                    color: #0891b2;
-
-                }
-
-                .overview-card small {
-
-                    display: block;
-
-                    color: #64748b;
-
-                    margin-bottom: 8px;
-
-                }
-
-                .overview-card h3 {
-
-                    font-size: 30px;
-
-                    font-weight: 800;
-
-                    margin-bottom: 10px;
-
-                    color: #143126;
-
-                }
-
-                .success {
-
-                    color: #16a34a;
-
-                    font-weight: 700;
-
-                }
-
-                .progress.modern {
-
-                    height: 10px;
-
-                    background: #edf2f7;
-
-                    border-radius: 30px;
-
-                    overflow: hidden;
-
-                    margin-top: 18px;
-
-                }
-
-                .progress.modern .progress-bar {
-
-                    background: linear-gradient(90deg, #25D366, #16a34a);
-
-                    border-radius: 30px;
-
-                }
-            </style>
-            <section class="analytics-section">
-
-                <div class="section-header">
+                <div class="d-flex justify-content-between align-items-center mb-3">
 
                     <div>
 
-                        <h2>Financial Analytics</h2>
+                        <h5 class="fw-bold mb-1">
+                            <i class="bi bi-bullseye text-success"></i>
+                            Target Tabungan
+                        </h5>
 
-                        <span>Visualisasi kondisi keuangan Anda</span>
+                        <small class="text-muted">
+                            Pantau progres impianmu
+                        </small>
+
+                    </div>
+
+                    {% if target_data %}
+                    <span class="badge bg-success-subtle text-success px-3 py-2">
+                        {{ target_data.progress }}%
+                    </span>
+                    {% endif %}
+
+                </div>
+
+                {% if target_data %}
+
+                <div class="mb-3">
+
+                    <h4 class="fw-bold mb-1">
+                        {{ target_data.nama }}
+                    </h4>
+
+                    <small class="text-muted">
+                        Deadline
+                        {{ target_data.deadline.strftime("%d %b %Y") }}
+                    </small>
+
+                </div>
+
+                <!-- Progress -->
+
+                <div class="progress rounded-pill mb-3" style="height:12px;">
+
+                    <div class="progress-bar bg-success progress-bar-striped progress-bar-animated"
+                        style="width: {{ target_data.progress }}%">
 
                     </div>
 
                 </div>
 
-                <div class="analytics-grid">
+                <div class="row text-center g-3">
 
-                    <div class="analytics-card large">
+                    <div class="col-md-4">
 
-                        <div class="card-title">
+                        <div class="border rounded-4 p-3 h-100">
 
-                            Cashflow Trend
+                            <small class="text-muted d-block">
+                                Target
+                            </small>
 
-                        </div>
-
-                        <canvas id="cashflowChart"></canvas>
-
-                    </div>
-
-                    <div class="analytics-card">
-
-                        <div class="card-title">
-
-                            Pengeluaran Terbesar
-
-                        </div>
-
-                        <div class="category-list">
-
-                            <div class="category-item">
-
-                                <span>🍔 Makan</span>
-
-                                <strong>Rp850.000</strong>
-
-                            </div>
-
-                            <div class="category-item">
-
-                                <span>🚗 Transport</span>
-
-                                <strong>Rp620.000</strong>
-
-                            </div>
-
-                            <div class="category-item">
-
-                                <span>🛒 Belanja</span>
-
-                                <strong>Rp450.000</strong>
-
-                            </div>
-
-                            <div class="category-item">
-
-                                <span>💡 Tagihan</span>
-
-                                <strong>Rp320.000</strong>
-
-                            </div>
+                            <h6 class="fw-bold text-primary mb-0">
+                                Rp {{ "{:,.0f}".format(target_data.target) }}
+                            </h6>
 
                         </div>
 
                     </div>
 
-                    <div class="analytics-card">
+                    <div class="col-md-4">
 
-                        <div class="card-title">
+                        <div class="border rounded-4 p-3 h-100">
 
-                            Income vs Expense
+                            <small class="text-muted d-block">
+                                Terkumpul
+                            </small>
+
+                            <h6 class="fw-bold text-success mb-0">
+                                Rp {{ "{:,.0f}".format(target_data.terkumpul) }}
+                            </h6>
 
                         </div>
-
-                        <canvas id="incomeExpenseChart"></canvas>
 
                     </div>
 
-                    <div class="analytics-card ai-card">
+                    <div class="col-md-4">
 
-                        <div class="card-title">
+                        <div class="border rounded-4 p-3 h-100">
 
-                            AI Insight
+                            <small class="text-muted d-block">
+                                Sisa
+                            </small>
+
+                            <h6 class="fw-bold text-danger mb-0">
+                                Rp {{ "{:,.0f}".format(target_data.sisa) }}
+                            </h6>
 
                         </div>
-
-                        <p>
-
-                            💡 Pengeluaran makan meningkat
-                            18% dibanding bulan lalu.
-
-                        </p>
 
                     </div>
 
                 </div>
 
-            </section>
-            <style>
-                .analytics-section {
+                <hr>
 
-                    margin-top: 30px;
-
-                }
-
-                .analytics-grid {
-
-                    display: grid;
-
-                    grid-template-columns: 2fr 1fr;
-
-                    gap: 20px;
-
-                }
-
-                .analytics-card {
-
-                    background: white;
-
-                    border-radius: 24px;
-
-                    padding: 24px;
-
-                    box-shadow: 0 12px 30px rgba(15, 23, 42, .05);
-
-                }
-
-                .analytics-card.large {
-
-                    min-height: 360px;
-
-                }
-
-                .card-title {
-
-                    font-size: 18px;
-
-                    font-weight: 800;
-
-                    margin-bottom: 20px;
-
-                    color: #143126;
-
-                }
-
-                .category-list {
-
-                    display: flex;
-
-                    flex-direction: column;
-
-                    gap: 14px;
-
-                }
-
-                .category-item {
-
-                    display: flex;
-
-                    justify-content: space-between;
-
-                    align-items: center;
-
-                    padding: 14px;
-
-                    background: #f8fbf9;
-
-                    border-radius: 16px;
-
-                }
-
-                .category-item strong {
-
-                    color: #15803d;
-
-                }
-
-                .ai-card {
-
-                    background: linear-gradient(135deg, #25D366, #169b4c);
-
-                    color: white;
-
-                }
-
-                .ai-card p {
-
-                    line-height: 1.8;
-
-                    margin-top: 18px;
-
-                }
-            </style>
-            <section class="activity-section">
-
-                <div class="section-header">
+                <div class="d-flex justify-content-between align-items-center">
 
                     <div>
 
-                        <h2>Activity Center</h2>
+                        {% if target_data.selesai %}
 
-                        <span>Semua aktivitas keuangan dalam satu tempat</span>
+                        <span class="text-success fw-bold">
+                            🎉 Target berhasil tercapai!
+                        </span>
+
+                        {% elif target_data.sisa_hari < 0 %} <span class="text-danger fw-bold">
+                            Deadline telah terlewati
+                            </span>
+
+                            {% else %}
+
+                            <span class="text-muted">
+
+                                <i class="bi bi-calendar-event"></i>
+
+                                {{ target_data.sisa_hari }} hari lagi
+
+                            </span>
+
+                            {% endif %}
 
                     </div>
 
-                    <button class="view-all">
+                    <div>
 
-                        Lihat Semua
+                        <span class="badge bg-light text-dark">
+
+                            {{ target_data.progress }}%
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+                {% else %}
+
+                <!-- Empty State -->
+
+                <div class="text-center py-5">
+
+                    <i class="bi bi-piggy-bank fs-1 text-success"></i>
+
+                    <h5 class="mt-3 fw-bold">
+
+                        Belum Ada Target Tabungan
+
+                    </h5>
+
+                    <p class="text-muted mb-4">
+
+                        Mulailah membuat target agar lebih termotivasi mencapai tujuan keuangan.
+
+                    </p>
+
+                    <button class="btn btn-success rounded-pill px-4">
+
+                        <i class="bi bi-plus-circle"></i>
+
+                        Buat Target
 
                     </button>
 
                 </div>
 
-                <div class="activity-grid">
+                {% endif %}
 
-                    <!-- LEFT -->
+            </div>
 
-                    <div class="activity-card transaction-card">
+        </div>
+        <div class="ai-wrapper mb-4">
 
-                        <div class="card-title">
+            <div class="ai-header">
 
-                            Riwayat Transaksi
+                <div class="ai-title">
 
-                        </div>
-
-                        <div class="transaction-list">
-
-                            <div class="transaction-item income">
-
-                                <div class="trx-icon">
-
-                                    <i class="bi bi-arrow-down-circle-fill"></i>
-
-                                </div>
-
-                                <div class="trx-info">
-
-                                    <strong>Gaji Bulanan</strong>
-
-                                    <small>Hari ini • 08:30</small>
-
-                                </div>
-
-                                <div class="trx-value positive">
-
-                                    +Rp2.500.000
-
-                                </div>
-
-                            </div>
-
-                            <div class="transaction-item expense">
-
-                                <div class="trx-icon">
-
-                                    <i class="bi bi-cup-hot"></i>
-
-                                </div>
-
-                                <div class="trx-info">
-
-                                    <strong>Makan Siang</strong>
-
-                                    <small>Hari ini • 12:45</small>
-
-                                </div>
-
-                                <div class="trx-value negative">
-
-                                    -Rp45.000
-
-                                </div>
-
-                            </div>
-
-                            <div class="transaction-item expense">
-
-                                <div class="trx-icon">
-
-                                    <i class="bi bi-car-front"></i>
-
-                                </div>
-
-                                <div class="trx-info">
-
-                                    <strong>Transport</strong>
-
-                                    <small>Kemarin</small>
-
-                                </div>
-
-                                <div class="trx-value negative">
-
-                                    -Rp18.000
-
-                                </div>
-
-                            </div>
-
-                            <div class="transaction-item income">
-
-                                <div class="trx-icon">
-
-                                    <i class="bi bi-laptop"></i>
-
-                                </div>
-
-                                <div class="trx-info">
-
-                                    <strong>Freelance</strong>
-
-                                    <small>Kemarin</small>
-
-                                </div>
-
-                                <div class="trx-value positive">
-
-                                    +Rp800.000
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    <!-- RIGHT -->
-
-                    <div class="widget-column">
-
-                        <div class="activity-card">
-
-                            <div class="card-title">
-
-                                Target Tabungan
-
-                            </div>
-
-                            <h4>🎯 Laptop MacBook</h4>
-
-                            <div class="progress modern">
-
-                                <div class="progress-bar" style="width:65%"></div>
-
-                            </div>
-
-                            <div class="target-footer">
-
-                                <strong>Rp6.500.000</strong>
-
-                                <span>/ Rp10.000.000</span>
-
-                            </div>
-
-                        </div>
-
-                        <div class="activity-card reminder-card">
-
-                            <div class="card-title">
-
-                                Reminder
-
-                            </div>
-
-                            <div class="reminder-item">
-
-                                <i class="bi bi-bell-fill"></i>
-
-                                <div>
-
-                                    <strong>Bayar Internet</strong>
-
-                                    <small>Besok • Rp350.000</small>
-
-                                </div>
-
-                            </div>
-
-                            <div class="reminder-item">
-
-                                <i class="bi bi-lightning-fill"></i>
-
-                                <div>
-
-                                    <strong>Listrik PLN</strong>
-
-                                    <small>3 Hari Lagi</small>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
+                    🤖 AI Finance Insight
 
                 </div>
 
-            </section>
-            <style>
-                .activity-section {
+                <div class="ai-subtitle">
 
-                    margin-top: 30px;
-
-                }
-
-                .activity-grid {
-
-                    display: grid;
-
-                    grid-template-columns: 2fr 1fr;
-
-                    gap: 22px;
-
-                }
-
-                .transaction-list {
-
-                    display: flex;
-
-                    flex-direction: column;
-
-                    gap: 14px;
-
-                }
-
-                .transaction-item {
-
-                    display: flex;
-
-                    align-items: center;
-
-                    padding: 16px;
-
-                    border-radius: 18px;
-
-                    transition: .25s;
-
-                }
-
-                .transaction-item:hover {
-
-                    background: #f8fbf9;
-
-                }
-
-                .trx-icon {
-
-                    width: 50px;
-
-                    height: 50px;
-
-                    border-radius: 16px;
-
-                    display: flex;
-
-                    align-items: center;
-
-                    justify-content: center;
-
-                    background: #eefbf2;
-
-                    font-size: 22px;
-
-                    color: #16a34a;
-
-                    margin-right: 16px;
-
-                }
-
-                .expense .trx-icon {
-
-                    background: #fff1f2;
-
-                    color: #ef4444;
-
-                }
-
-                .trx-info {
-
-                    flex: 1;
-
-                }
-
-                .trx-info strong {
-
-                    display: block;
-
-                    font-size: 15px;
-
-                }
-
-                .trx-info small {
-
-                    color: #64748b;
-
-                }
-
-                .trx-value {
-
-                    font-size: 17px;
-
-                    font-weight: 800;
-
-                }
-
-                .positive {
-
-                    color: #16a34a;
-
-                }
-
-                .negative {
-
-                    color: #ef4444;
-
-                }
-
-                .widget-column {
-
-                    display: flex;
-
-                    flex-direction: column;
-
-                    gap: 20px;
-
-                }
-
-                .target-footer {
-
-                    margin-top: 14px;
-
-                    display: flex;
-
-                    justify-content: space-between;
-
-                }
-
-                .reminder-item {
-
-                    display: flex;
-
-                    gap: 14px;
-
-                    align-items: center;
-
-                    padding: 14px 0;
-
-                    border-bottom: 1px solid #edf2f7;
-
-                }
-
-                .reminder-item:last-child {
-
-                    border: none;
-
-                }
-
-                .reminder-item i {
-
-                    font-size: 22px;
-
-                    color: #25D366;
-
-                }
-            </style>
-
-            <section class="assistant-section">
-
-                <div class="assistant-grid">
-
-                    <!-- AI -->
-
-                    <div class="assistant-card ai-panel">
-
-                        <div class="assistant-header">
-
-                            <div>
-
-                                <h3>🤖 ChatSaku AI</h3>
-
-                                <span>Online</span>
-
-                            </div>
-
-                            <div class="online-dot"></div>
-
-                        </div>
-
-                        <p class="assistant-text">
-
-                            Halo Bambang 👋
-
-                            <br><br>
-
-                            Pengeluaran makanmu meningkat
-                            sekitar 18% dibanding minggu lalu.
-
-                            <br><br>
-
-                            Sebaiknya tetapkan budget
-                            maksimal Rp50.000/hari agar
-                            target tabungan tetap tercapai.
-
-                        </p>
-
-                        <button class="assistant-btn">
-
-                            Lihat Insight
-
-                        </button>
-
-                    </div>
-
-                    <!-- Quick Action -->
-
-                    <div class="assistant-card">
-
-                        <h4>Quick Action</h4>
-
-                        <div class="quick-grid">
-
-                            <button>
-
-                                <i class="bi bi-plus-circle"></i>
-
-                                Catat
-
-                            </button>
-
-                            <button>
-
-                                <i class="bi bi-bullseye"></i>
-
-                                Target
-
-                            </button>
-
-                            <button>
-
-                                <i class="bi bi-bell"></i>
-
-                                Reminder
-
-                            </button>
-
-                            <button>
-
-                                <i class="bi bi-file-earmark-excel"></i>
-
-                                Export
-
-                            </button>
-
-                            <button>
-
-                                <i class="bi bi-stars"></i>
-
-                                AI
-
-                            </button>
-
-                            <button>
-
-                                <i class="bi bi-bar-chart"></i>
-
-                                Statistik
-
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                    <!-- WhatsApp -->
-
-                    <div class="assistant-card">
-
-                        <h4>Status WhatsApp</h4>
-
-                        <div class="wa-status">
-
-                            <div class="status-row">
-
-                                <span>Status</span>
-
-                                <strong class="online">
-
-                                    Connected
-
-                                </strong>
-
-                            </div>
-
-                            <div class="status-row">
-
-                                <span>Nomor</span>
-
-                                <strong>
-
-                                    08xxxxxxxxxx
-
-                                </strong>
-
-                            </div>
-
-                            <div class="status-row">
-
-                                <span>Sinkronisasi</span>
-
-                                <strong>
-
-                                    Realtime
-
-                                </strong>
-
-                            </div>
-
-                        </div>
-
-                    </div>
+                    Analisis otomatis kondisi keuangan Anda.
 
                 </div>
 
-            </section>
-            <style>
-                .assistant-section {
+            </div>
 
-                    margin-top: 30px;
+            {% for text in insight %}
 
-                    margin-bottom: 40px;
+            <div class="ai-item">
 
-                }
+                <div class="ai-icon">
 
-                .assistant-grid {
+                    <i class="bi bi-stars"></i>
 
-                    display: grid;
+                </div>
 
-                    grid-template-columns: 2fr 1fr 1fr;
+                <div>
 
-                    gap: 22px;
+                    {{ text }}
 
-                }
+                </div>
 
-                .assistant-card {
+            </div>
 
-                    background: white;
+            {% endfor %}
 
-                    padding: 26px;
-
-                    border-radius: 24px;
-
-                    box-shadow: 0 12px 30px rgba(15, 23, 42, .05);
-
-                }
-
-                .ai-panel {
-
-                    background: linear-gradient(135deg, #25D366, #169b4c);
-
-                    color: white;
-
-                }
-
-                .assistant-header {
-
-                    display: flex;
-
-                    justify-content: space-between;
-
-                    align-items: center;
-
-                    margin-bottom: 20px;
-
-                }
-
-                .online-dot {
-
-                    width: 12px;
-
-                    height: 12px;
-
-                    border-radius: 50%;
-
-                    background: #fff;
-
-                    box-shadow: 0 0 12px white;
-
-                }
-
-                .assistant-text {
-
-                    line-height: 1.9;
-
-                    opacity: .95;
-
-                }
-
-                .assistant-btn {
-
-                    margin-top: 20px;
-
-                    background: white;
-
-                    color: #16a34a;
-
-                    border: none;
-
-                    padding: 12px 22px;
-
-                    border-radius: 16px;
-
-                    font-weight: 700;
-
-                }
-
-                .quick-grid {
-
-                    display: grid;
-
-                    grid-template-columns: repeat(2, 1fr);
-
-                    gap: 14px;
-
-                    margin-top: 20px;
-
-                }
-
-                .quick-grid button {
-
-                    height: 74px;
-
-                    border: none;
-
-                    border-radius: 18px;
-
-                    background: #f8fbf9;
-
-                    display: flex;
-
-                    flex-direction: column;
-
-                    justify-content: center;
-
-                    align-items: center;
-
-                    gap: 8px;
-
-                    font-weight: 700;
-
-                    transition: .25s;
-
-                }
-
-                .quick-grid button:hover {
-
-                    background: #25D366;
-
-                    color: white;
-
-                    transform: translateY(-4px);
-
-                }
-
-                .quick-grid i {
-
-                    font-size: 22px;
-
-                }
-
-                .wa-status {
-
-                    margin-top: 18px;
-
-                }
-
-                .status-row {
-
-                    display: flex;
-
-                    justify-content: space-between;
-
-                    padding: 16px 0;
-
-                    border-bottom: 1px solid #edf2f7;
-
-                }
-
-                .status-row:last-child {
-
-                    border: none;
-
-                }
-
-                .online {
-
-                    color: #16a34a;
-
-                }
-            </style>
-
-        </main>
+        </div>
         <style>
-            .content {
-                flex: 1;
-                display: flex;
-                flex-direction: column;
-                min-width: 0;
-                background: #f5f9f6;
-            }
+            .ai-wrapper {
 
+                background: linear-gradient(135deg, #0f766e, #14b8a6);
 
-            .left-side {
+                color: white;
 
-                display: flex;
+                border-radius: 22px;
 
-                align-items: center;
+                padding: 22px;
 
-                gap: 18px;
+                margin-bottom: 20px;
+
+                box-shadow: 0 15px 30px rgba(20, 184, 166, .25);
 
             }
 
-            .menu-btn {
+            .ai-title {
 
-                width: 44px;
+                font-family: 'Baloo 2';
 
-                height: 44px;
+                font-size: 18px;
 
-                border: none;
+                font-weight: 700;
+
+            }
+
+            .ai-subtitle {
+
+                opacity: .85;
+
+                margin-bottom: 18px;
+
+                font-size: 13px;
+
+            }
+
+            .ai-item {
+
+                display: flex;
+
+                gap: 14px;
+
+                padding: 14px;
+
+                background: rgba(255, 255, 255, .08);
 
                 border-radius: 14px;
 
-                background: #eefbf2;
+                margin-bottom: 10px;
 
-                color: #17994d;
-
-                font-size: 20px;
-
-                transition: .25s;
+                align-items: flex-start;
 
             }
 
-            .menu-btn:hover {
+            .ai-icon {
 
-                transform: rotate(90deg);
+                width: 38px;
 
-            }
-
-            .search-box {
-
-                width: 420px;
-
-                height: 46px;
-
-                background: #f7faf8;
-
-                border-radius: 16px;
-
-                display: flex;
-
-                align-items: center;
-
-                padding: 0 18px;
-
-                gap: 12px;
-
-                border: 1px solid #e5ece7;
-
-            }
-
-            .search-box input {
-
-                flex: 1;
-
-                border: none;
-
-                background: transparent;
-
-                outline: none;
-
-            }
-
-            .search-box i {
-
-                color: #94a3b8;
-
-            }
-
-            .right-side {
-
-                display: flex;
-
-                align-items: center;
-
-                gap: 16px;
-
-            }
-
-            .icon-btn {
-
-                width: 46px;
-
-                height: 46px;
-
-                border: none;
-
-                background: white;
-
-                border-radius: 16px;
-
-                box-shadow: 0 8px 20px rgba(0, 0, 0, .05);
-
-                position: relative;
-
-                transition: .25s;
-
-            }
-
-            .icon-btn:hover {
-
-                transform: translateY(-3px);
-
-            }
-
-            .badge-dot {
-
-                width: 8px;
-
-                height: 8px;
+                height: 38px;
 
                 border-radius: 50%;
 
-                background: #ef4444;
-
-                position: absolute;
-
-                right: 12px;
-
-                top: 12px;
-
-            }
-
-            .profile-card {
-
-                display: flex;
-
-                align-items: center;
-
-                gap: 12px;
-
                 background: white;
 
-                border-radius: 18px;
-
-                padding: 8px 16px;
-
-                box-shadow: 0 8px 24px rgba(0, 0, 0, .05);
-
-            }
-
-            .profile-card img {
-
-                width: 46px;
-
-                height: 46px;
-
-                border-radius: 50%;
-
-            }
-
-            .profile-card strong {
-
-                display: block;
-
-                color: #143126;
-
-            }
-
-            .profile-card small {
-
-                color: #6b7280;
-
-            }
-
-            .dashboard-body {
-
-                flex: 1;
+                color: #0f766e;
 
                 display: flex;
 
@@ -2412,423 +2273,916 @@
 
                 align-items: center;
 
-                padding: 40px;
+                font-size: 18px;
+
+                flex-shrink: 0;
 
             }
         </style>
+        <!-- FILTER -->
+        <div class="filter-panel mb-4">
+
+            <form method="GET" action="/dashboard/{{ token }}">
+
+                <input type="hidden" name="token" value="{{ token }}">
+
+                <div class="filter-header">
+
+                    <div>
+                        <div class="filter-title">
+                            <i class="bi bi-funnel"></i>
+                            Filter Transaksi
+                        </div>
+
+                        <div class="filter-subtitle">
+                            Pilih rentang tanggal untuk melihat histori transaksi.
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="filter-body">
+
+                    <div class="filter-item">
+
+                        <label>
+                            Mulai
+                        </label>
+
+                        <input type="date" name="start_date" class="form-control" value="{{ start_date }}">
+
+                    </div>
+
+                    <div class="filter-item">
+
+                        <label>
+                            Sampai
+                        </label>
+
+                        <input type="date" name="end_date" class="form-control" value="{{ end_date }}">
+
+                    </div>
+
+                    <button class="btn btn-primary">
+
+                        <i class="bi bi-search"></i>
+
+                        Filter
+
+                    </button>
+
+                    <a href="/dashboard/{{ token }}" class="btn btn-light">
+                        <i class="bi bi-arrow-clockwise"></i>
+                        Reset
+                    </a>
+
+                    <a href="/export-excel?token={{ token }}&start_date={{ start_date }}&end_date={{ end_date }}"
+                        class="btn btn-success">
+
+                        <i class="bi bi-file-earmark-excel"></i>
+
+                        Export
+
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
         <style>
-            body {
+            /* ===========================
+            FILTER
+            =========================== */
 
-                background: #F5F9F6;
+            .filter-panel {
 
-                overflow-x: hidden;
+                background: #fff;
+                border-radius: 22px;
+                padding: 18px 20px;
 
-            }
+                border: 1px solid var(--border);
 
-            body::before {
-
-                content: "";
-
-                position: fixed;
-
-                width: 650px;
-
-                height: 650px;
-
-                right: -220px;
-
-                top: -220px;
-
-                background: rgba(37, 211, 102, .08);
-
-                border-radius: 50%;
-
-                filter: blur(90px);
-
-                z-index: -2;
+                box-shadow: 0 10px 25px rgba(7, 94, 84, .06);
 
             }
 
-            body::after {
+            .filter-header {
 
-                content: "";
+                display: flex;
 
-                position: fixed;
+                justify-content: space-between;
 
-                width: 450px;
+                align-items: center;
 
-                height: 450px;
-
-                left: -180px;
-
-                bottom: -180px;
-
-                background: rgba(37, 211, 102, .05);
-
-                border-radius: 50%;
-
-                filter: blur(70px);
-
-                z-index: -2;
+                margin-bottom: 18px;
 
             }
 
-            .dashboard-card {
+            .filter-title {
 
-                background: white;
+                font-family: 'Baloo 2', sans-serif;
 
-                border-radius: 28px;
-
-                padding: 26px;
-
-                border: 1px solid rgba(0, 0, 0, .04);
-
-                box-shadow:
-
-                    0 12px 35px rgba(15, 23, 42, .05);
-
-                transition: .25s;
-
-            }
-
-            .dashboard-card:hover {
-
-                transform: translateY(-5px);
-
-                box-shadow:
-
-                    0 25px 60px rgba(15, 23, 42, .08);
-
-            }
-
-            .sidebar-menu .active {
-
-                box-shadow:
-
-                    0 10px 35px rgba(255, 255, 255, .35);
-
-            }
-
-            .logo-icon {
-
-                box-shadow:
-
-                    0 10px 35px rgba(255, 255, 255, .25);
-
-            }
-
-            .progress {
-
-                height: 10px;
-
-                border-radius: 20px;
-
-                overflow: hidden;
-
-                background: #edf3ee;
-
-            }
-
-            .progress-bar {
-
-                background:
-
-                    linear-gradient(90deg,
-
-                        #25D366,
-
-                        #14B84A);
-
-                border-radius: 20px;
-
-            }
-
-            ::-webkit-scrollbar {
-
-                width: 8px;
-
-            }
-
-            ::-webkit-scrollbar-thumb {
-
-                background: #25D366;
-
-                border-radius: 50px;
-
-            }
-
-            ::-webkit-scrollbar-track {
-
-                background: #edf4ef;
-
-            }
-
-            .btn-primary {
-
-                background:
-
-                    linear-gradient(135deg,
-
-                        #25D366,
-
-                        #169b4c);
-
-                border: none;
-
-                border-radius: 16px;
-
-                padding: 14px 24px;
+                font-size: 15px;
 
                 font-weight: 700;
 
-                box-shadow:
+                display: flex;
 
-                    0 10px 25px rgba(37, 211, 102, .3);
+                align-items: center;
 
-            }
+                gap: 8px;
 
-            .btn-primary:hover {
-
-                transform: translateY(-3px);
+                color: var(--primary-deep);
 
             }
 
-            font-variant-numeric:tabular-nums;
+            .filter-title i {
 
-            .skeleton {
-
-                background:
-
-                    linear-gradient(90deg,
-
-                        #eee,
-
-                        #f7f7f7,
-
-                        #eee);
-
-                background-size: 300%;
-
-                animation: loading 1.2s infinite;
+                color: #25D366;
 
             }
 
-            @keyframes loading {
+            .filter-subtitle {
 
-                0% {
+                margin-top: 2px;
 
-                    background-position: 100%;
+                font-size: 12px;
+
+                color: var(--muted);
+
+            }
+
+            .filter-body {
+
+                display: flex;
+
+                gap: 12px;
+
+                align-items: end;
+
+                flex-wrap: wrap;
+
+            }
+
+            .filter-item {
+
+                min-width: 180px;
+
+                flex: 1;
+
+            }
+
+            .filter-item label {
+
+                font-size: 12px;
+
+                font-weight: 700;
+
+                color: var(--muted);
+
+                margin-bottom: 6px;
+
+            }
+
+            .filter-item .form-control {
+
+                border-radius: 14px;
+
+                height: 44px;
+
+                border: 1px solid var(--border);
+
+            }
+
+            .filter-item .form-control:focus {
+
+                border-color: var(--primary);
+
+                box-shadow: 0 0 0 3px rgba(37, 211, 102, .15);
+
+            }
+
+            .filter-body .btn {
+
+                height: 44px;
+
+                padding: 0 18px;
+
+                border-radius: 12px;
+
+                font-weight: 600;
+
+                display: flex;
+
+                align-items: center;
+
+                gap: 8px;
+
+            }
+
+            .filter-body .btn-primary {
+
+                background: var(--primary);
+
+                border: 1px solid var(--primary);
+
+                color: #fff;
+
+            }
+
+            .filter-body .btn-primary:hover,
+            .filter-body .btn-primary:focus,
+            .filter-body .btn-primary:active {
+
+                background: var(--primary-dark) !important;
+
+                border-color: var(--primary-dark) !important;
+
+            }
+
+            .filter-body .btn-success {
+
+                background: var(--primary-deep);
+
+                border: 1px solid var(--primary-deep);
+
+            }
+
+            .filter-body .btn-success:hover,
+            .filter-body .btn-success:focus,
+            .filter-body .btn-success:active {
+
+                background: #054238 !important;
+
+                border-color: #054238 !important;
+
+            }
+
+            .btn-light {
+
+                background: #f3fdf6;
+
+                border: 1px solid var(--border);
+
+                color: var(--primary-deep);
+
+            }
+
+            .btn-light:hover {
+
+                background: #e6f9ed;
+
+                color: var(--primary-dark);
+
+            }
+
+            @media(max-width:768px) {
+
+                .filter-panel {
+
+                    padding: 14px;
 
                 }
 
-                100% {
+                .filter-body {
 
-                    background-position: -100%;
+                    display: flex;
+
+                    flex-direction: column;
+
+                    align-items: stretch;
+
+                    gap: 10px;
+
+                }
+
+                .filter-item {
+
+                    width: 100%;
+
+                    min-width: 100%;
+
+                }
+
+                .filter-body .btn {
+
+                    width: 100%;
+
+                    justify-content: center;
 
                 }
 
             }
+        </style>
+        <!-- TABLE -->
+        <div class="content-card compact-ledger">
 
-            @media(max-width:1200px) {
+            <div class="card-header-modern">
 
-                .sidebar {
+                <h5 class="card-title-modern">
+                    Riwayat Transaksi
+                </h5>
 
-                    width: 86px;
+                <span class="badge bg-success" id="table-status">
+                    Live
+                </span>
 
-                }
+            </div>
 
-                .sidebar .menu-text,
-                .sidebar .menu-title,
-                .sidebar-logo div,
-                .sidebar-footer {
+            <!-- LIST -->
+            <div class="ledger-list" id="ledger-list">
 
-                    display: none;
+                {% for row in data_paginated.items %}
 
-                }
+                <div class="ledger-item">
 
-                .content {
+                    <div class="ledger-left">
 
-                    margin-left: 86px;
+                        <div class="ledger-date">
+                            {{ row.tanggal.strftime("%d %b %Y %H:%M") }}
+                        </div>
 
-                }
+                        <div class="ledger-meta">
 
+                            {% if row.tipe=="MASUK" %}
+                            <span class="pill pill-success">
+                                MASUK
+                            </span>
+                            {% else %}
+                            <span class="pill pill-danger">
+                                KELUAR
+                            </span>
+                            {% endif %}
+
+                            <span class="ledger-desc">
+                                {{ row.keterangan }}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <div class="ledger-right">
+
+                        <div class="ledger-amount">
+
+                            Rp {{ "{:,.0f}".format(row.nominal) }}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+            <!-- PAGINATION -->
+            <div class="pagination-wrapper compact" id="pagination-wrapper">
+
+                <div class="pagination-info" id="pagination-info">
+
+                    Menampilkan
+                    {{ ((data_paginated.page-1)*data_paginated.per_page)+1 }}
+                    -
+                    {% if data_paginated.page*data_paginated.per_page > data_paginated.total %}
+                    {{ data_paginated.total }}
+                    {% else %}
+                    {{ data_paginated.page*data_paginated.per_page }}
+                    {% endif %}
+                    dari {{ data_paginated.total }} transaksi
+
+                </div>
+
+                <nav id="pagination-nav">
+
+                    <ul class="pagination">
+
+                        {% if data_paginated.has_prev %}
+                        <li class="page-item">
+                            <a class="page-link"
+                                href="?page={{data_paginated.prev_num}}&start_date={{start_date}}&end_date={{end_date}}">
+                                ‹
+                            </a>
+                        </li>
+                        {% endif %}
+
+                        {% for page_num in
+                        data_paginated.iter_pages(left_edge=1,right_edge=1,left_current=2,right_current=2) %}
+
+                        {% if page_num %}
+
+                        {% if page_num==data_paginated.page %}
+
+                        <li class="page-item active">
+                            <span class="page-link">
+                                {{page_num}}
+                            </span>
+                        </li>
+
+                        {% else %}
+
+                        <li class="page-item">
+                            <a class="page-link"
+                                href="?page={{page_num}}&start_date={{start_date}}&end_date={{end_date}}">
+                                {{page_num}}
+                            </a>
+                        </li>
+
+                        {% endif %}
+
+                        {% endif %}
+
+                        {% endfor %}
+
+                        {% if data_paginated.has_next %}
+                        <li class="page-item">
+                            <a class="page-link"
+                                href="?page={{data_paginated.next_num}}&start_date={{start_date}}&end_date={{end_date}}">
+                                ›
+                            </a>
+                        </li>
+                        {% endif %}
+
+                    </ul>
+
+                </nav>
+
+            </div>
+
+        </div>
+        <style>
+            .compact-ledger {
+                border-radius: 20px;
+                background: #fff;
+                padding: 14px;
+                background-image:
+                    radial-gradient(circle at 20% 20%, rgba(37, 211, 102, .03) 0, transparent 40%),
+                    radial-gradient(circle at 80% 60%, rgba(18, 140, 126, .03) 0, transparent 40%);
             }
 
-            @media(max-width:992px) {
-
-                .sidebar {
-
-                    position: fixed;
-
-                    left: -100%;
-
-                    transition: .35s;
-
-                }
-
-                .sidebar.show {
-
-                    left: 0;
-
-                }
-
-                .content {
-
-                    margin-left: 0;
-
-                }
-
+            /* LIST */
+            .ledger-list {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                margin-top: 10px;
             }
 
-            @media(max-width:992px) {
-
-                .hero {
-
-                    grid-template-columns: 1fr;
-
-                }
-
+            /* ITEM — styled like a WhatsApp chat bubble */
+            .ledger-item {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 12px 14px;
+                border-radius: 16px;
+                background: #eef9f1;
+                border: 1px solid #dff3e6;
+                position: relative;
+                transition: 0.2s;
             }
 
-            .overview-grid {
-
-                display: grid;
-
-                grid-template-columns:
-
-                    repeat(auto-fit, minmax(260px, 1fr));
-
+            .ledger-item::before {
+                content: "";
+                position: absolute;
+                left: -5px;
+                bottom: 8px;
+                width: 12px;
+                height: 12px;
+                background: #eef9f1;
+                border-left: 1px solid #dff3e6;
+                border-bottom: 1px solid #dff3e6;
+                transform: rotate(45deg);
+                border-radius: 0 0 0 4px;
             }
 
-            .analytics-grid {
-
-                grid-template-columns:
-
-                    repeat(auto-fit, minmax(350px, 1fr));
-
+            .ledger-item:hover {
+                background: #e2f6e9;
+                transform: translateY(-1px);
+                box-shadow: 0 6px 14px rgba(37, 211, 102, .12);
             }
 
-            .fab {
+            .ledger-item:hover::before {
+                background: #e2f6e9;
+            }
 
-                position: fixed;
+            /* LEFT */
+            .ledger-left {
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+                padding-left: 6px;
+            }
 
-                bottom: 22px;
+            .ledger-date {
+                font-size: 11px;
+                color: var(--muted);
+                font-weight: 600;
+            }
 
-                right: 22px;
+            .ledger-meta {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                flex-wrap: wrap;
+            }
 
-                width: 64px;
+            .ledger-desc {
+                font-size: 12px;
+                color: #375146;
+                font-weight: 500;
+            }
 
-                height: 64px;
+            /* RIGHT */
+            .ledger-amount {
+                font-family: 'Baloo 2', sans-serif;
+                font-weight: 700;
+                font-size: 13px;
+                color: var(--primary-deep);
+            }
 
-                border-radius: 50%;
+            /* PILL BADGE */
+            .pill {
+                font-size: 10px;
+                padding: 3px 9px;
+                border-radius: 999px;
+                font-weight: 700;
+                letter-spacing: .2px;
+            }
 
-                background: linear-gradient(135deg,
-                        #25D366,
-                        #169b4c);
+            .pill-success {
+                background: #d7f7e4;
+                color: #128C7E;
+            }
 
-                box-shadow:
+            .pill-danger {
+                background: #ffe4e4;
+                color: #e14b4b;
+            }
 
-                    0 18px 40px rgba(37, 211, 102, .35);
+            /* PAGINATION COMPACT */
+            .pagination-wrapper.compact {
+                margin-top: 12px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
 
+            .pagination-info {
+                font-size: 11px;
+                color: #777;
+            }
+
+            .pagination .page-link {
+                font-size: 12px;
+                padding: 4px 8px;
+                border-radius: 8px;
             }
         </style>
 
     </div>
-    <script>
-        const menu = document.querySelector(".menu-btn");
-
-        const sidebar = document.querySelector(".sidebar");
-
-        menu.onclick = () => {
-
-            sidebar.classList.toggle("show");
-
-        }
-    </script>
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" id="toastContainer" style="z-index:9999">
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
 
-        const ctx = document.getElementById("cashflowChart");
+        let lastTransaction = "";
 
-        new Chart(ctx, {
 
-            type: "line",
+        document
+            .getElementById("toastContainer")
+            .insertAdjacentHTML("beforeend", html);
 
-            data: {
+        const toastElement =
+            document.getElementById(id);
 
-                labels: ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"],
+        const toast =
+            new bootstrap.Toast(toastElement, {
+                delay: 4000
+            });
 
-                datasets: [{
+        toast.show();
 
-                    label: "Cashflow",
+        toastElement.addEventListener("hidden.bs.toast", () => {
 
-                    data: [120, 180, 150, 230, 200, 280, 320],
-
-                    fill: true,
-
-                    tension: .45,
-
-                    borderColor: "#25D366",
-
-                    backgroundColor: "rgba(37,211,102,.15)",
-
-                    pointRadius: 5,
-
-                    pointBackgroundColor: "#25D366"
-
-                }]
-
-            },
-
-            options: {
-
-                plugins: {
-
-                    legend: { display: false }
-
-                },
-
-                responsive: true,
-
-                maintainAspectRatio: false
-
-            }
+            toastElement.remove();
 
         });
 
-        const bar = document.getElementById("incomeExpenseChart");
+        }
 
-        new Chart(bar, {
+    </script>
+    <script>
+        const TOKEN = "{{ token }}";
 
-            type: "bar",
+        let lastTransaction = null;
 
-            data: {
+        async function loadDashboard() {
 
-                labels: ["Income", "Expense"],
+            try {
 
-                datasets: [{
+                const res = await fetch(`/dashboard-data/${TOKEN}`);
 
-                    data: [2400, 1120],
+                if (!res.ok) return;
 
-                    backgroundColor: ["#25D366", "#ef4444"],
+                const data = await res.json();
 
-                    borderRadius: 12
+                // ==========================
+                // UPDATE SUMMARY
+                // ==========================
 
-                }]
+                document.getElementById("masuk").innerHTML =
+                    "Rp " + Number(data.masuk).toLocaleString("id-ID");
 
-            },
+                document.getElementById("keluar").innerHTML =
+                    "Rp " + Number(data.keluar).toLocaleString("id-ID");
 
-            options: {
+                document.getElementById("saldo").innerHTML =
+                    "Rp " + Number(data.saldo).toLocaleString("id-ID");
 
-                plugins: {
+                // ==========================
+                // UPDATE TRANSAKSI
+                // ==========================
 
-                    legend: { display: false }
+                const list = document.getElementById("ledger-list");
+
+                if (list) {
+
+                    list.innerHTML = "";
+
+                    data.rows.forEach(row => {
+
+                        list.innerHTML += `
+                <div class="ledger-item">
+
+                    <div class="ledger-left">
+
+                        <div class="ledger-date">
+                            ${row.tanggal}
+                        </div>
+
+                        <div class="ledger-meta">
+
+                            <span class="pill ${row.tipe == "MASUK" ? "pill-success" : "pill-danger"}">
+
+                                ${row.tipe}
+
+                            </span>
+
+                            <span class="ledger-desc">
+
+                                ${row.keterangan}
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <div class="ledger-right">
+
+                        <div class="ledger-amount">
+
+                            Rp ${Number(row.nominal).toLocaleString("id-ID")}
+
+                        </div>
+
+                    </div>
+
+                </div>
+                `;
+
+                    });
 
                 }
 
+                // ==========================
+                // TOAST
+                // ==========================
+
+                if (data.rows.length > 0) {
+
+                    const trx = data.rows[0];
+
+                    const key = trx.id || (
+                        trx.tanggal +
+                        trx.nominal +
+                        trx.tipe +
+                        trx.keterangan
+                    );
+
+                    if (lastTransaction !== null && lastTransaction !== key) {
+
+                        showRealtimeNotification(trx);
+
+                    }
+
+                    lastTransaction = key;
+
+                }
+
+            } catch (e) {
+
+                console.log(e);
+
             }
 
-        });
+        }
+
+        loadDashboard();
+
+        setInterval(loadDashboard, 3000);
+
+        function showRealtimeNotification(trx) {
+
+            const icon =
+                document.getElementById("toastIcon");
+
+            const iconClass =
+                document.getElementById("toastIconClass");
+
+            const title =
+                document.getElementById("toastTitle");
+
+            const desc =
+                document.getElementById("toastDesc");
+
+            if (trx.tipe === "MASUK") {
+
+                icon.style.background = "#25D366";
+
+                iconClass.className =
+                    "bi bi-arrow-down-circle-fill";
+
+                title.innerHTML = "💰 Pemasukan Baru";
+
+            } else {
+
+                icon.style.background = "#ef4444";
+
+                iconClass.className =
+                    "bi bi-arrow-up-circle-fill";
+
+                title.innerHTML = "💸 Pengeluaran Baru";
+
+            }
+
+            desc.innerHTML = `
+
+        <div class="fw-semibold">
+
+            Rp ${Number(trx.nominal).toLocaleString("id-ID")}
+
+        </div>
+
+        <div>
+
+            ${trx.keterangan}
+
+        </div>
+
+        <small class="text-success">
+
+            ${trx.kategori}
+
+        </small>
+
+    `;
+
+            const toastElement =
+                document.getElementById("trxToast");
+
+            const toast =
+                bootstrap.Toast.getOrCreateInstance(
+                    toastElement,
+                    {
+                        delay: 5000
+                    }
+                );
+
+            toast.show();
+
+        }
+
     </script>
+
+    <script>
+        const pieCtx = document.getElementById('pieChart');
+
+        new Chart(pieCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Masuk', 'Keluar'],
+                datasets: [{
+                    data: [
+                        {{ total_masuk }},
+                {{ total_keluar }}
+            ],
+            backgroundColor: ['#25D366', '#ef4444'],
+            borderWidth: 0
+        }]
+        }
+    });
+
+        const lineCtx = document.getElementById('lineChart');
+
+        new Chart(lineCtx, {
+            type: 'line',
+            data: {
+                labels: [
+                    {% for row in data %}
+            "{{ row.tanggal }}",
+            {% endfor %}
+            ],
+            datasets: [{
+                label: 'Transaksi',
+                data: [
+                    {% for row in data %}
+            {{ row.nominal }},
+            {% endfor %}
+        ],
+            borderColor: '#128C7E',
+            backgroundColor: 'rgba(37, 211, 102, 0.12)',
+            fill: true,
+            pointBackgroundColor: '#25D366',
+            tension: 0.3
+            }]
+        }
+    });
+    </script>
+    <!-- Realtime Notification -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index:99999">
+
+        <div id="trxToast" class="toast border-0 shadow-lg" role="alert" data-bs-delay="5000">
+
+            <div class="toast-header">
+
+                <div id="toastIcon" class="rounded-circle d-flex align-items-center justify-content-center me-2"
+                    style="width:34px;height:34px;background:#25D366;color:white">
+
+                    <i id="toastIconClass" class="bi bi-wallet2"></i>
+
+                </div>
+
+                <strong class="me-auto">
+                    ChatSaku Realtime
+                </strong>
+
+                <small id="toastTime">
+                    baru saja
+                </small>
+
+                <button class="btn-close" data-bs-dismiss="toast">
+                </button>
+
+            </div>
+
+            <div class="toast-body">
+
+                <div id="toastTitle" class="fw-bold mb-1">
+                </div>
+
+                <div id="toastDesc" class="text-muted small">
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    <style>
+        .toast {
+
+            border-radius: 18px;
+            overflow: hidden;
+            min-width: 340px;
+            background: white;
+
+        }
+
+        .toast-header {
+
+            background: white;
+            border: none;
+
+        }
+
+        #toastTitle {
+
+            font-size: 15px;
+
+        }
+
+        #toastDesc {
+
+            line-height: 1.5;
+
+        }
+    </style>
 </body>
 
 </html>
