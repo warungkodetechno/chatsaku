@@ -500,49 +500,45 @@
 
             <header class="topbar">
 
-                <div class="left-side">
+                <div class="topbar-row">
 
-                    <button class="menu-btn">
+                    <div class="topbar-left">
 
-                        <i class="bi bi-list"></i>
+                        <button class="menu-btn">
+                            <i class="bi bi-list"></i>
+                        </button>
 
-                    </button>
+                        <div class="page-title">
 
-                    <div class="search-box">
+                            <h2>Dashboard</h2>
 
-                        <i class="bi bi-search"></i>
+                            <small>Selamat datang kembali 👋</small>
 
-                        <input type="text" placeholder="Cari transaksi, budget, AI Insight...">
+                        </div>
 
                     </div>
 
-                </div>
+                    <div class="topbar-right">
 
-                <div class="right-side">
+                        <button class="circle-btn">
+                            <i class="bi bi-bell"></i>
+                        </button>
 
-                    <button class="icon-btn">
+                        <button class="circle-btn">
+                            <i class="bi bi-gear"></i>
+                        </button>
 
-                        <i class="bi bi-bell"></i>
+                        <div class="profile-card">
 
-                        <span class="badge-dot"></span>
+                            <img src="https://ui-avatars.com/api/?name=ChatSaku&background=25D366&color=fff">
 
-                    </button>
+                            <div>
 
-                    <button class="icon-btn">
+                                <strong>Bambang</strong>
 
-                        <i class="bi bi-moon-stars"></i>
+                                <small>Premium User</small>
 
-                    </button>
-
-                    <div class="profile-card">
-
-                        <img src="https://ui-avatars.com/api/?name=ChatSaku&background=25D366&color=fff">
-
-                        <div>
-
-                            <strong>ChatSaku</strong>
-
-                            <small>Premium User</small>
+                            </div>
 
                         </div>
 
@@ -550,7 +546,193 @@
 
                 </div>
 
+                <div class="search-wrapper">
+
+                    <i class="bi bi-search"></i>
+
+                    <input type="text" placeholder="Cari transaksi, kategori, AI Insight...">
+
+                </div>
+
             </header>
+            <style>
+                .profile-card {
+
+                    display: flex;
+
+                    align-items: center;
+
+                    gap: 14px;
+
+                    padding: 8px 10px 8px 8px;
+
+                    border-radius: 18px;
+
+                    background: white;
+
+                    box-shadow: 0 10px 25px rgba(15, 23, 42, .06);
+
+                }
+
+                .profile-card img {
+
+                    width: 50px;
+
+                    height: 50px;
+
+                    border-radius: 50%;
+
+                }
+
+                .profile-card strong {
+
+                    display: block;
+
+                    font-size: 15px;
+
+                }
+
+                .profile-card small {
+
+                    color: #6b7280;
+
+                }
+            </style>
+            <style>
+                .topbar {
+
+                    position: sticky;
+
+                    top: 0;
+
+                    z-index: 100;
+
+                    background: rgba(255, 255, 255, .82);
+
+                    backdrop-filter: blur(18px);
+
+                    padding: 22px 30px;
+
+                    border-bottom: 1px solid rgba(0, 0, 0, .05);
+
+                }
+
+                .topbar-row {
+
+                    display: flex;
+
+                    justify-content: space-between;
+
+                    align-items: center;
+
+                    margin-bottom: 20px;
+
+                }
+
+                .topbar-left {
+
+                    display: flex;
+
+                    align-items: center;
+
+                    gap: 18px;
+
+                }
+
+                .page-title h2 {
+
+                    margin: 0;
+
+                    font-size: 28px;
+
+                    font-weight: 800;
+
+                    color: #143126;
+
+                }
+
+                .page-title small {
+
+                    color: #6b7280;
+
+                }
+
+                .topbar-right {
+
+                    display: flex;
+
+                    align-items: center;
+
+                    gap: 14px;
+
+                }
+
+                .circle-btn {
+
+                    width: 48px;
+
+                    height: 48px;
+
+                    border: none;
+
+                    border-radius: 16px;
+
+                    background: white;
+
+                    box-shadow: 0 10px 25px rgba(15, 23, 42, .06);
+
+                    transition: .25s;
+
+                }
+
+                .circle-btn:hover {
+
+                    transform: translateY(-3px);
+
+                }
+
+                .search-wrapper {
+
+                    height: 58px;
+
+                    background: #f5f8f6;
+
+                    border-radius: 18px;
+
+                    display: flex;
+
+                    align-items: center;
+
+                    padding: 0 22px;
+
+                    gap: 15px;
+
+                    border: 1px solid #e8efe9;
+
+                }
+
+                .search-wrapper input {
+
+                    width: 100%;
+
+                    border: none;
+
+                    outline: none;
+
+                    background: transparent;
+
+                    font-size: 15px;
+
+                }
+
+                .search-wrapper i {
+
+                    color: #94a3b8;
+
+                    font-size: 20px;
+
+                }
+            </style>
 
             <section class="dashboard-body">
 
@@ -2043,29 +2225,6 @@
 
             }
 
-            .topbar {
-
-                height: 78px;
-
-                background: white;
-
-                display: flex;
-
-                justify-content: space-between;
-
-                align-items: center;
-
-                padding: 0 30px;
-
-                border-bottom: 1px solid #edf2f7;
-
-                position: sticky;
-
-                top: 0;
-
-                z-index: 99;
-
-            }
 
             .left-side {
 
@@ -2335,16 +2494,6 @@
                 box-shadow:
 
                     0 25px 60px rgba(15, 23, 42, .08);
-
-            }
-
-            .topbar {
-
-                background: rgba(255, 255, 255, .72);
-
-                backdrop-filter: blur(18px);
-
-                border-bottom: 1px solid rgba(255, 255, 255, .5);
 
             }
 
