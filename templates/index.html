@@ -2253,6 +2253,229 @@
 
             }
         </style>
+        <style>
+            body {
+
+                background: #F5F9F6;
+
+                overflow-x: hidden;
+
+            }
+
+            body::before {
+
+                content: "";
+
+                position: fixed;
+
+                width: 650px;
+
+                height: 650px;
+
+                right: -220px;
+
+                top: -220px;
+
+                background: rgba(37, 211, 102, .08);
+
+                border-radius: 50%;
+
+                filter: blur(90px);
+
+                z-index: -2;
+
+            }
+
+            body::after {
+
+                content: "";
+
+                position: fixed;
+
+                width: 450px;
+
+                height: 450px;
+
+                left: -180px;
+
+                bottom: -180px;
+
+                background: rgba(37, 211, 102, .05);
+
+                border-radius: 50%;
+
+                filter: blur(70px);
+
+                z-index: -2;
+
+            }
+
+            .dashboard-card {
+
+                background: white;
+
+                border-radius: 28px;
+
+                padding: 26px;
+
+                border: 1px solid rgba(0, 0, 0, .04);
+
+                box-shadow:
+
+                    0 12px 35px rgba(15, 23, 42, .05);
+
+                transition: .25s;
+
+            }
+
+            .dashboard-card:hover {
+
+                transform: translateY(-5px);
+
+                box-shadow:
+
+                    0 25px 60px rgba(15, 23, 42, .08);
+
+            }
+
+            .topbar {
+
+                background: rgba(255, 255, 255, .72);
+
+                backdrop-filter: blur(18px);
+
+                border-bottom: 1px solid rgba(255, 255, 255, .5);
+
+            }
+
+            .sidebar-menu .active {
+
+                box-shadow:
+
+                    0 10px 35px rgba(255, 255, 255, .35);
+
+            }
+
+            .logo-icon {
+
+                box-shadow:
+
+                    0 10px 35px rgba(255, 255, 255, .25);
+
+            }
+
+            .progress {
+
+                height: 10px;
+
+                border-radius: 20px;
+
+                overflow: hidden;
+
+                background: #edf3ee;
+
+            }
+
+            .progress-bar {
+
+                background:
+
+                    linear-gradient(90deg,
+
+                        #25D366,
+
+                        #14B84A);
+
+                border-radius: 20px;
+
+            }
+
+            ::-webkit-scrollbar {
+
+                width: 8px;
+
+            }
+
+            ::-webkit-scrollbar-thumb {
+
+                background: #25D366;
+
+                border-radius: 50px;
+
+            }
+
+            ::-webkit-scrollbar-track {
+
+                background: #edf4ef;
+
+            }
+
+            .btn-primary {
+
+                background:
+
+                    linear-gradient(135deg,
+
+                        #25D366,
+
+                        #169b4c);
+
+                border: none;
+
+                border-radius: 16px;
+
+                padding: 14px 24px;
+
+                font-weight: 700;
+
+                box-shadow:
+
+                    0 10px 25px rgba(37, 211, 102, .3);
+
+            }
+
+            .btn-primary:hover {
+
+                transform: translateY(-3px);
+
+            }
+
+            font-variant-numeric:tabular-nums;
+
+            .skeleton {
+
+                background:
+
+                    linear-gradient(90deg,
+
+                        #eee,
+
+                        #f7f7f7,
+
+                        #eee);
+
+                background-size: 300%;
+
+                animation: loading 1.2s infinite;
+
+            }
+
+            @keyframes loading {
+
+                0% {
+
+                    background-position: 100%;
+
+                }
+
+                100% {
+
+                    background-position: -100%;
+
+                }
+
+            }
+        </style>
 
     </div>
     <script>
