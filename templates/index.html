@@ -1119,6 +1119,581 @@
 
                 }
             </style>
+            <section class="analytics-section">
+
+                <div class="section-header">
+
+                    <div>
+
+                        <h2>Financial Analytics</h2>
+
+                        <span>Visualisasi kondisi keuangan Anda</span>
+
+                    </div>
+
+                </div>
+
+                <div class="analytics-grid">
+
+                    <div class="analytics-card large">
+
+                        <div class="card-title">
+
+                            Cashflow Trend
+
+                        </div>
+
+                        <canvas id="cashflowChart"></canvas>
+
+                    </div>
+
+                    <div class="analytics-card">
+
+                        <div class="card-title">
+
+                            Pengeluaran Terbesar
+
+                        </div>
+
+                        <div class="category-list">
+
+                            <div class="category-item">
+
+                                <span>🍔 Makan</span>
+
+                                <strong>Rp850.000</strong>
+
+                            </div>
+
+                            <div class="category-item">
+
+                                <span>🚗 Transport</span>
+
+                                <strong>Rp620.000</strong>
+
+                            </div>
+
+                            <div class="category-item">
+
+                                <span>🛒 Belanja</span>
+
+                                <strong>Rp450.000</strong>
+
+                            </div>
+
+                            <div class="category-item">
+
+                                <span>💡 Tagihan</span>
+
+                                <strong>Rp320.000</strong>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="analytics-card">
+
+                        <div class="card-title">
+
+                            Income vs Expense
+
+                        </div>
+
+                        <canvas id="incomeExpenseChart"></canvas>
+
+                    </div>
+
+                    <div class="analytics-card ai-card">
+
+                        <div class="card-title">
+
+                            AI Insight
+
+                        </div>
+
+                        <p>
+
+                            💡 Pengeluaran makan meningkat
+                            18% dibanding bulan lalu.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+            <style>
+                .analytics-section {
+
+                    margin-top: 30px;
+
+                }
+
+                .analytics-grid {
+
+                    display: grid;
+
+                    grid-template-columns: 2fr 1fr;
+
+                    gap: 20px;
+
+                }
+
+                .analytics-card {
+
+                    background: white;
+
+                    border-radius: 24px;
+
+                    padding: 24px;
+
+                    box-shadow: 0 12px 30px rgba(15, 23, 42, .05);
+
+                }
+
+                .analytics-card.large {
+
+                    min-height: 360px;
+
+                }
+
+                .card-title {
+
+                    font-size: 18px;
+
+                    font-weight: 800;
+
+                    margin-bottom: 20px;
+
+                    color: #143126;
+
+                }
+
+                .category-list {
+
+                    display: flex;
+
+                    flex-direction: column;
+
+                    gap: 14px;
+
+                }
+
+                .category-item {
+
+                    display: flex;
+
+                    justify-content: space-between;
+
+                    align-items: center;
+
+                    padding: 14px;
+
+                    background: #f8fbf9;
+
+                    border-radius: 16px;
+
+                }
+
+                .category-item strong {
+
+                    color: #15803d;
+
+                }
+
+                .ai-card {
+
+                    background: linear-gradient(135deg, #25D366, #169b4c);
+
+                    color: white;
+
+                }
+
+                .ai-card p {
+
+                    line-height: 1.8;
+
+                    margin-top: 18px;
+
+                }
+            </style>
+            <section class="activity-section">
+
+                <div class="section-header">
+
+                    <div>
+
+                        <h2>Activity Center</h2>
+
+                        <span>Semua aktivitas keuangan dalam satu tempat</span>
+
+                    </div>
+
+                    <button class="view-all">
+
+                        Lihat Semua
+
+                    </button>
+
+                </div>
+
+                <div class="activity-grid">
+
+                    <!-- LEFT -->
+
+                    <div class="activity-card transaction-card">
+
+                        <div class="card-title">
+
+                            Riwayat Transaksi
+
+                        </div>
+
+                        <div class="transaction-list">
+
+                            <div class="transaction-item income">
+
+                                <div class="trx-icon">
+
+                                    <i class="bi bi-arrow-down-circle-fill"></i>
+
+                                </div>
+
+                                <div class="trx-info">
+
+                                    <strong>Gaji Bulanan</strong>
+
+                                    <small>Hari ini • 08:30</small>
+
+                                </div>
+
+                                <div class="trx-value positive">
+
+                                    +Rp2.500.000
+
+                                </div>
+
+                            </div>
+
+                            <div class="transaction-item expense">
+
+                                <div class="trx-icon">
+
+                                    <i class="bi bi-cup-hot"></i>
+
+                                </div>
+
+                                <div class="trx-info">
+
+                                    <strong>Makan Siang</strong>
+
+                                    <small>Hari ini • 12:45</small>
+
+                                </div>
+
+                                <div class="trx-value negative">
+
+                                    -Rp45.000
+
+                                </div>
+
+                            </div>
+
+                            <div class="transaction-item expense">
+
+                                <div class="trx-icon">
+
+                                    <i class="bi bi-car-front"></i>
+
+                                </div>
+
+                                <div class="trx-info">
+
+                                    <strong>Transport</strong>
+
+                                    <small>Kemarin</small>
+
+                                </div>
+
+                                <div class="trx-value negative">
+
+                                    -Rp18.000
+
+                                </div>
+
+                            </div>
+
+                            <div class="transaction-item income">
+
+                                <div class="trx-icon">
+
+                                    <i class="bi bi-laptop"></i>
+
+                                </div>
+
+                                <div class="trx-info">
+
+                                    <strong>Freelance</strong>
+
+                                    <small>Kemarin</small>
+
+                                </div>
+
+                                <div class="trx-value positive">
+
+                                    +Rp800.000
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- RIGHT -->
+
+                    <div class="widget-column">
+
+                        <div class="activity-card">
+
+                            <div class="card-title">
+
+                                Target Tabungan
+
+                            </div>
+
+                            <h4>🎯 Laptop MacBook</h4>
+
+                            <div class="progress modern">
+
+                                <div class="progress-bar" style="width:65%"></div>
+
+                            </div>
+
+                            <div class="target-footer">
+
+                                <strong>Rp6.500.000</strong>
+
+                                <span>/ Rp10.000.000</span>
+
+                            </div>
+
+                        </div>
+
+                        <div class="activity-card reminder-card">
+
+                            <div class="card-title">
+
+                                Reminder
+
+                            </div>
+
+                            <div class="reminder-item">
+
+                                <i class="bi bi-bell-fill"></i>
+
+                                <div>
+
+                                    <strong>Bayar Internet</strong>
+
+                                    <small>Besok • Rp350.000</small>
+
+                                </div>
+
+                            </div>
+
+                            <div class="reminder-item">
+
+                                <i class="bi bi-lightning-fill"></i>
+
+                                <div>
+
+                                    <strong>Listrik PLN</strong>
+
+                                    <small>3 Hari Lagi</small>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+            <style>
+                .activity-section {
+
+                    margin-top: 30px;
+
+                }
+
+                .activity-grid {
+
+                    display: grid;
+
+                    grid-template-columns: 2fr 1fr;
+
+                    gap: 22px;
+
+                }
+
+                .transaction-list {
+
+                    display: flex;
+
+                    flex-direction: column;
+
+                    gap: 14px;
+
+                }
+
+                .transaction-item {
+
+                    display: flex;
+
+                    align-items: center;
+
+                    padding: 16px;
+
+                    border-radius: 18px;
+
+                    transition: .25s;
+
+                }
+
+                .transaction-item:hover {
+
+                    background: #f8fbf9;
+
+                }
+
+                .trx-icon {
+
+                    width: 50px;
+
+                    height: 50px;
+
+                    border-radius: 16px;
+
+                    display: flex;
+
+                    align-items: center;
+
+                    justify-content: center;
+
+                    background: #eefbf2;
+
+                    font-size: 22px;
+
+                    color: #16a34a;
+
+                    margin-right: 16px;
+
+                }
+
+                .expense .trx-icon {
+
+                    background: #fff1f2;
+
+                    color: #ef4444;
+
+                }
+
+                .trx-info {
+
+                    flex: 1;
+
+                }
+
+                .trx-info strong {
+
+                    display: block;
+
+                    font-size: 15px;
+
+                }
+
+                .trx-info small {
+
+                    color: #64748b;
+
+                }
+
+                .trx-value {
+
+                    font-size: 17px;
+
+                    font-weight: 800;
+
+                }
+
+                .positive {
+
+                    color: #16a34a;
+
+                }
+
+                .negative {
+
+                    color: #ef4444;
+
+                }
+
+                .widget-column {
+
+                    display: flex;
+
+                    flex-direction: column;
+
+                    gap: 20px;
+
+                }
+
+                .target-footer {
+
+                    margin-top: 14px;
+
+                    display: flex;
+
+                    justify-content: space-between;
+
+                }
+
+                .reminder-item {
+
+                    display: flex;
+
+                    gap: 14px;
+
+                    align-items: center;
+
+                    padding: 14px 0;
+
+                    border-bottom: 1px solid #edf2f7;
+
+                }
+
+                .reminder-item:last-child {
+
+                    border: none;
+
+                }
+
+                .reminder-item i {
+
+                    font-size: 22px;
+
+                    color: #25D366;
+
+                }
+            </style>
 
         </main>
         <style>
@@ -1346,7 +1921,89 @@
         </style>
 
     </div>
+    <script>
+        const ctx = document.getElementById("cashflowChart");
 
+        new Chart(ctx, {
+
+            type: "line",
+
+            data: {
+
+                labels: ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"],
+
+                datasets: [{
+
+                    label: "Cashflow",
+
+                    data: [120, 180, 150, 230, 200, 280, 320],
+
+                    fill: true,
+
+                    tension: .45,
+
+                    borderColor: "#25D366",
+
+                    backgroundColor: "rgba(37,211,102,.15)",
+
+                    pointRadius: 5,
+
+                    pointBackgroundColor: "#25D366"
+
+                }]
+
+            },
+
+            options: {
+
+                plugins: {
+
+                    legend: { display: false }
+
+                },
+
+                responsive: true,
+
+                maintainAspectRatio: false
+
+            }
+
+        });
+
+        const bar = document.getElementById("incomeExpenseChart");
+
+        new Chart(bar, {
+
+            type: "bar",
+
+            data: {
+
+                labels: ["Income", "Expense"],
+
+                datasets: [{
+
+                    data: [2400, 1120],
+
+                    backgroundColor: ["#25D366", "#ef4444"],
+
+                    borderRadius: 12
+
+                }]
+
+            },
+
+            options: {
+
+                plugins: {
+
+                    legend: { display: false }
+
+                }
+
+            }
+
+        });
+    </script>
 </body>
 
 </html>
