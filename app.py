@@ -826,7 +826,8 @@ def dashboard(token):
         data_paginated=data_paginated,
 
         trend_label=trend_label,
-        trend_value=trend_value
+        trend_value=trend_value,
+        now=date.today()
 
     )
 
