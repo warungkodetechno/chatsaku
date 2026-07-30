@@ -2385,6 +2385,8 @@ untuk melihat seluruh reminder.
 
             """)
 
+            return jsonify(status=True)
+
         try:
 
             parts = message.lower().split()
@@ -2460,6 +2462,8 @@ untuk melihat seluruh reminder.
     ✅ Dashboard Lengkap
 
             """)
+
+            return jsonify(status=True)
 
         daftar = HutangPiutang.query.filter(
             HutangPiutang.nomor_wa == sender,
@@ -2663,6 +2667,8 @@ untuk melihat seluruh reminder.
 
             """)
 
+            return jsonify(status=True)
+
         daftar = HutangPiutang.query.filter(
             HutangPiutang.nomor_wa == sender,
             HutangPiutang.tipe == "PIUTANG",
@@ -2748,6 +2754,8 @@ untuk melihat seluruh reminder.
 
             """)
 
+            return jsonify(status=True)
+
         data = message.split(" ", 3)
 
 
@@ -2774,7 +2782,7 @@ untuk melihat seluruh reminder.
 
         try:
 
-            nominal = normalize_nominal(parts[2])
+            nominal = normalize_nominal(data[2])
 
         except:
 
@@ -2857,6 +2865,8 @@ untuk melihat seluruh reminder.
     ✅ Dashboard Lengkap
 
             """)
+
+            return jsonify(status=True)
 
         data = message.split(" ",1)
 
@@ -2953,6 +2963,8 @@ untuk melihat seluruh reminder.
     ✅ Dashboard Lengkap
 
             """)
+
+            return jsonify(status=True)
 
         data = message.split(" ", 1)
 
