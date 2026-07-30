@@ -1277,9 +1277,6 @@
 
                 {% for item in reminder_list %}
 
-                {% set hari_ini = now.day %}
-                {% set selisih = item.tanggal - hari_ini %}
-
                 <div class="col-lg-6">
 
                     <div class="reminder-card">
@@ -1292,13 +1289,17 @@
 
                                     <i class="bi bi-receipt"></i>
 
-                                    {{ item.nama }}
+                                    {{ item.judul }}
 
                                 </div>
 
                                 <div class="reminder-date">
 
-                                    Tanggal {{ item.tanggal }}
+                                    {{ item.hari }} {{ item.bulan }}
+
+                                    {% if item.kategori != "-" %}
+                                    • {{ item.kategori }}
+                                    {% endif %}
 
                                 </div>
 
@@ -1312,33 +1313,23 @@
 
                         </div>
 
+                        {% if item.catatan %}
+
+                        <div class="reminder-note">
+
+                            {{ item.catatan }}
+
+                        </div>
+
+                        {% endif %}
+
                         <div class="reminder-status">
 
-                            {% if selisih > 0 %}
+                            <span class="badge bg-{{ item.status_color }}">
 
-                            <span class="badge bg-success">
-
-                                {{ selisih }} hari lagi
+                                {{ item.status }}
 
                             </span>
-
-                            {% elif selisih == 0 %}
-
-                            <span class="badge bg-warning text-dark">
-
-                                Hari ini
-
-                            </span>
-
-                            {% else %}
-
-                            <span class="badge bg-danger">
-
-                                Terlambat {{ selisih|abs }} hari
-
-                            </span>
-
-                            {% endif %}
 
                         </div>
 
@@ -1360,16 +1351,13 @@
 
                     <h6>Tidak ada reminder</h6>
 
-                    <small>
-                        Belum ada tagihan yang dibuat.
-                    </small>
+                    <small>Belum ada tagihan yang dibuat.</small>
 
                 </div>
 
             </div>
 
             {% endif %}
-
         </div>
         <style>
             .reminder-wrapper {

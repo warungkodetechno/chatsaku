@@ -586,11 +586,13 @@ def dashboard(token):
 
     for r in reminders:
 
-        tanggal = date(
-            today.year,
-            today.month,
-            r.tanggal
-        )
+        tanggal = date(today.year, today.month, r.tanggal)
+
+        if tanggal < today:
+            if today.month == 12:
+                tanggal = date(today.year + 1, 1, r.tanggal)
+            else:
+                tanggal = date(today.year, today.month + 1, r.tanggal)
 
         selisih = (tanggal - today).days
 
@@ -606,32 +608,27 @@ def dashboard(token):
         reminder_month += 1
 
         if selisih < 0:
+            status = f"Terlambat {abs(selisih)} hari"
             warna = "danger"
-
-        elif selisih <= 2:
+        elif selisih == 0:
+            status = "Hari ini"
             warna = "warning"
-
+        elif selisih == 1:
+            status = "Besok"
+            warna = "warning"
         else:
+            status = f"{selisih} hari lagi"
             warna = "success"
 
         reminder_list.append({
-
             "hari": tanggal.strftime("%d"),
-
             "bulan": tanggal.strftime("%b").upper(),
-
             "judul": r.nama,
-
             "kategori": getattr(r, "kategori", "-"),
-
             "catatan": getattr(r, "catatan", ""),
-
             "nominal": r.nominal,
-
-            "status": f"{selisih} Hari",
-
+            "status": status,
             "status_color": warna
-
         })
 
     # =====================================================
