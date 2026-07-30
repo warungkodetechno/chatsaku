@@ -2554,6 +2554,8 @@ untuk melihat seluruh reminder.
 
             """)
 
+            return jsonify(status=True)
+
         data = message.split(" ", 3)
 
         if len(data) < 3:
@@ -2575,7 +2577,7 @@ untuk melihat seluruh reminder.
 
         try:
 
-            nominal = normalize_nominal(parts[2])
+            nominal = normalize_nominal(data[2])
 
         except:
 
