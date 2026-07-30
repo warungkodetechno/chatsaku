@@ -1271,11 +1271,11 @@
 
             </div>
 
-            {% if reminders %}
+            {% if reminder_list %}
 
             <div class="row g-3">
 
-                {% for item in reminders %}
+                {% for item in reminder_list %}
 
                 {% set hari_ini = now.day %}
                 {% set selisih = item.tanggal - hari_ini %}
