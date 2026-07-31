@@ -1344,41 +1344,6 @@ Selamat menabung 💚"""
     # =========================
     # SALDO
     # =========================
-#     if cmd == "saldo":
-
-#         nomor = get_owner_number(sender)
-
-#         masuk = transaksi_user(nomor).filter(
-#             Transaksi.tipe == "MASUK"
-#         ).with_entities(
-#             db.func.sum(Transaksi.nominal)
-#         ).scalar() or 0
-
-#         keluar = transaksi_user(nomor).filter(
-#             Transaksi.tipe == "KELUAR"
-#         ).with_entities(
-#             db.func.sum(Transaksi.nominal)
-#         ).scalar() or 0
-
-#         saldo = get_current_balance(nomor)
-
-#         # link = generate_dashboard_link(sender)
-
-#         kirim_wa(
-#             sender,
-#             f"""💳 *Saldo Keuangan*
-# ┌─────────────────────┐
-# 📥 Masuk   : Rp {masuk:,.0f}
-# 📤 Keluar  : Rp {keluar:,.0f}
-#  ──────────────────────
-# 💰 Saldo   : *Rp {saldo:,.0f}*
-# └─────────────────────┘
-
-# 🤖 ChatSaku Finance Assistant
-# """
-#         )
-#         return jsonify({"status": True})
-    import json
     if cmd == "saldo":
 
         nomor = get_owner_number(sender)
@@ -1389,56 +1354,29 @@ Selamat menabung 💚"""
             db.func.sum(Transaksi.nominal)
         ).scalar() or 0
 
-
         keluar = transaksi_user(nomor).filter(
             Transaksi.tipe == "KELUAR"
         ).with_entities(
             db.func.sum(Transaksi.nominal)
         ).scalar() or 0
 
-
         saldo = get_current_balance(nomor)
 
-
-        buttons = [
-
-            {
-                "id": "dashboard",
-                "message": "📊 Dashboard"
-            },
-
-            {
-                "id": "masuk",
-                "message": "📥 Tambah Masuk"
-            },
-
-            {
-                "id": "keluar",
-                "message": "📤 Tambah Keluar"
-            }
-
-        ]
-
+        # link = generate_dashboard_link(sender)
 
         kirim_wa(
             sender,
-
             f"""💳 *Saldo Keuangan*
+┌─────────────────────┐
+📥 Masuk   : Rp {masuk:,.0f}
+📤 Keluar  : Rp {keluar:,.0f}
+ ──────────────────────
+💰 Saldo   : *Rp {saldo:,.0f}*
+└─────────────────────┘
 
-    ┌─────────────────────┐
-    📥 Masuk   : Rp {masuk:,.0f}
-    📤 Keluar  : Rp {keluar:,.0f}
-    ─────────────────────
-    💰 Saldo   : *Rp {saldo:,.0f}*
-    └─────────────────────┘
-
-    🤖 ChatSaku Finance Assistant
-    """,
-
-            buttons=buttons
+🤖 ChatSaku Finance Assistant
+"""
         )
-
-
         return jsonify({"status": True})
 
     # =========================

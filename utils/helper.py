@@ -462,71 +462,33 @@ def transaksi_user(sender):
 # =========================
 # FONNTE SEND MESSAGE
 # =========================
-import json
 FONTE_TOKEN = os.getenv("FONTE_TOKEN")
 
-# def kirim_wa(nomor, pesan):
-#     try:
+def kirim_wa(nomor, pesan):
+    try:
 
-#         response = requests.post(
-#             "https://api.fonnte.com/send",
-#             headers={
-#                 "Authorization": FONTE_TOKEN
-#             },
-#             data={
-#                 "target": nomor,
-#                 "message": pesan,
-#                 "delay": 2
-#             },
-#             timeout=30
-#         )
-
-#         print("=" * 60)
-#         print("FONNTE SEND")
-#         print("TO     :", nomor)
-#         print("STATUS :", response.status_code)
-#         print("BODY   :", response.text)
-#         print("=" * 60)
-
-#     except Exception as e:
-#         print("ERROR FONNTE :", str(e))
-
-def kirim_wa(nomor, pesan, buttons=None):
-
-    payload = {
-
-        "target": nomor,
-
-        "message": pesan
-
-    }
-
-
-    if buttons:
-
-        payload["buttonJSON"] = json.dumps(
-            buttons
+        response = requests.post(
+            "https://api.fonnte.com/send",
+            headers={
+                "Authorization": FONTE_TOKEN
+            },
+            data={
+                "target": nomor,
+                "message": pesan,
+                "delay": 2
+            },
+            timeout=30
         )
 
+        print("=" * 60)
+        print("FONNTE SEND")
+        print("TO     :", nomor)
+        print("STATUS :", response.status_code)
+        print("BODY   :", response.text)
+        print("=" * 60)
 
-    print("PAYLOAD FONNTE")
-    print(payload)
-
-
-    response = requests.post(
-        "https://api.fonnte.com/send",
-        headers={
-            "Authorization": FONTE_TOKEN
-        },
-        data=payload
-    )
-
-
-    print("RESPON FONNTE")
-    print(response.text)
-
-
-    return response.json()
+    except Exception as e:
+        print("ERROR FONNTE :", str(e))
 
 # ==========================================
 # BABLAST CONFIG
