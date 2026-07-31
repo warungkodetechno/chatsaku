@@ -1378,7 +1378,7 @@ Selamat menabung 💚"""
 # """
 #         )
 #         return jsonify({"status": True})
-
+    import json
     if cmd == "saldo":
 
         nomor = get_owner_number(sender)
