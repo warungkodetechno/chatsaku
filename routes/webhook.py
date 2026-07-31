@@ -1401,18 +1401,22 @@ Selamat menabung 💚"""
 
 
         buttons = [
+
             {
                 "id": "dashboard",
-                "text": "📊 Dashboard"
+                "message": "📊 Dashboard"
             },
+
             {
                 "id": "masuk",
-                "text": "📥 Tambah Masuk"
+                "message": "📥 Tambah Masuk"
             },
+
             {
                 "id": "keluar",
-                "text": "📤 Tambah Keluar"
+                "message": "📤 Tambah Keluar"
             }
+
         ]
 
 

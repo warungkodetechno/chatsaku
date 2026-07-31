@@ -504,11 +504,13 @@ def kirim_wa(nomor, pesan, buttons=None):
 
     if buttons:
 
-        payload["buttonJSON"] = json.dumps({
+        payload["buttonJSON"] = json.dumps(
+            buttons
+        )
 
-            "buttons": buttons
 
-        })
+    print("PAYLOAD FONNTE")
+    print(payload)
 
 
     response = requests.post(
@@ -518,6 +520,10 @@ def kirim_wa(nomor, pesan, buttons=None):
         },
         data=payload
     )
+
+
+    print("RESPON FONNTE")
+    print(response.text)
 
 
     return response.json()
