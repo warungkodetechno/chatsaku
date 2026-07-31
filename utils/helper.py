@@ -257,20 +257,17 @@ FEATURES = {
         # Budgeting
         "budget",
 
-        # Reminder
-        "reminder",
-        "hapusreminder",
-
         # Export
         "excel",
 
         # Statistik dasar
         "statistik",
 
-        # Target tabungan
-        # "target",
-        # "tabung",
-        # "hapustarget"
+
+        Target tabungan
+        "target",
+        "tabung",
+        "hapustarget"
 
     },
 
@@ -466,33 +463,104 @@ def transaksi_user(sender):
 # =========================
 # FONNTE SEND MESSAGE
 # =========================
-FONTE_TOKEN = os.getenv("FONTE_TOKEN")
+# FONTE_TOKEN = os.getenv("FONTE_TOKEN")
+
+# def kirim_wa(nomor, pesan):
+#     try:
+
+#         response = requests.post(
+#             "https://api.fonnte.com/send",
+#             headers={
+#                 "Authorization": FONTE_TOKEN
+#             },
+#             data={
+#                 "target": nomor,
+#                 "message": pesan,
+#                 "delay": 2
+#             },
+#             timeout=30
+#         )
+
+#         print("=" * 60)
+#         print("FONNTE SEND")
+#         print("TO     :", nomor)
+#         print("STATUS :", response.status_code)
+#         print("BODY   :", response.text)
+#         print("=" * 60)
+
+#     except Exception as e:
+#         print("ERROR FONNTE :", str(e))
+
+
+# ==========================================
+# BABLAST CONFIG
+# ==========================================
+BABLAST_API_KEY = os.getenv("BABLAST_API_KEY")
+
+import requests
+
+session = requests.Session()
+
 
 def kirim_wa(nomor, pesan):
+
     try:
 
-        response = requests.post(
-            "https://api.fonnte.com/send",
+        response = session.post(
+
+            "https://api.bablast.id/send",
+
             headers={
-                "Authorization": FONTE_TOKEN
+
+                "Authorization": f"Bearer {BABLAST_API_KEY}",
+
+                "Content-Type": "application/json"
+
             },
-            data={
-                "target": nomor,
-                "message": pesan,
-                "delay": 2
+
+            json={
+
+                "phone": nomor,
+
+                "message": pesan
+
             },
+
             timeout=30
+
         )
 
         print("=" * 60)
-        print("FONNTE SEND")
-        print("TO     :", nomor)
-        print("STATUS :", response.status_code)
-        print("BODY   :", response.text)
+        print("BABLAST SEND")
+        print("TO      :", nomor)
+        print("STATUS  :", response.status_code)
+
+        try:
+            print("BODY    :", response.json())
+        except:
+            print("BODY    :", response.text)
+
         print("=" * 60)
 
+        if response.status_code != 200:
+            return False
+
+        result = response.json()
+
+        # Sesuaikan jika struktur response Bablast berbeda
+        if result.get("success") is True:
+            return True
+
+        return False
+
     except Exception as e:
-        print("ERROR FONNTE :", str(e))
+
+        print("=" * 60)
+        print("BABLAST ERROR")
+        print(str(e))
+        print("=" * 60)
+
+        return False
 
 def hitung_saldo(nomor_wa):
 
