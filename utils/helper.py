@@ -491,7 +491,6 @@ def kirim_wa(nomor, pesan):
     except Exception as e:
         print("ERROR FONNTE :", str(e))
 
-
 # ==========================================
 # BABLAST CONFIG
 # ==========================================
