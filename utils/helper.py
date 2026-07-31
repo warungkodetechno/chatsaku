@@ -263,7 +263,7 @@ FEATURES = {
         # Statistik dasar
         "statistik",
 
-        Target tabungan
+        #Target tabungan
         "target",
         "tabung",
         "hapustarget"
