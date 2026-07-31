@@ -514,7 +514,7 @@ def kirim_wa(nomor, pesan, buttons=None):
     response = requests.post(
         "https://api.fonnte.com/send",
         headers={
-            "Authorization": FONNTE_TOKEN
+            "Authorization": FONTE_TOKEN
         },
         data=payload
     )
