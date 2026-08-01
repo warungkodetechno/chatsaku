@@ -2043,9 +2043,9 @@ def create_payment():
             }),404
 
         HARGA_PAKET = {
-            "STARTER": 10000,
-            "PRO": 25000,
-            "PREMIUM": 55000
+            "STARTER": 15000,
+            "PRO": 45000,
+            "PREMIUM": 75000
         }
 
         if paket not in HARGA_PAKET:
