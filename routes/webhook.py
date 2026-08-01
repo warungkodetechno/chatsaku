@@ -3092,46 +3092,50 @@ untuk melihat seluruh reminder.
             sender,
     f"""🤖 *ChatSaku Finance Assistant*
 
+Selamat datang di *ChatSaku* 💚
 Kelola seluruh keuangan langsung dari WhatsApp.
+Cepat • Praktis • Tanpa Install Aplikasi
 
 ━━━━━━━━━━━━━━━━━━
 💰 *TRANSAKSI*
 
-➕ masuk 500000 gaji
-➖ keluar 25000 makan
+➕ masuk 500000 Gaji
+➖ keluar 25000 Makan Siang
+
+Mencatat pemasukan & pengeluaran hanya dengan chat.
 
 ━━━━━━━━━━━━━━━━━━
 💳 *KEUANGAN*
 
 • saldo
-   Melihat saldo saat ini.
+   Melihat saldo terbaru.
 
 • hariini
    Ringkasan transaksi hari ini.
 
 • dashboard
-   Membuka dashboard keuangan.
+   Membuka Dashboard Web secara realtime.
 
 ━━━━━━━━━━━━━━━━━━
-🎯 *BUDGET*
+📊 *BUDGET BULANAN*
 
 • budget
    Melihat seluruh budget.
 
 • budget makanan 1500000
-   Membuat / mengubah budget.
+   Membuat atau mengubah budget.
 
 ━━━━━━━━━━━━━━━━━━
-🎁 *TARGET TABUNGAN*
+🎯 *TARGET TABUNGAN*
 
 • target
-   Melihat semua target.
+   Daftar target tabungan.
 
 • target laptop 12000000 31-12-2026
    Membuat target baru.
 
 • target laptop
-   Detail target.
+   Melihat detail target.
 
 • tabung laptop 500000
    Menambah tabungan.
@@ -3140,19 +3144,40 @@ Kelola seluruh keuangan langsung dari WhatsApp.
    Menghapus target.
 
 ━━━━━━━━━━━━━━━━━━
-🔔 *REMINDER*
+🔔 *REMINDER TAGIHAN*
 
 • reminder
    Daftar reminder.
 
 • reminder listrik 20 500000
-   Membuat reminder.
+   Membuat reminder baru.
 
 • hapusreminder listrik
    Menghapus reminder.
 
 ━━━━━━━━━━━━━━━━━━
-📊 *LAPORAN & ANALISIS*
+🤝 *HUTANG & PIUTANG*
+
+• hutang
+   Daftar hutang.
+
+• hutang Budi 500000 Pinjam uang
+   Menambah hutang.
+
+• bayarhutang Budi
+   Melunasi hutang.
+
+• piutang
+   Daftar piutang.
+
+• piutang Andi 300000 Pinjam modal
+   Menambah piutang.
+
+• bayarpiutang Andi
+   Menandai piutang sudah dibayar.
+
+━━━━━━━━━━━━━━━━━━
+📈 *LAPORAN & ANALISIS*
 
 • insight
    AI Finance Insight.
@@ -3161,44 +3186,65 @@ Kelola seluruh keuangan langsung dari WhatsApp.
    Statistik keuangan.
 
 • excel
-   Export ke Excel.
+   Export laporan Excel.
 
 • pdf
-   Export ke PDF.
+   Export laporan PDF.
 
 ━━━━━━━━━━━━━━━━━━
 👥 *MULTI USER*
 
-• share 08123456789
-   Tambah Viewer.
-
 • viewer
-   Daftar Viewer.
+   Daftar pengguna Viewer.
+
+• share 08123456789
+   Menambahkan Viewer.
 
 • unshare 08123456789
-   Hapus Viewer.
+   Menghapus Viewer.
 
 ━━━━━━━━━━━━━━━━━━
-⚡ *FITUR PREMIUM*
+⚙️ *AKUN*
 
+• paket
+   Melihat paket yang aktif.
+
+• fitur
+   Daftar seluruh fitur ChatSaku.
+
+• help
+   Menampilkan bantuan.
+
+━━━━━━━━━━━━━━━━━━
+👑 *FITUR PREMIUM*
+
+✨ Dashboard Web Realtime
 ✨ AI Finance Insight
 ✨ Budget Bulanan
-✨ Target Tabungan
 ✨ Reminder Tagihan
-✨ Export Excel & PDF
+✨ Target Tabungan
+✨ Hutang & Piutang
+✨ Export Excel
+✨ Export PDF
+✨ Multi User & Viewer
 ✨ Laporan Harian Otomatis
-✨ Multi User (Viewer)
 
 ━━━━━━━━━━━━━━━━━━
 🌐 Website
 https://chatsaku.com
 
-📈 Dashboard Web
-Tersedia otomatis setelah Anda melakukan transaksi.
+📊 Dashboard
+https://dashboard.chatsaku.com
 
-💚 _ChatSaku Finance Assistant_
-100% WhatsApp • AI Powered
-Kelola keuangan lebih mudah, cepat, dan praktis.
+💚 *ChatSaku Finance Assistant*
+
+✔️ 100% melalui WhatsApp
+✔️ Tanpa Install Aplikasi
+✔️ Dashboard Web Realtime
+✔️ AI Powered Financial Assistant
+✔️ Aman & Terenkripsi
+
+_Kelola keuangan lebih mudah, lebih cerdas, dan lebih praktis bersama ChatSaku._
 """
         )
 
