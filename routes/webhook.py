@@ -1374,7 +1374,7 @@ Selamat menabung 💚"""
 💰 Saldo   : *Rp {saldo:,.0f}*
 └─────────────────────┘
 
-🤖 ChatSaku Finance Assistant
+_ChatSaku Finance Assistant_
 """
         )
         return jsonify({"status": True})
