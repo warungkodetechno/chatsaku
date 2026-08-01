@@ -462,103 +462,103 @@ def transaksi_user(sender):
 # =========================
 # FONNTE SEND MESSAGE
 # =========================
-FONTE_TOKEN = os.getenv("FONTE_TOKEN")
+# FONTE_TOKEN = os.getenv("FONTE_TOKEN")
 
-def kirim_wa(nomor, pesan):
-    try:
+# def kirim_wa(nomor, pesan):
+#     try:
 
-        response = requests.post(
-            "https://api.fonnte.com/send",
-            headers={
-                "Authorization": FONTE_TOKEN
-            },
-            data={
-                "target": nomor,
-                "message": pesan,
-                "delay": 2
-            },
-            timeout=30
-        )
+#         response = requests.post(
+#             "https://api.fonnte.com/send",
+#             headers={
+#                 "Authorization": FONTE_TOKEN
+#             },
+#             data={
+#                 "target": nomor,
+#                 "message": pesan,
+#                 "delay": 2
+#             },
+#             timeout=30
+#         )
 
-        print("=" * 60)
-        print("FONNTE SEND")
-        print("TO     :", nomor)
-        print("STATUS :", response.status_code)
-        print("BODY   :", response.text)
-        print("=" * 60)
+#         print("=" * 60)
+#         print("FONNTE SEND")
+#         print("TO     :", nomor)
+#         print("STATUS :", response.status_code)
+#         print("BODY   :", response.text)
+#         print("=" * 60)
 
-    except Exception as e:
-        print("ERROR FONNTE :", str(e))
+#     except Exception as e:
+#         print("ERROR FONNTE :", str(e))
 
 # ==========================================
 # BABLAST CONFIG
 # ==========================================
-# BABLAST_API_KEY = os.getenv("BABLAST_API_KEY")
+BABLAST_API_KEY = os.getenv("BABLAST_API_KEY")
 
-# import requests
+import requests
 
-# session = requests.Session()
+session = requests.Session()
 
 
-# def kirim_wa(nomor, pesan):
+def kirim_wa(nomor, pesan):
 
-#     try:
+    try:
 
-#         response = session.post(
+        response = session.post(
 
-#             "https://api.bablast.id/send",
+            "https://api.bablast.id/send",
 
-#             headers={
+            headers={
 
-#                 "Authorization": f"Bearer {BABLAST_API_KEY}",
+                "Authorization": f"Bearer {BABLAST_API_KEY}",
 
-#                 "Content-Type": "application/json"
+                "Content-Type": "application/json"
 
-#             },
+            },
 
-#             json={
+            json={
 
-#                 "phone": nomor,
+                "phone": nomor,
 
-#                 "message": pesan
+                "message": pesan
 
-#             },
+            },
 
-#             timeout=30
+            timeout=30
 
-#         )
+        )
 
-#         print("=" * 60)
-#         print("BABLAST SEND")
-#         print("TO      :", nomor)
-#         print("STATUS  :", response.status_code)
+        print("=" * 60)
+        print("BABLAST SEND")
+        print("TO      :", nomor)
+        print("STATUS  :", response.status_code)
 
-#         try:
-#             print("BODY    :", response.json())
-#         except:
-#             print("BODY    :", response.text)
+        try:
+            print("BODY    :", response.json())
+        except:
+            print("BODY    :", response.text)
 
-#         print("=" * 60)
+        print("=" * 60)
 
-#         if response.status_code != 200:
-#             return False
+        if response.status_code != 200:
+            return False
 
-#         result = response.json()
+        result = response.json()
 
-#         # Sesuaikan jika struktur response Bablast berbeda
-#         if result.get("success") is True:
-#             return True
+        # Sesuaikan jika struktur response Bablast berbeda
+        if result.get("success") is True:
+            return True
 
-#         return False
+        return False
 
-#     except Exception as e:
+    except Exception as e:
 
-#         print("=" * 60)
-#         print("BABLAST ERROR")
-#         print(str(e))
-#         print("=" * 60)
+        print("=" * 60)
+        print("BABLAST ERROR")
+        print(str(e))
+        print("=" * 60)
 
-#         return False
+        return False
 
 def hitung_saldo(nomor_wa):
 

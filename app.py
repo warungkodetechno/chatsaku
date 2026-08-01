@@ -2465,6 +2465,56 @@ def payment_history():
         ]
     })
 
+
+import requests
+
+
+BABLAST_TOKEN = "9fYxtSorLpNAf89dbKjk7o5l0LtAqm7Q5PABLTNYSVWWLMOfYAg0pxim8z4deuVo2OMOlMdzIrfE0q3BBvQpHr9EIjQn0x5c2lOR"
+
+
+def kirim_template_waba(phone, nama, invoice):
+
+    url = "https://api.bablast.id/waba/send-template"
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {BABLAST_TOKEN}"
+    }
+
+
+    payload = {
+
+        "phone": phone,
+
+        "template_name": "saldo",
+
+        "language": "id",
+
+        "parameters": [
+
+            {
+                "type": "text",
+                "text": nama
+            },
+
+            {
+                "type": "text",
+                "text": invoice
+            }
+
+        ]
+
+    }
+
+
+    response = requests.post(
+        url,
+        headers=headers,
+        json=payload
+    )
+
+
+    return response.json()
 # =========================
 # TEST
 # =========================
