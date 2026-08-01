@@ -306,12 +306,9 @@ def webhook():
 
     Permintaan Anda berhasil diterima.
 
-    Silakan mulai menggunakan ChatSaku dengan contoh berikut:
+    Silakan menunggu persiapan oleh admin 😊.
 
-    • masuk 500000 gaji
-    • keluar 25000 makan
-
-    Selamat mencoba 😊"""
+    _ChatSaku Finance Assistant_"""
             )
 
             # ==========================
@@ -366,7 +363,7 @@ Silakan hubungi Admin untuk mengaktifkan akun Anda.
 
 https://www.chatsaku.com
 
-💚 ChatSaku Finance Assistant
+💚 _ChatSaku Finance Assistant_
 """
         )
 
@@ -403,7 +400,7 @@ https://www.chatsaku.com
 
     https://www.chatsaku.com
 
-    💚 ChatSaku Finance Assistant"""
+    💚 _ChatSaku Finance Assistant_"""
             )
 
             return jsonify(status=True)
@@ -1027,7 +1024,8 @@ Nama        : {nama}
 Target      : Rp. {nominal:,.0f}
 Deadline    :{deadline.strftime("%d-%m-%Y")}
 
-Selamat menabung 💚"""
+Selamat menabung 💚
+_ChatSaku Finance Assistant_"""
             )
 
             return jsonify(status=True)
@@ -1195,6 +1193,7 @@ Selamat menabung 💚"""
     🎯 Target    : Rp {x.target:,.0f}
     💵 Sisa      : Rp {sisa:,.0f}
 
+    _ChatSaku Finance Assistant_
     """
 
         kirim_wa(sender, text)
@@ -1274,7 +1273,7 @@ Selamat menabung 💚"""
     📊 Progress
     {persen}%
     {viewer_info}
-    🤖 ChatSaku Finance Assistant"""
+    _ChatSaku Finance Assistant_"""
         )
 
         return jsonify(status=True)
@@ -1464,7 +1463,7 @@ _ChatSaku Finance Assistant_
     Rp {saldo:,.0f}
 
     ━━━━━━━━━━━━━━━━━━
-    🤖 ChatSaku Finance Assistant
+    _ChatSaku Finance Assistant_
     """
             )
 
@@ -1697,7 +1696,7 @@ _ChatSaku Finance Assistant_
     *Rp {saldo:,.0f}*
 
     ──────────────────
-    🤖 ChatSaku Finance Assistant
+    _ChatSaku Finance Assistant_
     """
             )
 
@@ -1778,7 +1777,7 @@ _ChatSaku Finance Assistant_
     {viewer_info}
     ━━━━━━━━━━━━━━
 
-    🤖 ChatSaku Finance Assistant
+    _ChatSaku Finance Assistant_
     """
         )
 
@@ -2173,7 +2172,7 @@ untuk melihat semua budget.
             pesan += """
 
     ──────────────────
-    🤖 ChatSaku Finance Assistant
+    _ChatSaku Finance Assistant_
     💚 AI Powered • WhatsApp Finance
     """
 
@@ -2523,7 +2522,7 @@ untuk melihat seluruh reminder.
     Total Aktif:
     💰 Rp {total:,.0f}
 
-    🤖 ChatSaku Finance
+    _ChatSaku Finance Assistant_
     """
 
 
@@ -2636,7 +2635,7 @@ untuk melihat seluruh reminder.
     Status:
     ⏳ BELUM LUNAS
 
-    🤖 ChatSaku Finance"""
+    _ChatSaku Finance Assistant_"""
         )
 
 
@@ -2684,7 +2683,7 @@ untuk melihat seluruh reminder.
 
     Tidak ada piutang aktif 😊
 
-    🤖 ChatSaku Finance"""
+    _ChatSaku Finance Assistant_"""
             )
 
             return jsonify(status=True)
@@ -2719,7 +2718,7 @@ untuk melihat seluruh reminder.
     Total Piutang:
     💰 Rp {total:,.0f}
 
-    🤖 ChatSaku Finance
+    _ChatSaku Finance Assistant_
     """
 
 
@@ -2837,7 +2836,7 @@ untuk melihat seluruh reminder.
     Status:
     ⏳ BELUM DIBAYAR
 
-    🤖 ChatSaku Finance"""
+    _ChatSaku Finance Assistant_"""
         )
 
 
@@ -2935,7 +2934,7 @@ untuk melihat seluruh reminder.
 
     🕒 {sekarang().strftime("%d %b %Y %H:%M")}
 
-    🤖 ChatSaku Finance"""
+    _ChatSaku Finance Assistant_"""
         )
 
 
@@ -3034,7 +3033,7 @@ untuk melihat seluruh reminder.
 
     🕒 {sekarang().strftime("%d %b %Y %H:%M")}
 
-    🤖 ChatSaku Finance"""
+    _ChatSaku Finance Assistant_"""
         )
 
 
@@ -3079,7 +3078,7 @@ untuk melihat seluruh reminder.
 
     ⏳ Link berlaku 30 menit.
 
-    💚 ChatSaku Finance Assistant"""
+    _ChatSaku Finance Assistant_"""
         )
 
         return jsonify(status=True)
@@ -3197,7 +3196,7 @@ https://chatsaku.com
 📈 Dashboard Web
 Tersedia otomatis setelah Anda melakukan transaksi.
 
-💚 *ChatSaku Finance Assistant*
+💚 _ChatSaku Finance Assistant_
 100% WhatsApp • AI Powered
 Kelola keuangan lebih mudah, cepat, dan praktis.
 """
