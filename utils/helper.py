@@ -656,8 +656,8 @@ def get_harga_paket(nama_paket):
     # =========================
 
     harga_normal = {
-        "STARTER": 15000,
-        "PRO": 45000,
+        "STARTER": 19000,
+        "PRO": 49000,
         "PREMIUM": 75000
     }
 

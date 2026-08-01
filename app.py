@@ -2043,8 +2043,8 @@ def create_payment():
             }),404
 
         HARGA_PAKET = {
-            "STARTER": 15000,
-            "PRO": 45000,
+            "STARTER": 19000,
+            "PRO": 49000,
             "PREMIUM": 75000
         }
 
