@@ -2281,7 +2281,7 @@ def notification():
 
         user = User(
             nama=login_user.nama,
-            nomor_wa=login_user.nomor_whatsapp,
+            nomor_wa=normalize_wa(login_user.nomor_whatsapp),
             paket=payment.paket,
             aktif=True,
             akhir_langganan=sekarang().date() + timedelta(days=30)
