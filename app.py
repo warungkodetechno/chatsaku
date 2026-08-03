@@ -1934,8 +1934,8 @@ scheduler = BackgroundScheduler(
 scheduler.add_job(
     func=kirim_laporan_harian,
     trigger="cron",
-    hour=17,
-    minute=25,
+    hour=18,
+    minute=00,
     id="laporan_harian",
     replace_existing=True
 )
