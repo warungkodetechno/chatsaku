@@ -2009,6 +2009,11 @@ import os
 import uuid
 import midtransclient
 
+print("=" * 50)
+print("PRODUCTION :", snap.api_config.is_production)
+print("SERVER KEY :", snap.api_config.server_key[:20])
+print("=" * 50)
+
 snap = midtransclient.Snap(
     is_production=False,  # Sandbox
     server_key=os.getenv("MIDTRANS_SERVER_KEY")
