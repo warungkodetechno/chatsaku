@@ -2009,18 +2009,11 @@ import os
 import uuid
 import midtransclient
 
-
-
-snap = midtransclient.Snap(
-    is_production=False,  # Sandbox
-    server_key=os.getenv("MIDTRANS_SERVER_KEY")
-)
-
 from datetime import datetime
 from flask import request, jsonify
 
 snap = midtransclient.Snap(
-    is_production=False,
+    is_production=True,
     server_key=os.getenv("MIDTRANS_SERVER_KEY")
 )
 
