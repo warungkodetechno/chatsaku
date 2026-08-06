@@ -3420,6 +3420,83 @@ _Kelola keuangan lebih mudah, lebih cerdas, dan lebih praktis bersama ChatSaku._
 
         return jsonify(status=True)
 
+    # ======================================
+    # DETEKSI GAMBAR STRUK
+    # ======================================
+
+    image_url = (
+        payload.get("image")
+        or payload.get("media")
+        or payload.get("url")
+        or payload.get("file")
+    )
+
+    filename = str(payload.get("filename") or "").lower()
+
+    is_image = (
+        bool(image_url)
+        or filename.endswith((".jpg", ".jpeg", ".png", ".webp"))
+    )
+
+    if is_image:
+
+        try:
+
+            hasil = proses_struk_chatgpt(
+                sender=sender,
+                image_url=image_url
+            )
+
+            if not hasil["success"]:
+
+                kirim_wa(
+                    sender,
+                    "❌ Maaf, struk tidak dapat dibaca. Coba kirim foto yang lebih jelas."
+                )
+
+                return jsonify(status=True)
+
+            for item in hasil["items"]:
+
+                trx = Transaksi(
+                    nomor_wa=sender,
+                    tipe="keluar",
+                    nominal=item["harga"],
+                    kategori=item.get("kategori", "Belanja"),
+                    subkategori="OCR Struk",
+                    keterangan=f'{hasil["merchant"]} - {item["nama"]}'
+                )
+
+                db.session.add(trx)
+
+            db.session.commit()
+
+            text = f"""🧾 *Struk Berhasil Diproses*
+
+    🏪 {hasil["merchant"]}
+
+    📅 {hasil["tanggal"]}
+
+    💰 Total
+    Rp {hasil["total"]:,}
+
+    📦 Item : {len(hasil["items"])}
+
+    Semua transaksi telah disimpan ke ChatSaku ✅"""
+
+            kirim_wa(sender, text)
+
+        except Exception as e:
+
+            print(e)
+
+            kirim_wa(
+                sender,
+                "❌ Terjadi kesalahan saat membaca struk."
+            )
+
+        return jsonify(status=True)
+
     # =========================
     # DEFAULT
     # =========================
