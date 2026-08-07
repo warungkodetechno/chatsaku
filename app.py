@@ -1919,10 +1919,9 @@ def admin_verify():
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
+def kirim_reminder_harian():
 
-def kirim_reminder_harian(flask_app):
-
-    with flask_app.app_context():
+    with app.app_context():
 
         print("=" * 70)
         print("🔔 KIRIM REMINDER HARIAN CHATSAKU")
@@ -1939,7 +1938,7 @@ def kirim_reminder_harian(flask_app):
             print("Tanggal hari ini :", hari_ini)
 
             # ======================================
-            # AMBIL SEMUA REMINDER HARI INI
+            # AMBIL REMINDER HARI INI
             # ======================================
 
             reminders = Reminder.query.filter(
@@ -1948,21 +1947,23 @@ def kirim_reminder_harian(flask_app):
             ).all()
 
             print(
-                "Jumlah reminder :",
+                "Total reminder :",
                 len(reminders)
             )
 
             if not reminders:
 
-                print("📭 Tidak ada reminder hari ini.")
+                print(
+                    "📭 Tidak ada reminder hari ini."
+                )
 
                 return
 
             # ======================================
-            # KELOMPOKKAN BERDASARKAN NOMOR WA
+            # KELOMPOKKAN REMINDER PER NOMOR WA
             # ======================================
 
-            reminder_by_user = {}
+            reminder_users = {}
 
             for reminder in reminders:
 
@@ -1970,26 +1971,25 @@ def kirim_reminder_harian(flask_app):
                     reminder.nomor_wa
                 )
 
-                if nomor_wa not in reminder_by_user:
+                if nomor_wa not in reminder_users:
+                    reminder_users[nomor_wa] = []
 
-                    reminder_by_user[nomor_wa] = []
-
-                reminder_by_user[
-                    nomor_wa
-                ].append(reminder)
+                reminder_users[nomor_wa].append(
+                    reminder
+                )
 
             # ======================================
             # PROSES PER USER
             # ======================================
 
-            for nomor_wa, user_reminders in reminder_by_user.items():
+            for nomor_wa, user_reminders in reminder_users.items():
 
                 try:
 
                     print("-" * 60)
 
                     print(
-                        "NOMOR :",
+                        "Nomor :",
                         nomor_wa
                     )
 
@@ -2004,20 +2004,11 @@ def kirim_reminder_harian(flask_app):
                     if not user:
 
                         print(
-                            "⚠️ User tidak ditemukan"
+                            f"⚠️ User tidak ditemukan : "
+                            f"{nomor_wa}"
                         )
 
                         continue
-
-                    print(
-                        "USER  :",
-                        user.nama
-                    )
-
-                    print(
-                        "PAKET :",
-                        user.paket
-                    )
 
                     # ==================================
                     # HANYA PREMIUM
@@ -2028,19 +2019,22 @@ def kirim_reminder_harian(flask_app):
                     ).upper() != "PREMIUM":
 
                         print(
-                            "⏭️ Skip - bukan PREMIUM"
+                            f"⏭️ Skip bukan PREMIUM : "
+                            f"{nomor_wa} | "
+                            f"Paket: {user.paket}"
                         )
 
                         continue
 
                     # ==================================
-                    # CEK AKUN
+                    # CEK AKUN AKTIF
                     # ==================================
 
                     if not user.aktif:
 
                         print(
-                            "⏭️ Skip - akun nonaktif"
+                            f"⏭️ Skip akun nonaktif : "
+                            f"{nomor_wa}"
                         )
 
                         continue
@@ -2056,7 +2050,8 @@ def kirim_reminder_harian(flask_app):
                     ):
 
                         print(
-                            "⏭️ Skip - langganan expired"
+                            f"⏭️ Skip langganan expired : "
+                            f"{nomor_wa}"
                         )
 
                         continue
@@ -2069,15 +2064,11 @@ def kirim_reminder_harian(flask_app):
 
 Halo *{user.nama}* 👋
 
-Hari ini ada beberapa tagihan yang perlu diperhatikan:
+Hari ini ada beberapa pengingat:
 
 """
 
                     total = 0
-
-                    # ==================================
-                    # DAFTAR REMINDER
-                    # ==================================
 
                     for index, reminder in enumerate(
                         user_reminders,
@@ -2096,10 +2087,6 @@ Hari ini ada beberapa tagihan yang perlu diperhatikan:
                             f"   💰 Rp {nominal:,.0f}\n\n"
                         )
 
-                    # ==================================
-                    # TOTAL
-                    # ==================================
-
                     pesan += (
                         "━━━━━━━━━━━━━━━━━━\n"
                         f"💰 *Total: Rp {total:,.0f}*\n"
@@ -2109,7 +2096,7 @@ Hari ini ada beberapa tagihan yang perlu diperhatikan:
                     )
 
                     # ==================================
-                    # KIRIM KE NOMOR PEMILIK
+                    # KIRIM HANYA KE PEMILIK
                     # ==================================
 
                     kirim_wa(
@@ -2119,7 +2106,19 @@ Hari ini ada beberapa tagihan yang perlu diperhatikan:
 
                     print(
                         f"✅ {len(user_reminders)} "
-                        f"reminder terkirim ke {nomor_wa}"
+                        f"reminder terkirim"
+                    )
+
+                    print(
+                        f"   Nomor : {nomor_wa}"
+                    )
+
+                    print(
+                        f"   User  : {user.nama}"
+                    )
+
+                    print(
+                        f"   Paket : {user.paket}"
                     )
 
                 except Exception as e:
@@ -2139,7 +2138,7 @@ Hari ini ada beberapa tagihan yang perlu diperhatikan:
 
             print(
                 "❌ ERROR REMINDER:",
-                str(e)
+                e
             )
 
             traceback.print_exc()
@@ -2163,8 +2162,8 @@ scheduler = BackgroundScheduler(
 scheduler.add_job(
     func=kirim_reminder_harian,
     trigger="cron",
-    hour=7,
-    minute=00,
+    hour=21,
+    minute=5,
     id="reminder_harian",
     replace_existing=True
 )
