@@ -2014,16 +2014,8 @@ def kirim_reminder_harian():
                     # HANYA PREMIUM
                     # ==================================
 
-                    if str(
-                        user.paket
-                    ).upper() != "PREMIUM":
-
-                        print(
-                            f"⏭️ Skip bukan PREMIUM : "
-                            f"{nomor_wa} | "
-                            f"Paket: {user.paket}"
-                        )
-
+                    if not has_feature(user.nomor_wa, "reminder"):
+                        print("Lewat:", user.nomor_wa)
                         continue
 
                     # ==================================
