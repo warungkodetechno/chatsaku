@@ -2030,7 +2030,7 @@ def kirim_reminder_harian():
 
                     pesan = f"""🔔 *Reminder ChatSaku*
 
-Halo *{reminder.nama}* 👋
+Halo *{user.nama}* 👋
 
 Jangan lupa, hari ini ada pengingat:
 
@@ -2112,7 +2112,7 @@ scheduler.add_job(
     func=kirim_reminder_harian,
     trigger="cron",
     hour=21,
-    minute=28,
+    minute=33,
     id="reminder_harian",
     replace_existing=True
 )
