@@ -1915,6 +1915,183 @@ def admin_verify():
 
     })
 
+
+from datetime import datetime
+from zoneinfo import ZoneInfo
+
+
+def kirim_reminder_harian():
+
+    with app.app_context():
+
+        print("=" * 70)
+        print("🔔 KIRIM REMINDER HARIAN CHATSAKU")
+        print("=" * 70)
+
+        try:
+
+            sekarang = datetime.now(
+                ZoneInfo("Asia/Jakarta")
+            )
+
+            hari_ini = sekarang.day
+
+            print("Tanggal hari ini :", hari_ini)
+
+            # ======================================
+            # AMBIL REMINDER HARI INI
+            # ======================================
+
+            reminders = Reminder.query.filter(
+                Reminder.aktif == True,
+                Reminder.tanggal == hari_ini
+            ).all()
+
+            print("Total reminder :", len(reminders))
+
+            if not reminders:
+
+                print("📭 Tidak ada reminder hari ini.")
+
+                return
+
+            # ======================================
+            # PROSES SATU PER SATU
+            # ======================================
+
+            for reminder in reminders:
+
+                try:
+
+                    nomor_wa = normalize_wa(
+                        reminder.nomor_wa
+                    )
+
+                    # ==================================
+                    # CARI USER PEMILIK REMINDER
+                    # ==================================
+
+                    user = User.query.filter_by(
+                        nomor_wa=nomor_wa
+                    ).first()
+
+                    if not user:
+
+                        print(
+                            f"⚠️ User tidak ditemukan : {nomor_wa}"
+                        )
+
+                        continue
+
+                    # ==================================
+                    # HANYA PREMIUM
+                    # ==================================
+
+                    if user.paket != "PREMIUM":
+
+                        print(
+                            f"⏭️ Skip bukan PREMIUM : "
+                            f"{nomor_wa} | Paket: {user.paket}"
+                        )
+
+                        continue
+
+                    # ==================================
+                    # CEK AKUN AKTIF
+                    # ==================================
+
+                    if not user.aktif:
+
+                        print(
+                            f"⏭️ Skip akun nonaktif : {nomor_wa}"
+                        )
+
+                        continue
+
+                    # ==================================
+                    # CEK LANGGANAN
+                    # ==================================
+
+                    if (
+                        user.akhir_langganan
+                        and sekarang.date() > user.akhir_langganan
+                    ):
+
+                        print(
+                            f"⏭️ Skip langganan expired : "
+                            f"{nomor_wa}"
+                        )
+
+                        continue
+
+                    # ==================================
+                    # PESAN REMINDER
+                    # ==================================
+
+                    pesan = f"""🔔 *Reminder ChatSaku*
+
+Halo *{reminder.nama}* 👋
+
+Jangan lupa, hari ini ada pengingat:
+
+📌 *{reminder.nama}*
+
+💰 Nominal:
+*Rp {reminder.nominal:,.0f}*
+
+📅 Setiap tanggal:
+*{reminder.tanggal}*
+
+Jangan sampai lupa ya 😊
+
+💚 _ChatSaku Finance Assistant_
+"""
+
+                    # ==================================
+                    # KIRIM HANYA KE PEMILIK
+                    # ==================================
+
+                    kirim_wa(
+                        nomor_wa,
+                        pesan
+                    )
+
+                    print(
+                        f"✅ Reminder terkirim"
+                    )
+
+                    print(
+                        f"   Nomor : {nomor_wa}"
+                    )
+
+                    print(
+                        f"   Nama  : {reminder.nama}"
+                    )
+
+                    print(
+                        f"   Paket : {user.paket}"
+                    )
+
+                except Exception as e:
+
+                    print(
+                        f"❌ Gagal memproses reminder "
+                        f"{reminder.id}: {e}"
+                    )
+
+        except Exception as e:
+
+            print(
+                "❌ ERROR REMINDER:",
+                e
+            )
+
+        finally:
+
+            print("=" * 70)
+            print("SELESAI KIRIM REMINDER")
+            print("=" * 70)
+
 def scheduler_verify():
 
     users = User.query.filter_by(
