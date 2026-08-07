@@ -2154,8 +2154,8 @@ scheduler = BackgroundScheduler(
 scheduler.add_job(
     func=kirim_reminder_harian,
     trigger="cron",
-    hour=21,
-    minute=48,
+    hour=22,
+    minute=00,
     id="reminder_harian",
     replace_existing=True
 )
