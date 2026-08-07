@@ -2155,7 +2155,7 @@ scheduler.add_job(
     func=kirim_reminder_harian,
     trigger="cron",
     hour=22,
-    minute=00,
+    minute=5,
     id="reminder_harian",
     replace_existing=True
 )
