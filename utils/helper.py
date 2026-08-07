@@ -817,3 +817,82 @@ def verify_monthly_summary(nomor_wa):
         print("=" * 60)
 
         raise
+
+
+from datetime import datetime
+from zoneinfo import ZoneInfo
+
+
+def kirim_reminder_harian():
+
+    print("=" * 70)
+    print("🔔 KIRIM REMINDER HARIAN")
+    print("=" * 70)
+
+    try:
+
+        hari_ini = datetime.now(
+            ZoneInfo("Asia/Jakarta")
+        ).day
+
+        print("Tanggal hari ini :", hari_ini)
+
+        reminders = Reminder.query.filter(
+            Reminder.aktif == True,
+            Reminder.tanggal == hari_ini
+        ).all()
+
+        print("Jumlah reminder :", len(reminders))
+
+        if not reminders:
+            print("📭 Tidak ada reminder hari ini.")
+            return
+
+        for reminder in reminders:
+
+            try:
+
+                pesan = f"""🔔 *Reminder ChatSaku*
+
+Halo *{reminder.nama}* 👋
+
+Jangan lupa, hari ini ada pengingat:
+
+📌 *{reminder.nama}*
+
+💰 Nominal:
+Rp {reminder.nominal:,.0f}
+
+📅 Tanggal:
+Setiap tanggal {reminder.tanggal}
+
+Silakan cek dan lakukan pembayaran jika diperlukan.
+
+💚 _ChatSaku Finance Assistant_
+"""
+
+                kirim_wa(
+                    reminder.nomor_wa,
+                    pesan
+                )
+
+                print(
+                    f"✅ Reminder terkirim → "
+                    f"{reminder.nomor_wa} | "
+                    f"{reminder.nama}"
+                )
+
+            except Exception as e:
+
+                print(
+                    f"❌ Gagal mengirim reminder "
+                    f"{reminder.nomor_wa}: {e}"
+                )
+
+    except Exception as e:
+
+        print("❌ ERROR REMINDER:", e)
+
+    print("=" * 70)
+    print("SELESAI KIRIM REMINDER")
+    print("=" * 70)

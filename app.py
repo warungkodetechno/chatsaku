@@ -1932,6 +1932,15 @@ scheduler = BackgroundScheduler(
 )
 
 scheduler.add_job(
+    func=kirim_reminder_harian,
+    trigger="cron",
+    hour=22,
+    minute=00,
+    id="reminder_harian",
+    replace_existing=True
+)
+
+scheduler.add_job(
     func=kirim_laporan_harian,
     trigger="cron",
     hour=18,
