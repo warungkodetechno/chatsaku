@@ -1920,9 +1920,9 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 
 
-def kirim_reminder_harian():
+def kirim_reminder_harian(flask_app):
 
-    with app.app_context():
+    with flask_app.app_context():
 
         print("=" * 70)
         print("🔔 KIRIM REMINDER HARIAN CHATSAKU")
@@ -1939,15 +1939,18 @@ def kirim_reminder_harian():
             print("Tanggal hari ini :", hari_ini)
 
             # ======================================
-            # AMBIL REMINDER HARI INI
+            # AMBIL SEMUA REMINDER HARI INI
             # ======================================
 
             reminders = Reminder.query.filter(
-                Reminder.aktif == True,
+                Reminder.aktif.is_(True),
                 Reminder.tanggal == hari_ini
             ).all()
 
-            print("Total reminder :", len(reminders))
+            print(
+                "Jumlah reminder :",
+                len(reminders)
+            )
 
             if not reminders:
 
@@ -1956,19 +1959,42 @@ def kirim_reminder_harian():
                 return
 
             # ======================================
-            # PROSES SATU PER SATU
+            # KELOMPOKKAN BERDASARKAN NOMOR WA
             # ======================================
+
+            reminder_by_user = {}
 
             for reminder in reminders:
 
+                nomor_wa = normalize_wa(
+                    reminder.nomor_wa
+                )
+
+                if nomor_wa not in reminder_by_user:
+
+                    reminder_by_user[nomor_wa] = []
+
+                reminder_by_user[
+                    nomor_wa
+                ].append(reminder)
+
+            # ======================================
+            # PROSES PER USER
+            # ======================================
+
+            for nomor_wa, user_reminders in reminder_by_user.items():
+
                 try:
 
-                    nomor_wa = normalize_wa(
-                        reminder.nomor_wa
+                    print("-" * 60)
+
+                    print(
+                        "NOMOR :",
+                        nomor_wa
                     )
 
                     # ==================================
-                    # CARI USER PEMILIK REMINDER
+                    # CARI USER
                     # ==================================
 
                     user = User.query.filter_by(
@@ -1978,32 +2004,43 @@ def kirim_reminder_harian():
                     if not user:
 
                         print(
-                            f"⚠️ User tidak ditemukan : {nomor_wa}"
+                            "⚠️ User tidak ditemukan"
                         )
 
                         continue
+
+                    print(
+                        "USER  :",
+                        user.nama
+                    )
+
+                    print(
+                        "PAKET :",
+                        user.paket
+                    )
 
                     # ==================================
                     # HANYA PREMIUM
                     # ==================================
 
-                    if user.paket != "PREMIUM":
+                    if str(
+                        user.paket
+                    ).upper() != "PREMIUM":
 
                         print(
-                            f"⏭️ Skip bukan PREMIUM : "
-                            f"{nomor_wa} | Paket: {user.paket}"
+                            "⏭️ Skip - bukan PREMIUM"
                         )
 
                         continue
 
                     # ==================================
-                    # CEK AKUN AKTIF
+                    # CEK AKUN
                     # ==================================
 
                     if not user.aktif:
 
                         print(
-                            f"⏭️ Skip akun nonaktif : {nomor_wa}"
+                            "⏭️ Skip - akun nonaktif"
                         )
 
                         continue
@@ -2014,41 +2051,65 @@ def kirim_reminder_harian():
 
                     if (
                         user.akhir_langganan
-                        and sekarang.date() > user.akhir_langganan
+                        and sekarang.date()
+                        > user.akhir_langganan
                     ):
 
                         print(
-                            f"⏭️ Skip langganan expired : "
-                            f"{nomor_wa}"
+                            "⏭️ Skip - langganan expired"
                         )
 
                         continue
 
                     # ==================================
-                    # PESAN REMINDER
+                    # BUAT PESAN
                     # ==================================
 
                     pesan = f"""🔔 *Reminder ChatSaku*
 
 Halo *{user.nama}* 👋
 
-Jangan lupa, hari ini ada pengingat:
+Hari ini ada beberapa tagihan yang perlu diperhatikan:
 
-📌 *{reminder.nama}*
-
-💰 Nominal:
-*Rp {reminder.nominal:,.0f}*
-
-📅 Setiap tanggal:
-*{reminder.tanggal}*
-
-Jangan sampai lupa ya 😊
-
-💚 _ChatSaku Finance Assistant_
 """
 
+                    total = 0
+
                     # ==================================
-                    # KIRIM HANYA KE PEMILIK
+                    # DAFTAR REMINDER
+                    # ==================================
+
+                    for index, reminder in enumerate(
+                        user_reminders,
+                        start=1
+                    ):
+
+                        nominal = int(
+                            reminder.nominal or 0
+                        )
+
+                        total += nominal
+
+                        pesan += (
+                            f"{index}️⃣ "
+                            f"📌 *{reminder.nama}*\n"
+                            f"   💰 Rp {nominal:,.0f}\n\n"
+                        )
+
+                    # ==================================
+                    # TOTAL
+                    # ==================================
+
+                    pesan += (
+                        "━━━━━━━━━━━━━━━━━━\n"
+                        f"💰 *Total: Rp {total:,.0f}*\n"
+                        "━━━━━━━━━━━━━━━━━━\n\n"
+                        "Jangan sampai ada yang terlewat ya 😊\n\n"
+                        "💚 _ChatSaku Finance Assistant_"
+                    )
+
+                    # ==================================
+                    # KIRIM KE NOMOR PEMILIK
                     # ==================================
 
                     kirim_wa(
@@ -2057,40 +2118,31 @@ Jangan sampai lupa ya 😊
                     )
 
                     print(
-                        f"✅ Reminder terkirim"
-                    )
-
-                    print(
-                        f"   Nomor : {nomor_wa}"
-                    )
-
-                    print(
-                        f"   Nama  : {reminder.nama}"
-                    )
-
-                    print(
-                        f"   Paket : {user.paket}"
+                        f"✅ {len(user_reminders)} "
+                        f"reminder terkirim ke {nomor_wa}"
                     )
 
                 except Exception as e:
 
                     print(
-                        f"❌ Gagal memproses reminder "
-                        f"{reminder.id}: {e}"
+                        f"❌ Gagal memproses "
+                        f"{nomor_wa}: {e}"
                     )
+
+            print("=" * 70)
+            print("✅ SELESAI KIRIM REMINDER")
+            print("=" * 70)
 
         except Exception as e:
 
+            import traceback
+
             print(
                 "❌ ERROR REMINDER:",
-                e
+                str(e)
             )
 
-        finally:
-
-            print("=" * 70)
-            print("SELESAI KIRIM REMINDER")
-            print("=" * 70)
+            traceback.print_exc()
 
 def scheduler_verify():
 
