@@ -1036,11 +1036,14 @@ _ChatSaku Finance Assistant_"""
 
     if cmd.startswith("tabung "):
 
+        # ==========================================
+        # CEK FITUR
+        # ==========================================
         if not has_feature(sender, "tabung"):
 
-            kirim_wa(sender,
-    """
-    🔒 Fitur tabungan hanya tersedia pada paket PREMIUM.
+            kirim_wa(
+                sender,
+                """🔒 *Fitur Tabungan hanya tersedia pada paket PREMIUM.*
 
     Upgrade sekarang agar dapat:
 
@@ -1050,81 +1053,168 @@ _ChatSaku Finance Assistant_"""
     ✅ Hutang Piutang
     ✅ AI Insight
     ✅ Dashboard Lengkap
+    """
+            )
 
-            """)
+            return jsonify(status=True)
 
-        bagian = message.split()
+        # ==========================================
+        # PARSING COMMAND
+        # Format:
+        # tabung laptop 500000
+        # ==========================================
+        bagian = message.strip().split()
 
         if len(bagian) < 3:
 
             kirim_wa(
                 sender,
-                "Format:\n\ntabung laptop 500000"
+                """❌ Format tidak sesuai.
+
+    Gunakan:
+
+    *tabung [nama target] [nominal]*
+
+    Contoh:
+
+    tabung laptop 500000
+    tabung motor 1000000
+    tabung liburan 250000
+    """
             )
 
             return jsonify(status=True)
 
+        # ==========================================
+        # AMBIL NOMINAL
+        # ==========================================
         try:
 
-            nominal = normalize_nominal(parts[2])
+            nominal = normalize_nominal(bagian[-1])
 
-            if nominal is None:
-                kirim_wa(sender, "Nominal tabungan tidak valid.")
+            if nominal is None or nominal <= 0:
+
+                kirim_wa(
+                    sender,
+                    "❌ Nominal tabungan tidak valid."
+                )
+
                 return jsonify(status=True)
 
-        except:
+        except Exception as e:
+
+            print("ERROR NORMALIZE NOMINAL:", e)
+
+            kirim_wa(
+                sender,
+                "❌ Nominal tabungan tidak valid."
+            )
 
             return jsonify(status=True)
 
-        nama = " ".join(
-            bagian[1:-1]
-        )
+        # ==========================================
+        # AMBIL NAMA TARGET
+        # ==========================================
+        nama = " ".join(bagian[1:-1]).strip()
 
+        if not nama:
+
+            kirim_wa(
+                sender,
+                "❌ Nama target tabungan belum diisi."
+            )
+
+            return jsonify(status=True)
+
+        # ==========================================
+        # CARI TARGET
+        # ==========================================
         target = TargetPembelian.query.filter_by(
-
             nomor_wa=sender,
             nama=nama,
             aktif=True
-
         ).first()
 
         if not target:
 
             kirim_wa(
                 sender,
-                "Target tidak ditemukan."
+                f"""❌ *Target tidak ditemukan.*
+
+    Target: *{nama}*
+
+    Pastikan nama target sesuai dengan yang sudah dibuat.
+
+    Contoh:
+    *tabung laptop 500000*
+    """
             )
 
             return jsonify(status=True)
 
-        target.terkumpul += nominal
+        # ==========================================
+        # VALIDASI TARGET
+        # ==========================================
+        if not target.target or target.target <= 0:
+
+            kirim_wa(
+                sender,
+                "❌ Target tabungan tidak valid."
+            )
+
+            return jsonify(status=True)
+
+        # ==========================================
+        # TAMBAH TABUNGAN
+        # ==========================================
+        target.terkumpul = (target.terkumpul or 0) + nominal
 
         db.session.commit()
 
+        # ==========================================
+        # HITUNG PROGRESS
+        # ==========================================
         persen = round(
-            target.terkumpul /
-            target.target * 100
+            (target.terkumpul / target.target) * 100
         )
 
         if persen > 100:
             persen = 100
 
+        # ==========================================
+        # HITUNG SISA
+        # ==========================================
+        sisa = target.target - target.terkumpul
+
+        if sisa < 0:
+            sisa = 0
+
+        # ==========================================
+        # RESPONSE
+        # ==========================================
         kirim_wa(
-
             sender,
+            f"""💚 *Tabungan Berhasil*
 
-    f"""💚 Tabungan berhasil
+    🎯 *{target.nama}*
 
-    {target.nama}
+    ➕ Ditabung
+    Rp {nominal:,.0f}
 
-    +Rp {nominal:,.0f}
-
-    Terkumpul
+    💰 Terkumpul
     Rp {target.terkumpul:,.0f}
 
-    Progress
-    {persen}%"""
+    🎯 Target
+    Rp {target.target:,.0f}
 
+    📊 Progress
+    {persen}%
+
+    💵 Sisa
+    Rp {sisa:,.0f}
+
+    Semangat terus menabung! 🚀
+    """
         )
 
         return jsonify(status=True)
